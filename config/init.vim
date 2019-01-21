@@ -50,12 +50,6 @@ if &runtimepath !~# '/dein.vim'
 endif
 
 " }}}
-" Load less plugins while SSHing to remote machines {{{
-if len($SSH_CLIENT)
-	let $VIM_MINIMAL = 1
-endif
-
-" }}}
 " Disable default plugins "{{{
 
 " Disable menu.vim
@@ -70,6 +64,7 @@ let g:loaded_gzip = 1
 let g:loaded_logiPat = 1
 let g:loaded_matchit = 1
 let g:loaded_matchparen = 1
+let g:netrw_nogx = 1 " disable netrw's gx mapping.
 let g:loaded_rrhelper = 1
 let g:loaded_ruby_provider = 1
 let g:loaded_shada_plugin = 1

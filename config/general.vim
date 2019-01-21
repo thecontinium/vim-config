@@ -37,6 +37,21 @@ set sessionoptions-=help
 set sessionoptions-=buffers
 set sessionoptions+=tabpages
 
+if has('mac')
+	let g:clipboard = {
+		\   'name': 'macOS-clipboard',
+		\   'copy': {
+		\      '+': 'pbcopy',
+		\      '*': 'pbcopy',
+		\    },
+		\   'paste': {
+		\      '+': 'pbpaste',
+		\      '*': 'pbpaste',
+		\   },
+		\   'cache_enabled': 0,
+		\ }
+endif
+
 if has('clipboard')
 	set clipboard& clipboard+=unnamedplus
 endif
@@ -129,13 +144,17 @@ set splitbelow splitright       " Splits open bottom right
 set switchbuf=useopen,usetab    " Jump to the first open window in any tab
 set switchbuf+=vsplit           " Switch buffer behavior to vsplit
 set backspace=indent,eol,start  " Intuitive backspacing in insert mode
-set diffopt=filler,iwhite       " Diff mode: show fillers, ignore white
+set diffopt=filler,iwhite       " Diff mode: show fillers, ignore whitespace
 set showfulltag                 " Show tag and tidy search in completion
 set complete=.                  " No wins, buffs, tags, include scanning
 set completeopt=menuone         " Show menu even for one item
 set completeopt+=noselect       " Do not select a match in the menu
 if has('patch-7.4.775')
 	set completeopt+=noinsert
+endif
+
+if has('patch-8.1.0360')
+	set diffopt+=internal,algorithm:patience
 endif
 
 if exists('+inccommand')
@@ -149,12 +168,13 @@ set noshowmode          " Don't show mode in cmd window
 set shortmess=aoOTI     " Shorten messages and don't show intro
 set scrolloff=2         " Keep at least 2 lines above/below
 set sidescrolloff=5     " Keep at least 5 lines left/right
-set number              " Show line numbers
+set nonumber            " Don't show line numbers
 set noruler             " Disable default status ruler
 set list                " Show hidden characters
 
 set showtabline=2       " Always show the tabs line
 set winwidth=30         " Minimum width for active window
+set winminwidth=10      " Minimum width for inactive windows
 set winheight=1         " Minimum height for active window
 set pumheight=15        " Pop-up menu's line height
 set helpheight=12       " Minimum help window height
