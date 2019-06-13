@@ -30,9 +30,9 @@
 - repo: clojure-vim/async-clj-omni
   on_ft: clojure
   hook_source: |
-		call deoplete#custom#option('keyword_patterns', {
-		\ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
-		\})
+    call deoplete#custom#option('keyword_patterns', {
+    \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
+    \})
 
 # ==========================================
 # Commands
