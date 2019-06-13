@@ -24,6 +24,15 @@
       call system("cargo build --release --no-default-features --features json-rpc")
     endif
 
+- { repo: tpope/vim-fireplace, on_ft: clojure }
+- { repo: tpope/vim-projectionist, on_ft: clojure }
+- { repo: tpope/vim-salve, on_ft: clojure }
+- repo: clojure-vim/async-clj-omni
+  on_ft: clojure
+  hook_source: |
+		call deoplete#custom#option('keyword_patterns', {
+		\ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
+		\})
 
 # ==========================================
 # Commands
