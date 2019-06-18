@@ -27,6 +27,8 @@
 - { repo: tpope/vim-fireplace, on_ft: clojure }
 - { repo: tpope/vim-projectionist, on_ft: clojure }
 - { repo: tpope/vim-salve, on_ft: clojure }
+- { repo: tpope/vim-sexp-mappings-for-regular-people, on_ft: clojure }
+- { repo: guns/vim-sexp, on_ft: clojure }
 - repo: clojure-vim/async-clj-omni
   on_ft: clojure
   hook_source: |
