@@ -10,20 +10,25 @@
 
 # Languages
 # ---------
-- repo: thecontinium/vim-markdown-composer
-  if: empty($VIM_MINIMAL) && executable('cargo')
-  on_ft: markdown
-  hook_source: |
-    let g:markdown_composer_browser = 'open -a Firefox'
-    let g:markdown_composer_autostart = 0
-  hook_post_update: |
-    call dein#util#_notify("Building: " . g:dein#plugin["name"] )
-    if has('nvim')
-      call system("cargo build --release")
-    else
-      call system("cargo build --release --no-default-features --features json-rpc")
-    endif
 
+# markdown
+# - repo: thecontinium/vim-markdown-composer
+#   if: empty($VIM_MINIMAL) && executable('cargo')
+#   on_ft: markdown
+#   hook_source: |
+#     let g:markdown_composer_browser = 'open -a Firefox'
+#     let g:markdown_composer_autostart = 0
+#   hook_post_update: |
+#     call dein#util#_notify("Building: " . g:dein#plugin["name"] )
+#     if has('nvim')
+#       call system("cargo build --release")
+#     else
+#       call system("cargo build --release --no-default-features --features json-rpc")
+#     endif
+#
+- { repo: itspriddle/vim-marked, on_ft: markdown }
+
+# clojure
 - { repo: tpope/vim-fireplace, on_ft: clojure }
 - { repo: tpope/vim-projectionist, on_ft: clojure }
 - { repo: tpope/vim-salve, on_ft: clojure }
@@ -35,6 +40,15 @@
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
     \})
+
+# c#
+- repo: OmniSharp/omnisharp-vim
+  on_ft: cs
+  hook_source: |
+    let g:OmniSharp_server_stdio = 1
+    call deoplete#custom#option('sources', {
+    \ 'cs': ['omnisharp'],
+    \ })
 
 # ==========================================
 # Commands
