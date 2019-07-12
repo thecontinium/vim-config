@@ -28,13 +28,34 @@
 #
 - { repo: itspriddle/vim-marked, on_ft: markdown }
 
+# - repo: junegunn/fzf
+#   build: ./install --all
+#   merged: 0
+#
+# - repo: junegunn/fzf.vim
+#   depends: fzf
+#
+# - repo: alok/notational-fzf-vim
+#   depends: fzf.vim
+#   hook_source: |
+#     let g:nv_search_paths = ['~/Dropbox//notesy']
+#     let g:nv_default_extension = '.mmd'
+
 # clojure
-- { repo: tpope/vim-fireplace, on_ft: clojure }
-- { repo: tpope/vim-projectionist, on_ft: clojure }
-- { repo: tpope/vim-salve, on_ft: clojure }
-- { repo: tpope/vim-sexp-mappings-for-regular-people, on_ft: clojure }
-- { repo: guns/vim-sexp, on_ft: clojure }
-- repo: clojure-vim/async-clj-omni
+# - { repo: tpope/vim-fireplace, on_ft: clojure }
+# - { repo: tpope/vim-projectionist, on_ft: clojure }
+# - { repo: tpope/vim-salve, on_ft: clojure }
+# - { repo: tpope/vim-sexp-mappings-for-regular-people, on_ft: clojure }
+# - { repo: guns/vim-sexp, on_ft: clojure }
+# - repo: clojure-vim/async-clj-omni
+#   on_ft: clojure
+#   hook_source: |
+#     call deoplete#custom#option('keyword_patterns', {
+#     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
+#     \})
+- repo: Olical/conjure
+  build: bin/compile
+  rev: master/*
   on_ft: clojure
   hook_source: |
     call deoplete#custom#option('keyword_patterns', {
