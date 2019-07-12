@@ -52,20 +52,20 @@
 #   hook_source: |
 #     call deoplete#custom#option('keyword_patterns', {
 #     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
-#     \})
+#     \}
 - repo: Olical/conjure
   build: bin/compile
-  rev: master/*
   on_ft: clojure
-  hook_source: |
+  hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
     \})
+  #rev: v0.22.0
 
 # c#
 - repo: OmniSharp/omnisharp-vim
   on_ft: cs
-  hook_source: |
+  hook_post_source: |
     let g:OmniSharp_server_stdio = 1
     call deoplete#custom#option('sources', {
     \ 'cs': ['omnisharp'],
