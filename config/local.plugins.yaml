@@ -56,11 +56,11 @@
 - repo: Olical/conjure
   build: bin/compile
   on_ft: clojure
+  rev: v0.22.0
   hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
     \})
-  #rev: v0.22.0
 
 # c#
 - repo: OmniSharp/omnisharp-vim
