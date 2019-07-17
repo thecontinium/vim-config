@@ -130,7 +130,7 @@ If you'd like to install plugins by yourself, create a
 
 - Package management with caching enabled and lazy loading
 - Project-aware tabs and label
-- NERDTree as file-manager + Git status icons
+- Defx as file-manager + Git status icons
 - Go completion via vim-go and gocode
 - Javascript completion via Tern
 - Python Jedi completion, PEP8 convention
@@ -150,6 +150,7 @@ Name           | Description
 [thinca/vim-localrc] | Enable configuration file of each directory
 [christoomey/tmux-navigator] | Seamless navigation between tmux panes and vim splits
 [junegunn/vim-peekaboo] | See the contents of registers
+[romainl/vim-cool] | Simple plugin that makes hlsearch more useful
 [tpope/vim-sleuth] | Heuristically set buffer indent options
 [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
 [itchyny/vim-gitbranch] | Lightweight git branch detection
@@ -190,23 +191,23 @@ Name           | Description
 [raimon49/requirements.txt.vim] | Python requirements file format
 [StanAngeloff/php.vim] | Up-to-date PHP syntax file (5.3 – 7.1 support)
 [shawncplus/phpcomplete.vim] | PHP completion
-[osyo-manga/vim-monster] | Ruby code completion
+[vim-ruby/vim-ruby] | Ruby configuration files
 [tbastos/vim-lua] | Improved Lua 5.3 syntax and indentation support
-[toyamarinyon/vim-swift] | Swift support
+[keith/swift.vim] | Swift support
 [vim-jp/syntax-vim-ex] | Improved Vim syntax highlighting
 [chrisbra/csv.vim] | Handling column separated data
 [tpope/vim-git] | Git runtime files
 [ekalinin/Dockerfile.vim] | syntax and snippets for Dockerfile
 [tmux-plugins/vim-tmux] | vim plugin for tmux.conf
-[andreshazard/vim-logreview] | Bueatify log viewing
+[MTDL9/vim-log-highlighting] | Syntax highlighting for generic log files
 [hashivim/vim-terraform] | Base Terraform integration
 [cespare/vim-toml] | Syntax for TOML
 [mboughaba/i3config.vim] | i3 window manager config syntax
 [dag/vim-fish] | Fish shell edit support
 [jstrater/mpvim] | Macports portfile configuration files
 [robbles/logstash.vim] | Highlights logstash configuration files
-[exu/pgsql.vim] | PostgreSQL syntax
-[othree/nginx-contrib-vim] | Fork official vim nginx
+[lifepillar/pgsql.vim] | PostgreSQL syntax and indent
+[chr4/nginx.vim] | Improved nginx syntax and indent
 [IN3D/vim-raml] | Syntax and language settings for RAML
 
 ### Commands
@@ -216,8 +217,7 @@ Name           | Description
 [Shougo/defx.nvim] | Dark powered file explorer implementation
 [kristijanhusak/defx-git] | Git status implementation for Defx
 [kristijanhusak/defx-icons] | Filetype icons for Defx
-[scrooloose/nerdtree] | Tree explorer plugin
-[Xuyuanp/nerdtree-git-plugin] | NERDTree plugin for showing git status
+[liuchengxu/vim-which-key] | Shows key-bindings in pop-up
 [t9md/vim-choosewin] | Choose window to use, like tmux's 'display-pane'
 [kana/vim-niceblock] | Make blockwise Visual mode more useful
 [guns/xterm-color-table.vim] | Display 256 xterm colors with their RGB equivalents
@@ -325,6 +325,7 @@ Name           | Description
 [thinca/vim-localrc]: https://github.com/thinca/vim-localrc
 [christoomey/tmux-navigator]: https://github.com/christoomey/vim-tmux-navigator
 [junegunn/vim-peekaboo]: https://github.com/junegunn/vim-peekaboo
+[romainl/vim-cool]: https://github.com/romainl/vim-cool
 [tpope/vim-sleuth]: https://github.com/tpope/vim-sleuth
 [sgur/vim-editorconfig]: https://github.com/sgur/vim-editorconfig
 [itchyny/vim-gitbranch]: https://github.com/itchyny/vim-gitbranch
@@ -359,30 +360,29 @@ Name           | Description
 [raimon49/requirements.txt.vim]: https://github.com/raimon49/requirements.txt.vim
 [StanAngeloff/php.vim]: https://github.com/StanAngeloff/php.vim
 [shawncplus/phpcomplete.vim]: https://github.com/shawncplus/phpcomplete.vim
-[osyo-manga/vim-monster]: https://github.com/osyo-manga/vim-monster
+[vim-ruby/vim-ruby]: https://github.com/vim-ruby/vim-ruby
 [tbastos/vim-lua]: https://github.com/tbastos/vim-lua
-[toyamarinyon/vim-swift]: https://github.com/toyamarinyon/vim-swift
+[keith/swift.vim]: https://github.com/keith/swift.vim
 [vim-jp/syntax-vim-ex]: https://github.com/vim-jp/syntax-vim-ex
 [chrisbra/csv.vim]: https://github.com/chrisbra/csv.vim
 [tpope/vim-git]: https://github.com/tpope/vim-git
 [ekalinin/Dockerfile.vim]: https://github.com/ekalinin/Dockerfile.vim
 [tmux-plugins/vim-tmux]: https://github.com/tmux-plugins/vim-tmux
-[andreshazard/vim-logreview]: https://github.com/andreshazard/vim-logreview
+[MTDL9/vim-log-highlighting]: https://github.com/MTDL9/vim-log-highlighting
 [hashivim/vim-terraform]: https://github.com/hashivim/vim-terraform
 [cespare/vim-toml]: https://github.com/cespare/vim-toml
 [mboughaba/i3config.vim]: https://github.com/mboughaba/i3config.vim
 [dag/vim-fish]: https://github.com/dag/vim-fish
 [jstrater/mpvim]: https://github.com/jstrater/mpvim
 [robbles/logstash.vim]: https://github.com/robbles/logstash.vim
-[exu/pgsql.vim]: https://github.com/exu/pgsql.vim
-[othree/nginx-contrib-vim]: https://github.com/othree/nginx-contrib-vim
+[lifepillar/pgsql.vim]: https://github.com/lifepillar/pgsql.vim
+[chr4/nginx.vim]: https://github.com/chr4/nginx.vim
 [IN3D/vim-raml]: https://github.com/IN3D/vim-raml
 
 [Shougo/defx.nvim]: https://github.com/Shougo/defx.nvim
 [kristijanhusak/defx-git]: https://github.com/kristijanhusak/defx-git
 [kristijanhusak/defx-icons]: https://github.com/kristijanhusak/defx-icons
-[scrooloose/nerdtree]: https://github.com/scrooloose/nerdtree
-[Xuyuanp/nerdtree-git-plugin]: https://github.com/Xuyuanp/nerdtree-git-plugin
+[liuchengxu/vim-which-key]: https://github.com/liuchengxu/vim-which-key
 [t9md/vim-choosewin]: https://github.com/t9md/vim-choosewin
 [kana/vim-niceblock]: https://github.com/kana/vim-niceblock
 [guns/xterm-color-table.vim]: https://github.com/guns/xterm-color-table.vim
@@ -473,7 +473,8 @@ Name           | Description
 Note that,
 
 * Leader key is set as <kbd>Space</kbd>
-* Local-leader is set as <kbd>;</kbd> and used for Denite & NERDTree
+* Local-leader is set as <kbd>;</kbd> and used for navigation and search mostly
+  (Denite and Defx)
 
 Key   | Mode | Action
 ----- |:----:| ------------------
@@ -508,7 +509,7 @@ Arrows | Normal | Resize splits (* Enable `g:elite_mode` in `.vault.vim`)
 `mj`/`mk` | Normal/Visual | Move lines down/up
 `<leader>`+`cp` | Normal | Duplicate paragraph
 `<leader>`+`cn`/`cN` | Normal/Visual | Change current word in a repeatable manner
-`s` | Visual | Replace within selected area
+`sg` | Visual | Replace within selected area
 `Ctrl`+`a` | Command | Navigation in command line
 `Ctrl`+`b` | Command | Move cursor backward in command line
 `Ctrl`+`f` | Command | Move cursor forward in command line
@@ -616,13 +617,13 @@ Key   | Mode | Action
 `sv` | Normal | Open in a split
 `'` | Normal | Toggle mark current candidate
 
-### Plugin: NERDTree
+### Plugin: Defx
 
 Key   | Mode | Action
 ----- |:----:| ------------------
 `;`+`e` | Normal | Toggle file explorer
 `;`+`a` | Normal | Toggle file explorer on current file
-| **Within _NERDTree_ buffers** |||
+| **Within _Defx_ buffers** |||
 `h/j/k/l` | Normal | Movement + collapse/expand + file open
 `w` | Normal | Toggle window size
 `N` | Normal | Create new file or directory
@@ -670,7 +671,7 @@ Key   | Mode | Action
 
 Key   | Mode | Action
 ----- |:----:| ------------------
-`<leader>`+`,` | Normal/Visual | Toggle highlighted word
+`m`+`t` | Normal/Visual | Toggle highlighted word
 
 ### Plugin: Expand-Region
 
@@ -738,10 +739,10 @@ Key   | Mode | Action
 
 Key   | Mode | Action
 ----- |:----:| ------------------
-`,`+`df` | Visual | Mark lines and open diff if 2nd region
-`,`+`da` | Visual | Mark lines for diff
-`,`+`ds` | Normal | Shows the diff between all the marked areas
-`,`+`dr` | Normal | Removes the signs denoting the diff'ed regions
+`m`+`d`+`f` | Visual | Mark lines and open diff if 2nd region
+`m`+`d`+`a` | Visual | Mark lines for diff
+`m`+`d`+`s` | Normal | Shows the diff between all the marked areas
+`m`+`d`+`r` | Normal | Removes the signs denoting the diff'ed regions
 
 ### Misc Plugins
 
