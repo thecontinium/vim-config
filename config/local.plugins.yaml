@@ -57,6 +57,8 @@
   rep: v0.22.0
   build: bin/compile
   on_ft: clojure
+  hook_add: |
+    let g:dein#install_process_timeout = 600
   hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
