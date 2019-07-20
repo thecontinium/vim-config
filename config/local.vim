@@ -7,7 +7,7 @@ augroup MyAutoCmd " {{{
 	autocmd FileType markdown
 		\ let b:sleuth_automatic = 0
 	  \ | setlocal nospell path=. suffixesadd=.mmd
-		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>Denite -input=mmd file/rec grep:::!<CR>
+		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>Denite file/rec grep:::!<CR>
 		\ | setlocal updatetime=200
 		\ | au CursorHold <buffer> silent! update
 
