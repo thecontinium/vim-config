@@ -1,17 +1,24 @@
-
 augroup MyAutoCmd " {{{
 
 	" save automatically when text is changed
 	" it will save the current file whenever text is changed in normal mode
 	" or you leave the insert mode.
 	autocmd FileType markdown
-		\ let b:sleuth_automatic = 0
-	  \ | setlocal nospell path=. suffixesadd=.mmd
-		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>Denite file/rec grep:::!<CR>
+	  \ setlocal nospell path=. suffixesadd=.mmd
 		\ | setlocal updatetime=200
 		\ | au CursorHold <buffer> silent! update
 
-	autocmd FileType clojure
+	autocmd FileType vimwiki,markdown
+		\ let b:sleuth_automatic = 0
+		\ | setlocal concealcursor=nc
+		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>Denite -path=~/Dropbox/notesy file/rec grep:::!<CR>
+
+	" only run vimwikireturn if the popup menu is not showing, otherwise close it
+	autocmd filetype vimwiki
+		\ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<esc>:vimwikireturn 1 5<cr>"
+
+
+autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
 
 	autocmd FileType yaml
