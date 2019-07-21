@@ -15,7 +15,7 @@ augroup MyAutoCmd " {{{
 
 	" only run vimwikireturn if the popup menu is not showing, otherwise close it
 	autocmd filetype vimwiki
-		\ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<esc>:vimwikireturn 1 5<cr>"
+		\ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
 
 
 autocmd FileType clojure
