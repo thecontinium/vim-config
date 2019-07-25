@@ -11,7 +11,7 @@ augroup MyAutoCmd " {{{
 	autocmd FileType vimwiki,markdown
 		\ let b:sleuth_automatic = 0
 		\ | setlocal concealcursor=nc
-		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>Denite -path=~/Dropbox/notesy file/rec grep:::!<CR>
+		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>Denite -path=~/Dropbox/notesy -sorters=sorter/lastmod file/rec grep:::!<CR>
 
 	" only run vimwikireturn if the popup menu is not showing, otherwise close it
 	autocmd filetype vimwiki

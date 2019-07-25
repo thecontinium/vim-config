@@ -2,6 +2,8 @@
 # PLUGINS
 # ==========================================
 
+- { repo: thecontinium/vim-denite-sorter-lastmod }
+
 # Startup
 # -------
 
@@ -89,6 +91,9 @@
     call deoplete#custom#option('sources', {
     \ 'cs': ['omnisharp'],
     \ })
+
+# debugging
+- repo: sakhnik/nvim-gdb
 
 # ==========================================
 # Commands
