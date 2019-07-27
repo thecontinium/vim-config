@@ -13,6 +13,12 @@
 # Languages
 # ---------
 
+# debugging
+- repo: sakhnik/nvim-gdb
+  on_cmd: [ GdbStart, GdbStartLLDB, GdbStartPD, GdbStartBashDB ]
+  hook_post_source: |
+    call dein#remote_plugins()
+
 # markdown
 # - repo: thecontinium/vim-markdown-composer
 #   if: empty($VIM_MINIMAL) && executable('cargo')
@@ -38,6 +44,7 @@
     let g:vimwiki_hl_cb_checked = 1
     let g:vimwiki_autowriteall = 0
   hook_source: |
+    let g:vimwiki_listsyms = ' .oOx'
     let g:vimwiki_list = [
     \   { 'diary_header': 'Diary',
     \     'diary_link_fmt': '%Y-%m/%d',
@@ -92,8 +99,6 @@
     \ 'cs': ['omnisharp'],
     \ })
 
-# debugging
-- repo: sakhnik/nvim-gdb
 
 # ==========================================
 # Commands

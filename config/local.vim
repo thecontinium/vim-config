@@ -43,4 +43,14 @@ autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
 
 augroup END " }}}
+
+" autocmd filetype vimwiki
+" \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:call <SID>do_wiki_cr()<CR>"
+" function! s:do_wiki_cr()
+"		:call vimwiki#vars#set_wikilocal('syntax','default',vimwiki#vars#get_bufferlocal('wiki_nr'))
+"		:VimwikiReturn 1 5
+"		:call vimwiki#vars#set_wikilocal('syntax','markdown',vimwiki#vars#get_bufferlocal('wiki_nr'))
+" endfunction
+" vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
+
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
