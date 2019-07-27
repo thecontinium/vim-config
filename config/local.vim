@@ -1,3 +1,22 @@
+
+
+" terminal mappings
+" map jj to exit terminal-mode
+:tnoremap jj <C-\><C-N>
+" use `CTRL+{h,j,k,l}` to navigate windows from any mode: >
+:tnoremap <C-h> <C-\><C-N><C-w>h
+:tnoremap <C-j> <C-\><C-N><C-w>j
+:tnoremap <C-k> <C-\><C-N><C-w>k
+:tnoremap <C-l> <C-\><C-N><C-w>l
+:inoremap <C-h> <C-\><C-N><C-w>h
+:inoremap <C-j> <C-\><C-N><C-w>j
+:inoremap <C-k> <C-\><C-N><C-w>k
+:inoremap <C-l> <C-\><C-N><C-w>l
+:nnoremap <C-h> <C-w>h
+:nnoremap <C-j> <C-w>j
+:nnoremap <C-k> <C-w>k
+:nnoremap <C-l> <C-w>l
+
 augroup MyAutoCmd " {{{
 
 	" save automatically when text is changed
@@ -17,7 +36,6 @@ augroup MyAutoCmd " {{{
 	autocmd filetype vimwiki
 		\ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
 
-
 autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
 
@@ -25,6 +43,4 @@ autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
 
 augroup END " }}}
-
-
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
