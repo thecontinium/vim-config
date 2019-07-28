@@ -44,6 +44,11 @@ autocmd FileType clojure
 
 augroup END " }}}
 
+autocmd MyAutoCmd FileType defx do WinEnter | call s:defx_my_settings()
+function! s:defx_my_settings() abort
+	nnoremap <silent><buffer><expr><nowait> &  defx#do_action('cd', defx#get_candidate().action__path)
+endfunction
+
 " autocmd filetype vimwiki
 " \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:call <SID>do_wiki_cr()<CR>"
 " function! s:do_wiki_cr()
