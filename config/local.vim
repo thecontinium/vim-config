@@ -46,7 +46,17 @@ augroup END " }}}
 
 autocmd MyAutoCmd FileType defx do WinEnter | call s:defx_my_settings()
 function! s:defx_my_settings() abort
-	nnoremap <silent><buffer><expr><nowait> &  defx#do_action('cd', defx#get_candidate().action__path)
+	nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
+	nnoremap <silent><buffer><expr>					=	 defx#do_action('call', 'DefxCD')
+endfunction
+
+" Set the vim directory to the selected
+function! g:DefxCD(context) abort
+	let l:target = a:context['targets'][0]
+	let l:selected = fnamemodify(l:target, ':p:h')
+	silent execute 'close'
+	silent execute 'cd '.l:selected
+	echo "cd set to ".l:selected
 endfunction
 
 " autocmd filetype vimwiki
