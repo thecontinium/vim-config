@@ -1,4 +1,6 @@
 
+" What to save in sessions:
+set sessionoptions+=winpos
 
 " terminal mappings
 " map jj to exit terminal-mode
@@ -38,6 +40,7 @@ augroup MyAutoCmd " {{{
 
 autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
+		\ | nnoremap <silent><buffer><LocalLeader>cn :<C-u>vsplit term://lein repl<CR>
 
 	autocmd FileType yaml
 		\ let b:sleuth_automatic = 0

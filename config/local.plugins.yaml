@@ -34,7 +34,7 @@
 #       call system("cargo build --release --no-default-features --features json-rpc")
 #     endif
 #
-- { repo: itspriddle/vim-marked, on_ft: markdown }
+# - { repo: itspriddle/vim-marked, on_ft: markdown }
 - repo: vimwiki/vimwiki
   on_map: { n: <Plug> }
   on_cmd: [ VimwikiIndex, VimwikiUISelect ]
@@ -80,11 +80,14 @@
 #     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
 #     \}
 - repo: Olical/conjure
-  rep: v0.22.0
+  rep: v0.23.0
   build: bin/compile
   on_ft: clojure
   hook_add: |
     let g:dein#install_process_timeout = 600
+  hook_source: |
+    let g:conjure_log_direction = "horizontal"
+    let g:conjure_log_blacklist = ["load-file", "eval"]
   hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
