@@ -80,7 +80,7 @@
 #     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
 #     \}
 - repo: Olical/conjure
-  rep: v0.23.0
+  rep: v0.24.0
   build: bin/compile
   on_ft: clojure
   hook_add: |
