@@ -1,4 +1,4 @@
-" deoplete for nvim
+" deoplete
 " ---
 
 " call deoplete#custom#option('profile', v:true)
@@ -7,7 +7,6 @@
 
 " General settings " {{{
 " ---
-
 call deoplete#custom#option({
 	\ 'auto_refresh_delay': 10,
 	\ 'camel_case': v:true,
@@ -27,9 +26,9 @@ let g:deoplete#sources#jedi#short_types = 1
 " Deoplete TernJS settings
 let g:deoplete#sources#ternjs#filetypes = [
 	\ 'jsx',
+	\ 'javascript',
 	\ 'javascript.jsx',
 	\ 'vue',
-	\ 'javascript'
 	\ ]
 
 let g:deoplete#sources#ternjs#timeout = 3
@@ -40,52 +39,24 @@ let g:deoplete#sources#ternjs#docs = 1
 " Limit Sources " {{{
 " ---
 
-" let g:deoplete#sources = get(g:, 'deoplete#sources', {})
-" let g:deoplete#sources.go = ['vim-go']
-" let g:deoplete#sources.javascript = ['file', 'ternjs']
-" let g:deoplete#sources.jsx = ['file', 'ternjs']
-
-" call deoplete#custom#option('ignore_sources', {'_': ['around', 'buffer']})
-" let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
-" let g:deoplete#ignore_sources.html = ['syntax']
-" let g:deoplete#ignore_sources.python = ['syntax']
-" let g:deoplete#ignore_sources.php = ['omni']
-
-" call deoplete#custom#source('_', 'disabled_syntaxes', ['Comment', 'String'])
-
 " }}}
 " Omni functions and patterns " {{{
 " ---
-" let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
-" let g:deoplete#omni#functions.css = 'csscomplete#CompleteCSS'
-" let g:deoplete#omni#functions.html = 'htmlcomplete#CompleteTags'
-" let g:deoplete#omni#functions.markdown = 'htmlcomplete#CompleteTags'
-" let g:deoplete#omni#functions.javascript =
-" 	\ [ 'tern#Complete', 'jspc#omni', 'javascriptcomplete#CompleteJS' ]
+if ! exists('g:context_filetype#same_filetypes')
+	let g:context_filetype#filetypes = {}
+endif
 
-" let g:deoplete#omni_patterns = get(g:, 'deoplete#omni_patterns', {})
-" let g:deoplete#omni_patterns.terraform = '[^ *\t"{=$]\w*'
-" call deoplete#custom#option('omni_patterns', {
-"\ 'complete_method': 'omnifunc',
-"\ 'terraform': '[^ *\t"{=$]\w*',
-"\})
+let g:context_filetype#filetypes.svelte = [
+	\   { 'filetype': 'css', 'start': '<style>', 'end': '</style>' },
+	\ ]
 
-" let g:deoplete#omni_patterns.html = '<[^>]*'
-" let g:deoplete#omni_patterns.javascript = '[^. *\t]\.\w*'
-" let g:deoplete#omni_patterns.javascript = '[^. \t]\.\%\(\h\w*\)\?'
-" let g:deoplete#omni_patterns.php =
-" 	\ '\w+|[^. \t]->\w*|\w+::\w*'
-	" \ '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?'
+call deoplete#custom#var('omni', 'functions', {
+	\   'css': [ 'csscomplete#CompleteCSS' ]
+	\ })
 
-" let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
-" let g:deoplete#omni#input_patterns.xml = '<[^>]*'
-" let g:deoplete#omni#input_patterns.md = '<[^>]*'
-" let g:deoplete#omni#input_patterns.css  = '^\s\+\w\+\|\w\+[):;]\?\s\+\w*\|[@!]'
-" let g:deoplete#omni#input_patterns.scss = '^\s\+\w\+\|\w\+[):;]\?\s\+\w*\|[@!]'
-" let g:deoplete#omni#input_patterns.sass = '^\s\+\w\+\|\w\+[):;]\?\s\+\w*\|[@!]'
-" let g:deoplete#omni#input_patterns.javascript = '[^. *\t]\.\w*'
-" let g:deoplete#omni#input_patterns.python = ''
-" let g:deoplete#omni#input_patterns.php = '\w+|[^. \t]->\w*|\w+::\w*'
+call deoplete#custom#option('omni_patterns', {
+	\ 'go': '[^. *\t]\.\w*',
+	\})
 
 " }}}
 " Ranking and Marks " {{{
@@ -131,14 +102,13 @@ call deoplete#custom#source('syntax',        'rank', 50)
 " Default matchers: ['matcher/length', 'matcher/fuzzy']
 
 call deoplete#custom#source('_', 'matchers',
-	\ ['matcher_fuzzy', 'matcher_length'])
+	\ [ 'matcher_fuzzy', 'matcher_length' ])
 
 call deoplete#custom#source('_', 'converters', [
-	\ 'converter_remove_paren',
-	\ 'converter_remove_overlap',
-	\ 'matcher_length',
-	\ 'converter_truncate_abbr',
-	\ 'converter_truncate_menu',
+	\   'converter_remove_paren',
+	\   'converter_remove_overlap',
+	\   'converter_truncate_abbr',
+	\   'converter_truncate_menu',
 	\ ])
 
 call deoplete#custom#source('denite', 'matchers',
@@ -147,8 +117,10 @@ call deoplete#custom#source('denite', 'matchers',
 " }}}
 " Key-mappings and Events " {{{
 " ---
-
-autocmd MyAutoCmd CompleteDone * silent! pclose!
+augroup user_plugin_deoplete
+	autocmd!
+	autocmd CompleteDone * silent! pclose!
+augroup END
 
 " Movement within 'ins-completion-menu'
 imap <expr><C-j>   pumvisible() ? "\<Down>" : "\<C-j>"
@@ -164,7 +136,7 @@ imap     <expr><C-u> pumvisible() ? "\<PageUp>" : "\<C-u>"
 " inoremap <expr><C-g> deoplete#undo_completion()
 
 " Redraw candidates
-inoremap <expr><C-g> deoplete#refresh()
+inoremap <expr><C-g> deoplete#manual_complete()
 inoremap <expr><C-e> deoplete#cancel_popup()
 inoremap <silent><expr><C-l> deoplete#complete_common_string()
 

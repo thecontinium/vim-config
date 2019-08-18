@@ -12,7 +12,7 @@ if dein#tap('denite.nvim')
 	nnoremap <silent><LocalLeader>l :<C-u>Denite location_list -buffer-name=list<CR>
 	nnoremap <silent><LocalLeader>q :<C-u>Denite quickfix -buffer-name=list<CR>
 	nnoremap <silent><LocalLeader>n :<C-u>Denite dein<CR>
-	nnoremap <silent><LocalLeader>g :<C-u>Denite grep -buffer-name=search<CR>
+	nnoremap <silent><LocalLeader>g :<C-u>Denite grep -no-start-filter<CR>
 	nnoremap <silent><LocalLeader>j :<C-u>Denite jump change file/point -buffer-name=jump<CR>
 	nnoremap <silent><LocalLeader>u :<C-u>Denite junkfile:new junkfile<CR>
 	nnoremap <silent><LocalLeader>o :<C-u>Denite outline<CR>
@@ -28,9 +28,9 @@ if dein#tap('denite.nvim')
 	nnoremap <silent><LocalLeader>; :<C-u>Denite command command_history<CR>
 
 	" chemzqm/denite-git
-	nnoremap <silent> <Leader>gl :<C-u>Denite gitlog:all -buffer-name=git<CR>
-	nnoremap <silent> <Leader>gs :<C-u>Denite gitstatus -buffer-name=git<CR>
-	nnoremap <silent> <Leader>gc :<C-u>Denite gitbranch -buffer-name=git<CR>
+	nnoremap <silent> <Leader>gl :<C-u>Denite gitlog:all -no-start-filter<CR>
+	nnoremap <silent> <Leader>gs :<C-u>Denite gitstatus -no-start-filter<CR>
+	nnoremap <silent> <Leader>gc :<C-u>Denite gitbranch -no-start-filter<CR>
 
 	" Open Denite with word under cursor or selection
 	nnoremap <silent> <Leader>gt :DeniteCursorWord tag:include -buffer-name=tag -immediately<CR>
@@ -43,22 +43,9 @@ if dein#tap('denite.nvim')
 	function! s:get_selection(cmdtype)
 		let temp = @s
 		normal! gv"sy
-		let @/ = substitute(escape(@s, '\'.a:cmdtype), '\n', '\\n', 'g')
+		let @/ = substitute(escape(@s, '\' . a:cmdtype), '\n', '\\n', 'g')
 		let @s = temp
-	endfunction "}}}
-endif
-
-if dein#tap('vim-denite-z')
-	command! -nargs=+ -complete=file Z
-		\ call denite#start([{'name': 'z', 'args': [<q-args>], {'immediately': 1}}])
-endif
-
-if dein#tap('tagbar')
-	nnoremap <silent> <Leader>o   :<C-u>TagbarOpenAutoClose<CR>
-
-	" Also use h/l to open/close folds
-	let g:tagbar_map_closefold = ['h', '-', 'zc']
-	let g:tagbar_map_openfold = ['l', '+', 'zo']
+	endfunction
 endif
 
 if dein#tap('defx.nvim')
@@ -68,32 +55,24 @@ if dein#tap('defx.nvim')
 		\ :<C-u>Defx -resume -buffer-name=tab`tabpagenr()` -search=`expand('%:p')`<CR>
 endif
 
-if dein#tap('nerdtree')
-	let g:NERDTreeMapOpenSplit = 'sv'
-	let g:NERDTreeMapOpenVSplit = 'sg'
-	let g:NERDTreeMapOpenInTab = 'st'
-	let g:NERDTreeMapOpenInTabSilent = 'sT'
-	let g:NERDTreeMapUpdirKeepOpen = '<BS>'
-	let g:NERDTreeMapOpenRecursively = 't'
-	let g:NERDTreeMapCloseChildren = 'T'
-	let g:NERDTreeMapToggleHidden = '.'
+if dein#tap('vim-denite-z')
+	command! -nargs=+ -complete=file Z
+		\ call denite#start([{'name': 'z', 'args': [<q-args>], {'immediately': 1}}])
+endif
 
-	nnoremap <silent> <Leader>e :<C-u>let NERDTreeWinPos=0 \| NERDTreeToggle<CR>
-	" nnoremap <silent> <LocalLeader>a :<C-u>let NERDTreeWinPos=0 \| NERDTreeFind<CR>
-	" nnoremap <silent> <LocalLeader>E :<C-u>let NERDTreeWinPos=1 \| NERDTreeToggle<CR>
-	" nnoremap <silent> <LocalLeader>A :<C-u>let NERDTreeWinPos=1 \| NERDTreeFind<CR>
+if dein#tap('vista.vim')
+	nnoremap <silent> <Leader>o :<C-u>Vista<CR>
 endif
 
 if dein#tap('neosnippet.vim')
 	imap <expr><C-o> neosnippet#expandable_or_jumpable()
 		\ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
-	xmap <silent><C-s> <Plug>(neosnippet_register_oneshot_snippet)
 	smap <silent>L     <Plug>(neosnippet_jump_or_expand)
 	xmap <silent>L     <Plug>(neosnippet_expand_target)
 endif
 
 if dein#tap('emmet-vim')
-	autocmd MyAutoCmd FileType html,css,jsx,javascript,javascript.jsx
+	autocmd user_events FileType html,css,jsx,javascript,javascript.jsx
 		\ EmmetInstall
 		\ | imap <buffer> <C-Return> <Plug>(emmet-expand-abbr)
 endif
@@ -149,7 +128,7 @@ endif
 
 if dein#tap('vim-bookmarks')
 	nmap ma :<C-u>cgetexpr bm#location_list()<CR>
-		\ :<C-u>Denite quickfix -buffer-name=list<CR>
+		\ :<C-u>Denite quickfix -no-start-filter<CR>
 	nmap mn <Plug>BookmarkNext
 	nmap mp <Plug>BookmarkPrev
 	nmap mm <Plug>BookmarkToggle
@@ -157,7 +136,7 @@ if dein#tap('vim-bookmarks')
 endif
 
 if dein#tap('auto-git-diff')
-	autocmd MyAutoCmd FileType gitrebase
+	autocmd user_events FileType gitrebase
 		\  nmap <buffer><CR>  <Plug>(auto_git_diff_scroll_manual_update)
 		\| nmap <buffer><C-n> <Plug>(auto_git_diff_scroll_down_page)
 		\| nmap <buffer><C-p> <Plug>(auto_git_diff_scroll_up_page)
@@ -197,32 +176,32 @@ endif
 
 if dein#tap('jedi-vim')
 	let g:jedi#completions_command = ''
-	let g:jedi#documentation_command = 'K'
 	let g:jedi#goto_command = '<C-]>'
-	let g:jedi#goto_assignments_command = '<leader>g'
-	let g:jedi#rename_command = '<Leader>r'
-	let g:jedi#usages_command = '<Leader>n'
+	let g:jedi#goto_assignments_command = 'gy'
+	let g:jedi#documentation_command = 'K'
+	let g:jedi#usages_command = 'gr'
+	let g:jedi#rename_command = '<Leader>R'
 endif
 
 if dein#tap('tern_for_vim')
-	autocmd MyAutoCmd FileType javascript,jsx,javascript.jsx
+	autocmd user_events FileType javascript,jsx,javascript.jsx
 		\  nnoremap <silent><buffer> K          :<C-u>TernDoc<CR>
 		\| nnoremap <silent><buffer> <C-]>      :<C-u>TernDefSplit<CR>
-		\| nnoremap <silent><buffer> <leader>g  :<C-u>TernType<CR>
-		\| nnoremap <silent><buffer> <leader>n  :<C-u>TernRefs<CR>
-		\| nnoremap <silent><buffer> <leader>r  :<C-u>TernRename<CR>
+		\| nnoremap <silent><buffer> gy         :<C-u>TernType<CR>
+		\| nnoremap <silent><buffer> gr         :<C-u>TernRefs<CR>
+		\| nnoremap <silent><buffer> <leader>R  :<C-u>TernRename<CR>
 endif
 
 if dein#tap('vim-gitgutter')
-	nmap <Leader>hj <Plug>GitGutterNextHunk
-	nmap <Leader>hk <Plug>GitGutterPrevHunk
-	nmap <Leader>hs <Plug>GitGutterStageHunk
-	nmap <Leader>hr <Plug>GitGutterUndoHunk
-	nmap <Leader>hp <Plug>GitGutterPreviewHunk
+	nmap ]g <Plug>GitGutterNextHunk
+	nmap [g <Plug>GitGutterPrevHunk
+	nmap gS <Plug>GitGutterStageHunk
+	nmap <Leader>gr <Plug>GitGutterUndoHunk
+	nmap gs <Plug>GitGutterPreviewHunk
 endif
 
 if dein#tap('vim-go')
-	autocmd MyAutoCmd FileType go
+	autocmd user_events FileType go
 		\   nmap <C-]> <Plug>(go-def)
 		\ | nmap <Leader>god  <Plug>(go-describe)
 		\ | nmap <Leader>goc  <Plug>(go-callees)
@@ -236,7 +215,7 @@ if dein#tap('vim-go')
 endif
 
 if dein#tap('phpcomplete-extended')
-	autocmd MyAutoCmd FileType php
+	autocmd user_events FileType php
 		\   nmap <silent> <unique> K <Plug>(phpcomplete-extended-doc)
 		\ | nmap <silent> <unique> <C-]> <Plug>(phpcomplete-extended-goto)
 		\ | nmap <silent> <unique> <Leader>a <Plug>(phpcomplete-extended-add-use)
@@ -292,8 +271,10 @@ if dein#tap('vim-expand-region')
 endif
 
 if dein#tap('sideways.vim')
-	nnoremap <silent> m" :SidewaysJumpLeft<CR>
-	nnoremap <silent> m' :SidewaysJumpRight<CR>
+	nnoremap <silent> >, :SidewaysLeft<CR>
+	nnoremap <silent> <, :SidewaysRight<CR>
+	nnoremap <silent> [, :SidewaysJumpLeft<CR>
+	nnoremap <silent> ], :SidewaysJumpRight<CR>
 	omap <silent> a, <Plug>SidewaysArgumentTextobjA
 	xmap <silent> a, <Plug>SidewaysArgumentTextobjA
 	omap <silent> i, <Plug>SidewaysArgumentTextobjI
@@ -341,22 +322,8 @@ if dein#tap('caw.vim')
 			xmap <buffer> gcc <Plug>(caw:hatpos:toggle)
 		endif
 	endfunction
-	autocmd MyAutoCmd FileType * call InitCaw()
+	autocmd user_events FileType * call InitCaw()
 	call InitCaw()
-endif
-
-if dein#tap('vim-easymotion')
-	nmap ss <Plug>(easymotion-s2)
-	nmap sd <Plug>(easymotion-s)
-	nmap sf <Plug>(easymotion-overwin-f)
-	map  sh <Plug>(easymotion-linebackward)
-	map  sl <Plug>(easymotion-lineforward)
-	" map  sj <Plug>(easymotion-j)
-	" map  sk <Plug>(easymotion-k)
-	map  s/ <Plug>(easymotion-sn)
-	omap s/ <Plug>(easymotion-tn)
-	map  sn <Plug>(easymotion-next)
-	map  sp <Plug>(easymotion-prev)
 endif
 
 if dein#tap('vim-textobj-multiblock')
