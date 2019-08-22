@@ -1,6 +1,8 @@
 
 " What to save in sessions:
 set sessionoptions+=winpos
+set sessionoptions+=blank
+set sessionoptions+=buffers
 
 " terminal mappings
 " map jj to exit terminal-mode
@@ -18,6 +20,14 @@ set sessionoptions+=winpos
 :nnoremap <C-j> <C-w>j
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
+
+augroup my_user_plugin_denite " }}}
+	autocmd!
+
+	autocmd FileType denite
+		\ nnoremap <silent><buffer><expr> sa denite#do_map('do_action', 'save')
+
+augroup END " }}}
 
 augroup MyAutoCmd " {{{
 
@@ -37,6 +47,9 @@ augroup MyAutoCmd " {{{
 	" only run vimwikireturn if the popup menu is not showing, otherwise close it
 	autocmd filetype vimwiki
 		\ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
+		\ | setlocal sw=4
+		\ | setlocal sts=4
+		\ | setlocal et
 
 autocmd FileType clojure
 		\ let b:sleuth_automatic = 0

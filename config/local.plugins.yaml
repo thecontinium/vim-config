@@ -3,6 +3,8 @@
 # ==========================================
 
 - { repo: thecontinium/vim-denite-sorter-lastmod }
+- { repo: rafi/vim-denite-session, on_source: denite.nvim, if: 0 }
+- { repo: thecontinium/vim-denite-session, on_source: denite.nvim }
 
 # Startup
 # -------
@@ -80,7 +82,7 @@
 #     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
 #     \}
 - repo: Olical/conjure
-  rep: v0.24.0
+  rep: v0.2*.0
   build: bin/compile
   on_ft: clojure
   hook_add: |
