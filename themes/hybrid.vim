@@ -64,6 +64,8 @@ highlight! link jsFutureKeys PreProc
 highlight Defx_filename_3_Modified  ctermfg=1  guifg=#D370A3
 highlight Defx_filename_3_Staged    ctermfg=10 guifg=#A3D572
 highlight Defx_filename_3_Ignored   ctermfg=8  guifg=#404660
+highlight link Defx_filename_3_root_marker Comment
+
 highlight def link Defx_filename_3_Untracked Comment
 highlight def link Defx_filename_3_Unknown Comment
 highlight def link Defx_filename_3_Renamed Title
@@ -81,11 +83,11 @@ highlight! WarningSyntax ctermfg=58 guifg=#7d7629
 "}}}
 
 " Plugin: vim-gitgutter {{{
-" ---------------------------------------------------------
-highlight! GitGutterAdd ctermfg=22 guifg=#006000 ctermbg=NONE guibg=NONE
-highlight! GitGutterChange ctermfg=58 guifg=#5F6000 ctermbg=NONE guibg=NONE
-highlight! GitGutterDelete ctermfg=52 guifg=#600000 ctermbg=NONE guibg=NONE
-highlight! GitGutterChangeDelete ctermfg=52 guifg=#600000 ctermbg=NONE guibg=NONE
+" ---
+highlight! GitGutterAdd ctermfg=22 guifg=#006000 ctermbg=234 guibg=#1c1c1c
+highlight! GitGutterChange ctermfg=58 guifg=#5F6000 ctermbg=234 guibg=#1c1c1c
+highlight! GitGutterDelete ctermfg=52 guifg=#600000 ctermbg=234 guibg=#1c1c1c
+highlight! GitGutterChangeDelete ctermfg=52 guifg=#600000 ctermbg=234 guibg=#1c1c1c
 " }}}
 
 " Plugin: denite {{{
@@ -104,9 +106,9 @@ highlight! link deniteSource_QuickfixPosition qfLineNr
 highlight! link Flashy DiffText
 " }}}
 
-" Plugin: vim-bookmarks {{{
-highlight! BookmarkSign            ctermfg=12 guifg=#4EA9D7 ctermbg=234 guibg=#1c1c1c
-highlight! BookmarkAnnotationSign  ctermfg=11 guifg=#EACF49 ctermbg=234 guibg=#1c1c1c
+" Plugin: vim-signature {{{
+highlight! SignatureMarkText    ctermfg=11 guifg=#756207 ctermbg=234 guibg=#1c1c1c
+highlight! SignatureMarkerText  ctermfg=12 guifg=#4EA9D7 ctermbg=234 guibg=#1c1c1c
 " }}}
 
 " Plugin: vim-choosewin {{{

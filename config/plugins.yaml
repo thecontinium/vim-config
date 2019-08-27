@@ -6,12 +6,15 @@
 # -------
 - repo: Shougo/dein.vim
 - repo: rafi/awesome-vim-colorschemes
-- repo: christoomey/vim-tmux-navigator
 - repo: itchyny/vim-gitbranch
 - repo: itchyny/vim-parenmatch
 - repo: thinca/vim-localrc
 - repo: romainl/vim-cool
 - repo: sgur/vim-editorconfig
+
+- repo: christoomey/vim-tmux-navigator
+  if: "! (has('win32') || has('win64'))"
+
 - repo: tpope/vim-sleuth
   hook_add: let g:sleuth_neighbor_limit = 5
 
@@ -19,8 +22,8 @@
 - { repo: equalsraf/neovim-gui-shim, if: has('gui_running') }
 
 # Vim8 only:
-- { repo: roxma/nvim-yarp, if: ! has('nvim') }
-- { repo: roxma/vim-hug-neovim-rpc, if: ! has('nvim'), depends: nvim-yarp }
+- { repo: roxma/nvim-yarp, if: "! has('nvim')", depends: vim-hug-neovim-rpc }
+- { repo: roxma/vim-hug-neovim-rpc, if: "! has('nvim')" }
 
 # Lazy Loading
 # ==========================================
@@ -47,13 +50,15 @@
 - repo: plasticboy/vim-markdown
   on_ft: markdown
   hook_add: |
-    let g:vim_markdown_folding_level = 6
-    let g:vim_markdown_emphasis_multiline = 0
-    let g:vim_markdown_conceal = 0
+    let g:vim_markdown_folding_level = 1
+    let g:vim_markdown_folding_style_pythonic = 1
     let g:vim_markdown_frontmatter = 1
-    let g:vim_markdown_new_list_item_indent = 2
-    let g:vim_markdown_edit_url_in = 'vsplit'
+    let g:vim_markdown_auto_insert_bullets = 1
+    let g:vim_markdown_new_list_item_indent = 0
+    let g:vim_markdown_conceal_code_blocks = 0
+    let g:vim_markdown_conceal = 0
     let g:vim_markdown_strikethrough = 1
+    let g:vim_markdown_edit_url_in = 'vsplit'
     let g:vim_markdown_fenced_languages = [
       \ 'c++=cpp',
       \ 'viml=vim',
@@ -164,7 +169,7 @@
       \ }
 
 - repo: hashivim/vim-terraform
-  on_ft: terraform
+  on_ft: [ terraform, hcl ]
   on_cmd: [ Terraform, TerraformFmt ]
   hook_add: let g:terraform_fmt_on_save = 1
 
@@ -176,9 +181,20 @@
   hook_source: source $VIM_PATH/config/plugins/defx.vim
 
 - { repo: kristijanhusak/defx-git, on_source: defx.nvim }
-- { repo: kristijanhusak/defx-icons, on_source: defx.nvim }
 
-- { repo: tyru/caw.vim, on_map: { nx: <Plug> }}
+- repo: kristijanhusak/defx-icons
+  on_source: defx.nvim
+  on_func: defx_icons#get
+
+- repo: tyru/caw.vim
+  on_map: { nx: <Plug> }
+  hook_add: |
+    let g:caw_hatpos_sp = ''
+    let g:caw_zeropos_sp = ''
+    let g:caw_wrap_sp_left = ''
+    let g:caw_wrap_sp_right = ''
+    let g:caw_jump_sp = ''
+
 - { repo: liuchengxu/vim-which-key, on_cmd: WhichKey }
 - { repo: kana/vim-niceblock, on_map: { x: <Plug> }}
 - { repo: guns/xterm-color-table.vim, on_cmd: XtermColorTable }
@@ -266,6 +282,23 @@
     let g:gitgutter_sign_removed = '▏'
     let g:gitgutter_sign_removed_first_line = '▔'
     let g:gitgutter_sign_modified_removed = '▋'
+    let g:gitgutter_sign_allow_clobber = 0
+    let g:gitgutter_sign_priority = 0
+    let g:gitgutter_override_sign_column_highlight = 0
+
+- repo: kshenoy/vim-signature
+  depends: vim-gitgutter
+  on_path: .*
+  hook_add: |
+    let g:SignatureForceRemoveGlobal = 0
+    let g:SignatureUnconditionallyRecycleMarks = 1
+    let g:SignatureErrorIfNoAvailableMarks = 0
+    let g:SignaturePurgeConfirmation = 0
+    let g:SignatureMarkTextHLDynamic = 1
+    let g:SignatureMarkerTextHLDynamic = 1
+    let g:SignatureIncludeMarks = 'abcdefgABCDEFG'
+    let g:SignatureIncludeMarkers = repeat('⚐', 10)
+    autocmd user_events User GitGutter call signature#sign#Refresh()
 
 - repo: nathanaelkane/vim-indent-guides
   on_cmd: [ IndentGuidesEnable, IndentGuidesDisable, IndentGuidesToggle ]
@@ -293,15 +326,6 @@
     if ! has('vim_starting')
       doautocmd <nomodeline> user_plugin_indentguides BufEnter
     endif
-
-- repo: MattesGroeger/vim-bookmarks
-  on_path: .*
-  hook_source: |
-    let g:bookmark_auto_save_file = g:etc#cache_path . '/bookmarks'
-    let g:bookmark_no_default_key_mappings = 1
-    let g:bookmark_disable_ctrlp = 1
-    let g:bookmark_location_list = 1
-    let g:bookmark_sign = '⚐'
 
 - repo: rhysd/committia.vim
   on_path: COMMIT_EDITMSG
@@ -395,8 +419,9 @@
   hook_source: |
     let g:neosnippet#enable_snipmate_compatibility = 1
     let g:neosnippet#enable_completed_snippet = 1
-    let g:neosnippet#expand_word_boundary = 1
     let g:neosnippet#enable_complete_done = 1
+    let g:neosnippet#expand_word_boundary = 1
+    let g:neosnippet#enable_auto_clear_markers = 1
     autocmd user_events InsertLeave * NeoSnippetClearMarkers
 
 - repo: Shougo/echodoc.vim
@@ -410,8 +435,8 @@
     let g:float_preview#docked = 0
     let g:float_preview#max_width = 80
 
-- { repo: Shougo/neosnippet-snippets, on_event: InsertEnter }
-- { repo: Shougo/context_filetype.vim, on_event: InsertEnter }
+- { repo: Shougo/neosnippet-snippets, on_source: neosnippet.vim }
+- { repo: Shougo/context_filetype.vim, lazy: 1 }
 - { repo: Shougo/neco-vim, on_ft: vim }
 - { repo: Shougo/neoinclude.vim, on_source: deoplete.nvim }
 - { repo: Shougo/neco-syntax, on_source: deoplete.nvim }
@@ -475,6 +500,7 @@
     let g:delimitMate_excluded_ft = 'html'
 
 - repo: wellle/tmux-complete.vim
+  if: "! (has('win32') || has('win64'))"
   on_event: InsertEnter
   hook_add: let g:tmuxcomplete#trigger = ''
 

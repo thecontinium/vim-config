@@ -9,7 +9,7 @@ call defx#custom#option('_', {
 	\ 'direction': 'topleft',
 	\ 'listed': 1,
 	\ 'show_ignored_files': 0,
-	\ 'root_marker': '↯ ',
+	\ 'root_marker': '≡ ',
 	\ 'ignored_files':
 	\     '.mypy_cache,.pytest_cache,.git,.hg,.svn,.stversions'
 	\   . ',__pycache__,.sass-cache,*.egg-info,.DS_Store,*.pyc'
@@ -33,6 +33,7 @@ call defx#custom#column('git', {
 " defx-icons plugin
 let g:defx_icons_column_length = 2
 let g:defx_icons_mark_icon = '✓'
+let g:defx_icons_parent_icon = ''
 
 " Events
 " ---
@@ -121,6 +122,7 @@ function! s:defx_mappings() abort
 	nnoremap <silent><buffer><expr> <CR>  <SID>defx_toggle_tree()
 	nnoremap <silent><buffer><expr> l     <SID>defx_toggle_tree()
 	nnoremap <silent><buffer><expr> h     defx#do_action('close_tree')
+	nnoremap <silent><buffer><expr> t     defx#do_action('open_tree_recursive')
 	nnoremap <silent><buffer><expr> <BS>  defx#async_action('cd', ['..'])
 	nnoremap <silent><buffer><expr> st    defx#do_action('multi', [['drop', 'tabnew'], 'quit'])
 	nnoremap <silent><buffer><expr> sg    defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
@@ -161,12 +163,14 @@ function! s:defx_mappings() abort
 		\ defx#do_action('toggle_columns', 'indent:mark:filename:type:size:time')
 
 	" Tools
+	nnoremap <silent><buffer><expr> w   defx#async_action('call', '<SID>toggle_width')
 	nnoremap <silent><buffer><expr> gx  defx#async_action('execute_system')
 	nnoremap <silent><buffer><expr> gd  defx#async_action('multi', ['drop', ['call', '<SID>git_diff']])
-	nnoremap <silent><buffer><expr> gl  defx#async_action('call', '<SID>explorer')
 	nnoremap <silent><buffer><expr> gr  defx#do_action('call', '<SID>grep')
 	nnoremap <silent><buffer><expr> gf  defx#do_action('call', '<SID>find_files')
-	nnoremap <silent><buffer><expr> w   defx#async_action('call', '<SID>toggle_width')
+	if exists('$TMUX')
+		nnoremap <silent><buffer><expr> gl  defx#async_action('call', '<SID>explorer')
+	endif
 endfunction
 
 " TOOLS
