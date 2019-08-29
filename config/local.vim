@@ -3,6 +3,12 @@
 set sessionoptions+=winpos
 set sessionoptions+=blank
 set sessionoptions+=buffers
+" nmap <silent> <Leader>su :<C-u>let v:this_session='' && execute 'redrawtabline'<CR>
+nmap <silent> <Leader>su :<C-u>call g:SessionUnload()<CR>
+function! g:SessionUnload() abort
+	let v:this_session=''
+	silent execute 'redrawtabline'
+endfunction
 
 " terminal mappings
 " map jj to exit terminal-mode
