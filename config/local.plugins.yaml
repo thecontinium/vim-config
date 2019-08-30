@@ -88,6 +88,7 @@
   hook_add: |
     let g:dein#install_process_timeout = 600
   hook_source: |
+    let g:conjure_map_prefix = ","
     let g:conjure_log_direction = "horizontal"
     let g:conjure_log_blacklist = ["load-file", "eval"]
   hook_post_source: |
