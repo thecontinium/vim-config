@@ -1,8 +1,6 @@
 
 " What to save in sessions:
 set sessionoptions+=winpos
-set sessionoptions+=blank
-set sessionoptions+=buffers
 " nmap <silent> <Leader>su :<C-u>let v:this_session='' && execute 'redrawtabline'<CR>
 nmap <silent> <Leader>su :<C-u>call g:SessionUnload()<CR>
 function! g:SessionUnload() abort
