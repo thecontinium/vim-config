@@ -11,6 +11,23 @@ if has('gui_running')
 endif
 " }}}
 
+let g:terminal_color_0 = '#2a2a2a'
+let g:terminal_color_1 = '#d370a3'
+let g:terminal_color_2 = '#6d9e3f'
+let g:terminal_color_3 = '#b58858'
+let g:terminal_color_4 = '#6095c5'
+let g:terminal_color_5 = '#ac7bde'
+let g:terminal_color_6 = '#3ba275'
+let g:terminal_color_7 = '#ffffff'
+let g:terminal_color_8 = '#686868'
+let g:terminal_color_9 = '#ffa7da'
+let g:terminal_color_10 = '#a3d572'
+let g:terminal_color_11 = '#efbd8b'
+let g:terminal_color_12 = '#98cbfe'
+let g:terminal_color_13 = '#e5b0ff'
+let g:terminal_color_14 = '#75daa9'
+let g:terminal_color_15 = '#cfcfcf'
+
 " Tabline {{{
 " ---
 " TabLineFill: Tab pages line, where there are no labels
@@ -53,10 +70,10 @@ highlight! link jsFutureKeys PreProc
 " highlight! link pythonSpaceError  NONE
 " highlight! link pythonIndentError NONE
 " highlight! link mkdLineBreak      NONE
-" highlight! WarningMsg ctermfg=100 guifg=#CCC566
-" highlight! ParenMatch  ctermbg=236 guibg=#30302c
-" highlight! CursorWord0 ctermbg=236 guibg=#30302c
-" highlight! CursorWord1 ctermbg=236 guibg=#30302c
+highlight! WarningMsg ctermfg=100 guifg=#CCC566
+highlight! MatchParen ctermfg=NONE guifg=NONE ctermbg=236 guibg=#2d3c42
+highlight! ParenMatch  ctermfg=NONE guifg=NONE ctermbg=236 guibg=#494d2a
+highlight! CursorWord0 ctermfg=NONE guifg=NONE ctermbg=236 guibg=#2b2a22
 " }}}
 
 " Plugin: Defx icons and highlights {{{
