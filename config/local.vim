@@ -1,5 +1,7 @@
 
 " What to save in sessions:
+
+let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 set sessionoptions+=winpos
 set sessionoptions+=buffers
 " nmap <silent> <Leader>su :<C-u>let v:this_session='' && execute 'redrawtabline'<CR>
