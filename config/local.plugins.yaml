@@ -53,9 +53,13 @@
     \     'auto_toc': 1,
     \     'path': '~/Dropbox/notesy/',
     \     'syntax': 'markdown',
+    \     'ext': '.mmd' },
+    \   { 'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/wiki/',
+    \     'syntax': 'markdown',
     \     'ext': '.mmd' }
     \ ]
 
+  
 # - repo: junegunn/fzf
 #   build: ./install --all
 #   merged: 0
