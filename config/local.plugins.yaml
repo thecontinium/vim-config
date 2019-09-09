@@ -5,8 +5,6 @@
 - { repo: thecontinium/vim-denite-sorter-lastmod }
 - { repo: rafi/vim-denite-session, if: 0 }
 - { repo: thecontinium/vim-denite-session, on_source: denite.nvim }
-- { repo: chemzqm/denite-git, if: 0}
-- { repo: thecontinium/denite-git, on_source: denite.nvim}
 
 # Startup
 # -------
