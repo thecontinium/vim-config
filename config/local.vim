@@ -83,9 +83,6 @@ function! g:DefxCD(context) abort
 	echo "cd set to ".l:selected
 endfunction
 
-" easily add a date stamp
-:iab <expr> dts strftime("%d-%m-%y@%H:%M:%S")
-
 " autocmd filetype vimwiki
 " \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:call <SID>do_wiki_cr()<CR>"
 " function! s:do_wiki_cr()
