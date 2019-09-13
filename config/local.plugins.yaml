@@ -124,6 +124,17 @@
 # ==========================================
 # Completion
 # ----------
+- repo: Shougo/neosnippet.vim
+  depends: [ neosnippet-snippets, context_filetype.vim ]
+  on_event: InsertCharPre
+  on_ft: snippet
+  hook_add: let g:neosnippet#data_directory = g:etc#cache_path . '/snippets'
+  hook_source: |
+    let g:neosnippet#enable_snipmate_compatibility = 1
+    let g:neosnippet#enable_completed_snippet = 1
+    let g:neosnippet#enable_complete_done = 1
+    let g:neosnippet#expand_word_boundary = 1
+    let g:neosnippet#enable_auto_clear_markers = 1
 # Only NeoVim ------------------------------
 # ==========================================
 # Denite
