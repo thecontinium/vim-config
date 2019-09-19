@@ -100,11 +100,11 @@
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
     \})
 
-- repo: Raimondi/delimitMate
-  on_event: InsertEnter
-  hook_source: |
-    let g:delimitMate_expand_cr = 1
-    let g:delimitMate_excluded_ft = 'html,clojure'
+# - repo: Raimondi/delimitMate
+#   on_event: InsertEnter
+#   hook_source: |
+#     let g:delimitMate_expand_cr = 1
+#     let g:delimitMate_excluded_ft = 'html,clojure'
 # c#
 - repo: OmniSharp/omnisharp-vim
   on_ft: cs
@@ -128,13 +128,15 @@
   depends: [ neosnippet-snippets, context_filetype.vim ]
   on_event: InsertCharPre
   on_ft: snippet
-  hook_add: let g:neosnippet#data_directory = g:etc#cache_path . '/snippets'
+  hook_add: let g:neosnippet#data_directory = $DATA_PATH . '/snippets'
   hook_source: |
     let g:neosnippet#enable_snipmate_compatibility = 1
     let g:neosnippet#enable_completed_snippet = 1
     let g:neosnippet#enable_complete_done = 1
     let g:neosnippet#expand_word_boundary = 1
     let g:neosnippet#enable_auto_clear_markers = 1
+    snoremap <silent><ESC> <ESC>:NeoSnippetClearMarkers<CR>
+
 # Only NeoVim ------------------------------
 # ==========================================
 # Denite

@@ -83,6 +83,11 @@ function! g:DefxCD(context) abort
 	echo "cd set to ".l:selected
 endfunction
 
+if dein#tap('neosnippet.vim')
+	smap <expr><C-o> neosnippet#expandable_or_jumpable()
+		\ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
+endif
+
 " autocmd filetype vimwiki
 " \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:call <SID>do_wiki_cr()<CR>"
 " function! s:do_wiki_cr()
