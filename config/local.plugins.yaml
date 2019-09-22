@@ -51,7 +51,7 @@
     \   { 'diary_header': 'Diary',
     \     'diary_link_fmt': '%Y-%m/%d',
     \     'auto_toc': 1,
-    \     'path': '~/Dropbox/notesy/',
+    \     'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/notesy/',
     \     'syntax': 'markdown',
     \     'ext': '.mmd' },
     \   { 'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/wiki/',
