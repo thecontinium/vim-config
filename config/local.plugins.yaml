@@ -94,7 +94,7 @@
   hook_source: |
     let g:conjure_map_prefix = ","
     let g:conjure_log_direction = "horizontal"
-    let g:conjure_log_blacklist = ["load-file", "eval"]
+    let g:conjure_log_blacklist = ["up", "ret", "ret-multiline", "load-file", "eval"]
   hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
@@ -121,6 +121,12 @@
 # ==========================================
 # Interface
 # ---------
+- repo: RRethy/vim-hexokinase
+  on_ft: [ css, scss, sass, stylus, vim ]
+  build: make hexokinase
+  hook_add: |
+    let g:Hexokinase_ftAutoload = [ 'css', 'scss', 'sass', 'stylus' ]
+
 # ==========================================
 # Completion
 # ----------
