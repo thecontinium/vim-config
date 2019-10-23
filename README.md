@@ -2,7 +2,12 @@
 
 Lean mean Neo/vim machine, 30-45ms startup time.
 
-Best with Neovim or Vim8 with +python3 extensions enabled.
+Best with Neovim or Vim8 with +python3 extension enabled.
+
+I encourage you to fork this repo and create your own experience. Learn how to
+tweak and change Neo/vim to the way _you_ like it. This is my cultivation of
+years of tweaking, use it as a git remote and stay in-touch with upstream for
+reference or cherry-picking.
 
 <details>
   <summary>
@@ -55,18 +60,19 @@ Best with Neovim or Vim8 with +python3 extensions enabled.
 
 ## Features
 
-- Fast startup time
-- Robust, yet light-weight
-- Lazy-load 95% of plugins with [Shougo/dein.vim]
-- Custom side-menu (try it out! <kbd>Leader</kbd>+<kbd>l</kbd>)
-- Custom context-menu (try it! <kbd>;</kbd>+<kbd>c</kbd>)
-- Modular configuration (see [structure](#structure))
-- Denite centric work-flow (lists)
-- Extensive Deoplete setup (auto-completion)
-- Light-weight but informative status/tabline
-- Easy customizable theme
-- Premium color-schemes
-- Central location for tags and sessions
+* Fast startup time
+* Robust, yet light-weight
+* Lazy-load 95% of plugins with [Shougo/dein.vim]
+* Custom side-menu (try it out! <kbd>Leader</kbd>+<kbd>l</kbd>)
+* Custom context-menu (try it! <kbd>;</kbd>+<kbd>c</kbd>)
+* Modular configuration (see [structure](#structure))
+* [Shougo/denite.nvim] centric work-flow (lists)
+* Extensive [Shougo/deoplete.nvim] setup (auto-completion)
+* Structure view with [liuchengxu/vista.vim]
+* Light-weight but informative status/tabline
+* Easy customizable theme
+* Premium color-schemes
+* Central location for tags and sessions
 
 ## Screenshot
 
@@ -75,7 +81,7 @@ Best with Neovim or Vim8 with +python3 extensions enabled.
 ## Pre-requisites
 
 * Python 3 (`brew install python`)
-* Neovim or Vim (`brew install neovim` or `brew install vim`)
+* Neovim or Vim (`brew install neovim` and/or `brew install vim`)
 * Virtualenv tool for Python 3:
   ```bash
   pip3 install virtualenv
@@ -93,25 +99,22 @@ we'll also symlink it for Vim:
 ```bash
 mkdir ~/.config
 git clone git://github.com/rafi/vim-config.git ~/.config/nvim
-ln -s ~/.config/nvim ~/.vim
-```
-
-- _Note:_ If your system sets `$XDG_CONFIG_HOME`,
-  use that instead of `~/.config` in the code above.
-  Neovim follows the XDG base-directories convention.
-
-**_2._** If you are a _first-time **Neovim** user_, you need the `pynvim`
-package. Don't worry, run the script provided:
-
-```sh
 cd ~/.config/nvim
-./venv.sh
+ln -s ~/.config/nvim ~/.vim  # For Vim8
 ```
 
-Otherwise, or additionally, if you use Vim, you can run
-`pip3 install --user pynvim`
+* _**Note**:_ If you set a custom `$XDG_CONFIG_HOME`,
+  use that instead of `~/.config` in the commands above.
+  Neovim follows the XDG base-directories convention, Vim doesn't.
 
-**_3._** Run `make test` to test your nvim/vim version and compatibility.
+**_2._** Install the Python 3 `pynvim` library. This is also needed for Vim 8
+if you want to use Denite and Defx.
+
+> Neovim: `./venvs.sh` or `pip3 install --user pynvim`
+
+> Vim8: `pip3 install --user pynvim`
+
+**_3._** Run `make test` to test your nvim/vim version and capabilities.
 
 **_4._** Run `make` to install all plugins.
 
@@ -121,8 +124,8 @@ Enjoy!
 
 ### Recommended Fonts
 
-- [Pragmata Pro] (€19 – €1,990): My preferred font
-- Any of the [Nerd Fonts]
+* [Pragmata Pro] (€19 – €1,990): My preferred font
+* Any of the [Nerd Fonts]
 
 On macOS with Homebrew, choose one of the [Nerd Fonts],
 for example, to install the [Hack](https://sourcefoundry.org/hack/) font:
@@ -138,34 +141,46 @@ brew cask install font-hack-nerd-font
 
 ### Recommended Linters
 
-- Node.js based linters:
+* Node.js based linters:
 
 ```sh
 npm -g install jshint jsxhint jsonlint stylelint sass-lint
 npm -g install raml-cop markdownlint-cli write-good
 ```
 
-- Python based linters:
+* Python based linters:
 
 ```sh
 pip install --user pycodestyle pyflakes flake8 vim-vint proselint yamllint
 ```
 
-- Shell lint: [shellcheck.net](https://www.shellcheck.net/)
-- HTML Tidy: [html-tidy.org](http://www.html-tidy.org/)
+* Shell lint: [shellcheck.net](https://www.shellcheck.net/)
+* HTML Tidy: [html-tidy.org](http://www.html-tidy.org/)
 
 ### Recommended Tools
 
-- ag (The Silver Searcher): [ggreer/the_silver_searcher](https://github.com/ggreer/the_silver_searcher)
-  - and/or ripgrep: [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep)
-- z (jump around): [rupa/z](https://github.com/rupa/z)
-- Universal ctags: [ctags.io](https://ctags.io/)
-- Fuzzy file finders: [fzf](https://github.com/junegunn/fzf), [fzy](https://github.com/jhawthorn/fzy), or [peco](https://github.com/peco/peco)
-- Tern: `npm -g install tern`
+* **ag** [ggreer/the_silver_searcher](https://github.com/ggreer/the_silver_searcher)
+  (macOS: `brew install the_silver_searcher`)
+  * and/or **ripgrep**: [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep)
+* Jump around with **z**: [rupa/z](https://github.com/rupa/z)
+  (macOS: `brew install z`)
+* **[Universal ctags](https://ctags.io/)** for syntax tokenization
+* Fuzzy file finders:
+  **[fzf](https://github.com/junegunn/fzf)**,
+  **[fzy](https://github.com/jhawthorn/fzy)**, or
+  **[peco](https://github.com/peco/peco)**
+  (macOS: `brew install fzf`)
+* **Tern** for Javascript completion (`npm -g install tern`)
 
 ## Upgrade
 
-Run `make update`
+```bash
+cd <your installation path>
+make update
+```
+
+This will run `git pull -ff --ff-only` and update all plugins using
+[Shougo/dein.vim] package-manager.
 
 ## User Custom Config
 
@@ -182,37 +197,40 @@ If you want to disable some of the plugins I use, you can overwrite them, e.g.:
 
 ## Structure
 
-- [config/](./config) - Configuration
-  - [plugins/](./config/plugins) - Plugin configurations
-    - [all.vim](./config/plugins/all.vim) - Plugin mappings
-    - […](./config/plugins)
-  - [filetype.vim](./config/filetype.vim) - Language behavior
-  - [general.vim](./config/general.vim) - General configuration
-  - local.plugins.yaml - Custom user plugins
-  - local.vim - Custom user settings
-  - [mappings.vim](./config/mappings.vim) - Key-mappings
-  - [plugins.yaml](./config/plugins.yaml) - _**Plugins!**_
-  - [terminal.vim](./config/terminal.vim) - Terminal configuration
-  - [vimrc](./config/vimrc) - Initialization
-- [ftplugin/](./ftplugin) - Language specific custom settings
-- [plugin/](./plugin) - Customized small plugins
-- [snippets/](./snippets) - Personal code snippets
-- [themes/](./themes) - Colorscheme overrides
-- [filetype.vim](./filetype.vim) - Custom filetype detection
+* [config/](./config) - Configuration
+  * [plugins/](./config/plugins) - Plugin configurations
+    * [all.vim](./config/plugins/all.vim) - Plugin mappings
+    * […](./config/plugins)
+  * [filetype.vim](./config/filetype.vim) - Language behavior
+  * [general.vim](./config/general.vim) - General configuration
+  * **local.plugins.yaml** - Custom user plugins
+  * **local.vim** - Custom user settings
+  * [mappings.vim](./config/mappings.vim) - Key-mappings
+  * [plugins.yaml](./config/plugins.yaml) - My favorite _**Plugins!**_
+  * [terminal.vim](./config/terminal.vim) - Terminal configuration
+  * [vimrc](./config/vimrc) - Initialization
+* [ftplugin/](./ftplugin) - Language specific custom settings
+* [plugin/](./plugin) - Customized small plugins
+* [snippets/](./snippets) - Personal code snippets
+* [themes/](./themes) - Colorscheme overrides
+* [filetype.vim](./filetype.vim) - Custom filetype detection
 
 ## Plugin Highlights
 
-- Package management with caching enabled and lazy loading
-- Project-aware tabs and label
-- Defx as file-manager + Git status icons
-- Go completion via vim-go and gocode
-- Javascript completion via Tern
-- Python Jedi completion, PEP8 convention
-- Languages: PHP, Ansible, css3, csv, json, less, markdown, mustache, and more
+* Package management with caching enabled and lazy loading
+* Project-aware tabs and label
+* Defx as file-manager + Git status icons
+* Go completion via vim-go and gocode
+* Javascript completion via Tern
+* Python Jedi completion, PEP8 convention
+* Languages: PHP, Ansible, css3, csv, json, less, markdown, mustache, and more
 
 _Note_ that 95% of the plugins are **[lazy-loaded]**.
 
 ## Plugins Included
+
+<details open>
+  <summary><strong>List</strong> <small><i>(🔎 Click to expand)</i></small></summary>
 
 ### Non Lazy-Loaded Plugins
 
@@ -534,6 +552,8 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [osyo-manga/vim-textobj-multiblock]: https://github.com/osyo-manga/vim-textobj-multiblock
 [kana/vim-textobj-function]: https://github.com/kana/vim-textobj-function
 
+</details>
+
 ## Custom Key-mappings
 
 Note that,
@@ -541,6 +561,12 @@ Note that,
 * Leader key is set as <kbd>Space</kbd>
 * Local-leader is set as <kbd>;</kbd> and used for navigation and search mostly
   (Denite and Defx)
+
+<details open>
+  <summary>
+    <strong>Key-mappings</strong>
+    <small><i>(🔎 Click to expand)</i></small>
+  </summary>
 
 ### General
 
@@ -554,7 +580,7 @@ Note that,
 | `gK` | Normal | Open Zeal or Dash on some file-types
 | `Y` | Normal | Yank to the end of line (y$)
 | `<Return>` | Normal | Toggle fold (za)
-| `S`+`<Return>` | Normal | Focus the current fold by closing all others (zMza)
+| `S`+`<Return>` | Normal | Focus the current fold by closing all others (zMzvzt)
 | `S`+`<Return>` | Insert | Start new line from any cursor position (<C-o>o)
 | `hjkl` | Normal | Smart cursor movements (g/hjkl)
 | `Ctrl`+`f` | Normal | Smart page forward (C-f/C-d)
@@ -594,7 +620,8 @@ Note that,
 | ----- |:----:| ------------------
 | `<leader>`+`cd` | Normal | Switch to the directory of opened buffer (:lcd %:p:h)
 | `<leader>`+`w` | Normal/Visual | Write (:w)
-| `<leader>`+`y` / `<leader>`+`Y` | Normal | Copy (relative / absolute) file-path to clipboard
+| `<leader>`+`y` | Normal | Copy relative file-path to clipboard
+| `<leader>`+`Y` | Normal | Copy absolute file-path to clipboard
 | `Ctrl`+`s` | _All_ | Write (:w)
 
 ### Editor UI
@@ -798,6 +825,8 @@ Note that,
 | `<leader>`+`gu` | Normal | Open undo-tree
 | `<leader>`+`W` | Normal | VimWiki
 | `<leader>`+`K` | Normal | Thesaurus
+
+</details>
 
 ## Credits & Contribution
 
