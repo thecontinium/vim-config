@@ -80,13 +80,50 @@ function! g:DefxCD(context) abort
 	let l:selected = fnamemodify(l:target, ':p:h')
 	silent execute 'close'
 	silent execute 'cd '.l:selected
-	echo "cd set to ".l:selected
+	echo 'cd set to '.l:selected
 endfunction
 
 if dein#tap('neosnippet.vim')
 	smap <expr><C-o> neosnippet#expandable_or_jumpable()
 		\ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
 endif
+
+" Neomake clojure additions
+let g:neomake_joker_maker = {
+		\ 'exe': 'joker',
+		\ 'args': ['--lint'],
+		\ 'errorformat': '%f:%l:%c: %*[^ ] %t%*[^:]: %m',
+		\ }
+
+let g:neomake_cljkondo_maker = {
+		\ 'exe': 'clj-kondo',
+		\ 'args': ['--lint'],
+		\ 'errorformat': '%f:%l:%c:\ Parse\ %t%*[^:]:\ %m,%f:%l:%c:\ %t%*[^:]:\ %m',
+		\ 'remove_invalid_entries': 1,
+		\ }
+
+let g:neomake_clojure_enabled_makers = ['joker', 'cljkondo']
+
+let g:sexp_mappings = {
+		\ 'sexp_round_head_wrap_list':      '',
+		\ 'sexp_round_tail_wrap_list':      '',
+		\ 'sexp_square_head_wrap_list':     '',
+		\ 'sexp_square_tail_wrap_list':     '',
+		\ 'sexp_curly_head_wrap_list':      '',
+		\ 'sexp_curly_tail_wrap_list':      '',
+		\ 'sexp_round_head_wrap_element':   '',
+		\ 'sexp_round_tail_wrap_element':   '',
+		\ 'sexp_square_head_wrap_element':  '',
+		\ 'sexp_square_tail_wrap_element':  '',
+		\ 'sexp_curly_head_wrap_element':   '',
+		\ 'sexp_curly_tail_wrap_element':   '',
+		\ 'sexp_insert_at_list_head':       '',
+		\ 'sexp_insert_at_list_tail':       '',
+		\ 'sexp_splice_list':               '',
+		\ 'sexp_convolute':                 '',
+		\ 'sexp_raise_list':                '',
+		\ 'sexp_raise_element':             '',
+		\ }
 
 " autocmd filetype vimwiki
 " \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:call <SID>do_wiki_cr()<CR>"
