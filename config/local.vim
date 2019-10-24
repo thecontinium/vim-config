@@ -105,24 +105,24 @@ let g:neomake_cljkondo_maker = {
 let g:neomake_clojure_enabled_makers = ['joker', 'cljkondo']
 
 let g:sexp_mappings = {
-		\ 'sexp_round_head_wrap_list':      '',
-		\ 'sexp_round_tail_wrap_list':      '',
+		\ 'sexp_round_head_wrap_list':      ',i',
+		\ 'sexp_round_tail_wrap_list':      ',I',
 		\ 'sexp_square_head_wrap_list':     '',
 		\ 'sexp_square_tail_wrap_list':     '',
 		\ 'sexp_curly_head_wrap_list':      '',
 		\ 'sexp_curly_tail_wrap_list':      '',
-		\ 'sexp_round_head_wrap_element':   '',
-		\ 'sexp_round_tail_wrap_element':   '',
+		\ 'sexp_round_head_wrap_element':   ',w',
+		\ 'sexp_round_tail_wrap_element':   ',W',
 		\ 'sexp_square_head_wrap_element':  '',
 		\ 'sexp_square_tail_wrap_element':  '',
 		\ 'sexp_curly_head_wrap_element':   '',
 		\ 'sexp_curly_tail_wrap_element':   '',
-		\ 'sexp_insert_at_list_head':       '',
-		\ 'sexp_insert_at_list_tail':       '',
-		\ 'sexp_splice_list':               '',
-		\ 'sexp_convolute':                 '',
-		\ 'sexp_raise_list':                '',
-		\ 'sexp_raise_element':             '',
+		\ 'sexp_insert_at_list_head':       ',h',
+		\ 'sexp_insert_at_list_tail':       ',l',
+		\ 'sexp_splice_list':               ',@',
+		\ 'sexp_convolute':                 ',?',
+		\ 'sexp_raise_list':                ',o',
+		\ 'sexp_raise_element':             ',O',
 		\ }
 
 " autocmd filetype vimwiki
