@@ -103,6 +103,7 @@
   hook_source: |
     let g:delimitMate_expand_cr = 1
     let g:delimitMate_excluded_ft = 'html,clojure'
+    let g:neomake_virtualtext_current_error = 0
 
 # - { repo: tpope/vim-fireplace, on_ft: clojure }
 # - { repo: tpope/vim-projectionist, on_ft: clojure }
