@@ -59,7 +59,7 @@
     \     'ext': '.mmd' }
     \ ]
 
-  
+
 # - repo: junegunn/fzf
 #   build: ./install --all
 #   merged: 0
@@ -77,6 +77,7 @@
 - repo: guns/vim-sexp
   on_event: InsertCharPre
   on_ft: clojure
+  depends: neosnippet.vim
 
 - repo: tpope/vim-sexp-mappings-for-regular-people
   on_event: InsertCharPre
@@ -150,7 +151,6 @@
     let g:neosnippet#enable_complete_done = 1
     let g:neosnippet#expand_word_boundary = 1
     let g:neosnippet#enable_auto_clear_markers = 1
-    snoremap <silent><ESC> <ESC>:NeoSnippetClearMarkers<CR>
 
 # Only NeoVim ------------------------------
 # ==========================================
