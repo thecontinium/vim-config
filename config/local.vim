@@ -103,6 +103,7 @@ let g:neomake_cljkondo_maker = {
 		\ }
 
 let g:neomake_clojure_enabled_makers = ['joker', 'cljkondo']
+let g:neomake_virtualtext_current_error = 0
 
 let g:sexp_mappings = {
 		\ 'sexp_round_head_wrap_list':      ',i',
