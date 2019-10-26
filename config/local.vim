@@ -28,7 +28,12 @@ endfunction
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
 
-augroup my_user_plugin_denite " }}}
+augroup user_plugin_filetype " {{{
+	" set to default so that we get the warningd and options
+	autocmd swapexists * nested let v:swapchoice = ''
+augroup END " }}}
+
+augroup my_user_plugin_denite " {{{
 	autocmd!
 
 	autocmd FileType denite
@@ -133,6 +138,5 @@ let g:sexp_mappings = {
 "		:VimwikiReturn 1 5
 "		:call vimwiki#vars#set_wikilocal('syntax','markdown',vimwiki#vars#get_bufferlocal('wiki_nr'))
 " endfunction
-" vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
 
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
