@@ -69,6 +69,7 @@ reference or cherry-picking.
 * [Shougo/denite.nvim] centric work-flow (lists)
 * Extensive [Shougo/deoplete.nvim] setup (auto-completion)
 * Structure view with [liuchengxu/vista.vim]
+* Open SCM detailed URL in OS browser
 * Light-weight but informative status/tabline
 * Easy customizable theme
 * Premium color-schemes
@@ -78,18 +79,10 @@ reference or cherry-picking.
 
 ![Vim screenshot](http://rafi.io/static/img/project/vim-config/features.png)
 
-## Pre-requisites
+## Prerequisites
 
 * Python 3 (`brew install python`)
 * Neovim or Vim (`brew install neovim` and/or `brew install vim`)
-* Virtualenv tool for Python 3:
-  ```bash
-  pip3 install virtualenv
-  ```
-  On Ubuntu you can use:
-  ```bash
-  apt-get install -y python3-venv
-  ```
 
 ## Install
 
@@ -262,7 +255,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [hail2u/vim-css3-syntax] | CSS3 syntax support to vim's built-in `syntax/css.vim`
 | [othree/csscomplete.vim] | Updated built-in CSS complete with latest standards
 | [cakebaker/scss-syntax.vim] | Syntax file for scss (Sassy CSS)
-| [ap/vim-css-color] | Preview colors in source-code while editing
 | [plasticboy/vim-markdown] | Markdown syntax highlighting
 | [rhysd/vim-gfm-syntax] | GitHub Flavored Markdown syntax highlight extension
 | [pangloss/vim-javascript] | Enhanced Javascript syntax
@@ -321,9 +313,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [cocopon/colorswatch.vim] | Generate a beautiful color swatch for the current buffer
 | [kana/vim-altr] | Switch to the alternate file without interaction
 | [lambdalisue/suda.vim] | An alternative sudo.vim for Vim and Neovim
-| [tyru/open-browser.vim] | Open URI with your favorite browser
-| [tyru/open-browser-unicode.vim] | Open info page about character on current cursor
-| [tyru/open-browser-github.vim] | Open GitHub URL of current file
 | [tyru/caw.vim] | Robust comment plugin with operator support
 | [Shougo/vinarise.vim] | Hex editor
 | [mzlogin/vim-markdown-toc] | Generate table of contents for Markdown files
@@ -341,6 +330,7 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [t9md/vim-quickhl] | Quickly highlight words
 | [rafi/vim-sidemenu] | Small side-menu useful for terminal users
 | [airblade/vim-gitgutter] | Show git changes at Vim gutter and un/stages hunks
+| [norcalli/nvim-colorizer.lua] | The fastest Neovim colorizer
 | [nathanaelkane/vim-indent-guides] | Visually display indent levels in code
 | [kshenoy/vim-signature] | Display and toggle marks
 | [hotwatermorning/auto-git-diff] | Display Git diff for interactive rebase
@@ -360,7 +350,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [ludovicchabant/vim-gutentags] | Manages your tag files
 | [mattn/emmet-vim] | Provides support for expanding abbreviations alá emmet
 | [Shougo/echodoc.vim] | Print objects' documentation in echo area
-| [ncm2/float-preview.nvim] | Pretty completion preview with neovim's floating win
 | [Raimondi/delimitMate] | Auto-completion for quotes, parens, brackets
 | [Shougo/neosnippet-snippets] | Standard snippets repository for neosnippet
 | [Shougo/context_filetype.vim] | Context filetype library for Vim script
@@ -427,7 +416,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [hail2u/vim-css3-syntax]: https://github.com/hail2u/vim-css3-syntax
 [othree/csscomplete.vim]: https://github.com/othree/csscomplete.vim
 [cakebaker/scss-syntax.vim]: https://github.com/cakebaker/scss-syntax.vim
-[ap/vim-css-color]: https://github.com/ap/vim-css-color
 [plasticboy/vim-markdown]: https://github.com/plasticboy/vim-markdown
 [rhysd/vim-gfm-syntax]: https://github.com/rhysd/vim-gfm-syntax
 [pangloss/vim-javascript]: https://github.com/pangloss/vim-javascript
@@ -482,9 +470,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [cocopon/colorswatch.vim]: https://github.com/cocopon/colorswatch.vim
 [kana/vim-altr]: https://github.com/kana/vim-altr
 [lambdalisue/suda.vim]: https://github.com/lambdalisue/suda.vim
-[tyru/open-browser.vim]: https://github.com/tyru/open-browser.vim
-[tyru/open-browser-unicode.vim]: https://github.com/tyru/open-browser-unicode.vim
-[tyru/open-browser-github.vim]: https://github.com/tyru/open-browser-github.vim
 [tyru/caw.vim]: https://github.com/tyru/caw.vim
 [Shougo/vinarise.vim]: https://github.com/Shougo/vinarise.vim
 [mzlogin/vim-markdown-toc]: https://github.com/mzlogin/vim-markdown-toc
@@ -498,6 +483,7 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [t9md/vim-quickhl]: https://github.com/t9md/vim-quickhl
 [rafi/vim-sidemenu]: https://github.com/rafi/vim-sidemenu
 [airblade/vim-gitgutter]: https://github.com/airblade/vim-gitgutter
+[norcalli/nvim-colorizer.lua]: https://github.com/norcalli/nvim-colorizer.lua
 [nathanaelkane/vim-indent-guides]: https://github.com/nathanaelkane/vim-indent-guides
 [kshenoy/vim-signature]: https://github.com/kshenoy/vim-signature
 [hotwatermorning/auto-git-diff]: https://github.com/hotwatermorning/auto-git-diff
@@ -513,7 +499,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [ludovicchabant/vim-gutentags]: https://github.com/ludovicchabant/vim-gutentags
 [mattn/emmet-vim]: https://github.com/mattn/emmet-vim
 [Shougo/echodoc.vim]: https://github.com/Shougo/echodoc.vim
-[ncm2/float-preview.nvim]: https://github.com/ncm2/float-preview.nvim
 [Raimondi/delimitMate]: https://github.com/Raimondi/delimitMate
 [Shougo/neosnippet-snippets]: https://github.com/Shougo/neosnippet-snippets
 [Shougo/context_filetype.vim]: https://github.com/Shougo/context_filetype.vim
@@ -820,7 +805,9 @@ Note that,
 | `-` | Normal | Choose a window to edit (choosewin)
 | `<leader>`+`-` | Normal | Switch editing window with selected (choosewin)
 | `<leader>`+`l` | Normal | Open sidemenu
-| `<leader>`+`o` | Normal | Open tag-bar (:Vista)
+| `<leader>`+`o` | Normal/Visual | Open SCM detailed URL in browser (:OpenSCM)
+| `<leader>`+`t` | Normal | Open structure window (:Vista)
+| `<leader>`+`a` | Normal | Show nearby tag in structure window (:Vista show)
 | `<leader>`+`G` | Normal | Toggle distraction-free writing (goyo)
 | `<leader>`+`gu` | Normal | Open undo-tree
 | `<leader>`+`W` | Normal | VimWiki

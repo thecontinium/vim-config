@@ -33,7 +33,6 @@ vnoremap <expr> <leader>cn "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>" . "``cgn"
 vnoremap <expr> <leader>cN "y/\\V\<C-r>=escape(@\", '/')\<CR>\<CR>" . "``cgN"
 
 nnoremap <leader>cp yap<S-}>p
-nnoremap <leader>a =ip
 
 " xnoremap p  "0p
 " nnoremap x "_x
@@ -213,6 +212,9 @@ nnoremap [w :<C-u>WhitespacePrev<CR>
 " Session management shortcuts (see plugin/sessions.vim)
 nmap <silent> <Leader>se :<C-u>SessionSave<CR>
 nmap <silent> <Leader>os :<C-u>SessionLoad<CR>
+
+nmap <silent> <Leader>o :<C-u>OpenSCM<CR>
+vmap <silent> <Leader>o :OpenSCM<CR>
 
 if has('mac')
 	" Open the macOS dictionary on current word
