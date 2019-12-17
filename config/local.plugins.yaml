@@ -92,9 +92,10 @@
     let g:dein#install_process_timeout = 600
   hook_source: |
     let g:conjure_map_prefix = ","
-    let g:conjure_log_direction = "horizontal"
-    let g:conjure_log_blacklist = ["up", "ret", "ret-multiline", "load-file", "eval"]
-  hook_post_source: |
+    let g:conjure_log_direction = "vertical"
+    let g:conjure_log_blacklist = ["ret", "retg:conjure_log_auto_close-multiline", "load-file", "eval"]
+    let g:conjure_log_auto_close = "v:false"
+  e hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
     \})
