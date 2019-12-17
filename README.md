@@ -236,6 +236,7 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [romainl/vim-cool] | Simple plugin that makes hlsearch more useful
 | [tpope/vim-sleuth] | Heuristically set buffer indent options
 | [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
+| [neovim/nvim-lsp] | Common configurations for Neovim Language Servers
 | [itchyny/vim-gitbranch] | Lightweight git branch detection
 | [itchyny/vim-parenmatch] | Efficient alternative to the standard matchparen plugin
 | [itchyny/cursorword] | Underlines word under cursor
@@ -318,6 +319,8 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [mzlogin/vim-markdown-toc] | Generate table of contents for Markdown files
 | [chemzqm/vim-easygit] | Git wrapper focus on simplity and usability
 | [liuchengxu/vista.vim] | Viewer & Finder for LSP symbols and tags in Vim
+| [junegunn/fzf] | Powerful command-line fuzzy finder
+| [junegunn/fzf.vim] | Fzf integration
 | [Ron89/thesaurus_query.vim] | Multi-language thesaurus query and replacement
 
 #### Interface
@@ -356,10 +359,12 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [Shougo/neco-vim] | Deoplete source for Vimscript
 | [Shougo/neoinclude.vim] | Include completion framework for Deoplete
 | [Shougo/neco-syntax] | Syntax source for Deoplete
-| [davidhalter/jedi-vim] | Python jedi autocompletion library
-| [zchee/deoplete-go] | deoplete.nvim source for Go
-| [zchee/deoplete-jedi] | deoplete.nvim source for Python
-| [carlitux/deoplete-ternjs] | deoplete.nvim source for javascript
+| [Shougo/deoplete-lsp] | LSP Completion source for deoplete
+| [davidhalter/jedi-vim] | Python Jedi autocompletion library
+| [deoplete-plugins/deoplete-go] | Deoplete source for Go
+| [deoplete-plugins/deoplete-jedi] | Deoplete source for Python
+| [deoplete-plugins/deoplete-tag] | Deoplete source for tag
+| [carlitux/deoplete-ternjs] | Deoplete source for Javascript
 | [wellle/tmux-complete.vim] | Completion of words in adjacent tmux panes
 | [fszymanski/deoplete-emoji] | Deoplete source for emoji codes
 | [juliosueiras/vim-terraform-completion] | Autocompletion and linter for Terraform
@@ -403,6 +408,7 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [romainl/vim-cool]: https://github.com/romainl/vim-cool
 [tpope/vim-sleuth]: https://github.com/tpope/vim-sleuth
 [sgur/vim-editorconfig]: https://github.com/sgur/vim-editorconfig
+[neovim/nvim-lsp]: https://github.com/neovim/nvim-lsp
 [itchyny/vim-gitbranch]: https://github.com/itchyny/vim-gitbranch
 [itchyny/vim-parenmatch]: https://github.com/itchyny/vim-parenmatch
 [itchyny/cursorword]: https://github.com/itchyny/vim-cursorword
@@ -475,6 +481,8 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [mzlogin/vim-markdown-toc]: https://github.com/mzlogin/vim-markdown-toc
 [chemzqm/vim-easygit]: https://github.com/chemzqm/vim-easygit
 [liuchengxu/vista.vim]: https://github.com/liuchengxu/vista.vim
+[junegunn/fzf]: https://github.com/junegunn/fzf
+[junegunn/fzf.vim]: https://github.com/junegunn/fzf.vim
 [Ron89/thesaurus_query.vim]: https://github.com/Ron89/thesaurus_query.vim
 
 [haya14busa/vim-asterisk]: https://github.com/haya14busa/vim-asterisk
@@ -505,9 +513,11 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [Shougo/neco-vim]: https://github.com/Shougo/neco-vim
 [Shougo/neoinclude.vim]: https://github.com/Shougo/neoinclude.vim
 [Shougo/neco-syntax]: https://github.com/Shougo/neco-syntax
+[Shougo/deoplete-lsp]: https://github.com/Shougo/deoplete-lsp
 [davidhalter/jedi-vim]: https://github.com/davidhalter/jedi-vim
-[zchee/deoplete-go]: https://github.com/zchee/deoplete-go
-[zchee/deoplete-jedi]: https://github.com/zchee/deoplete-jedi
+[deoplete-plugins/deoplete-go]: https://github.com/deoplete-plugins/deoplete-go
+[deoplete-plugins/deoplete-jedi]: https://github.com/deoplete-plugins/deoplete-jedi
+[deoplete-plugins/deoplete-tag]: https://github.com/deoplete-plugins/deoplete-tag
 [carlitux/deoplete-ternjs]: https://github.com/carlitux/deoplete-ternjs
 [wellle/tmux-complete.vim]: https://github.com/wellle/tmux-complete.vim
 [fszymanski/deoplete-emoji]: https://github.com/fszymanski/deoplete-emoji
@@ -704,17 +714,27 @@ Note that,
 | `;`+`e` | Normal | Open file explorer (toggle)
 | `;`+`a` | Normal | Open file explorer and select current file
 | **Within _Defx_ window** ||
-| `h/j/k/l` | Normal | Movement, collapse/expand, open
-| `]`+`g` | Normal | Next dirty git item
-| `]`+`g` | Normal | Previous dirty git item
-| `w` | Normal | Toggle window size
-| `N` | Normal | Create new file or directory
-| `yy` | Normal | Yank selected item to clipboard
+| `h` | Normal | Collapse directory tree
+| `j` / `k` | Normal | Move up and down the tree
+| `<Return>` / `l` | Normal | Toggle collapse/expand directory or open file
+| `<Space>` | Normal | Select current file or directory
+| `*` | Normal | Invert selection (select all)
+| `<Backspace>` | Normal | Move into the parent directory
+| `&` / `\` | Normal | Move to project root
+| `~` | Normal | Move to user home directory
 | `st` | Normal | Open file in new tab
 | `sv` | Normal | Open file in a horizontal split
 | `sg` | Normal | Open file in a vertical split
-| `&` | Normal | Jump to project root
-| `gx` | Normal | Execute associated system application
+| `N` | Normal | Create new directories and/or files
+| `K` | Normal | Create new directory
+| `c`/`m`/`p` | Normal | Copy, move, and paste
+| `r` | Normal | Rename file or directory
+| `d` | Normal | Delete selected files and directories
+| `y` | Normal | Yank selected item to clipboard
+| `w` | Normal | Toggle window size
+| `]`+`g` | Normal | Next dirty git item
+| `[`+`g` | Normal | Previous dirty git item
+| `x` / `gx` | Normal | Execute associated system application
 | `gd` | Normal | Open git diff on selected file
 | `gl` | Normal | Open terminal file explorer
 | `gr` | Normal | Grep in selected directory
@@ -757,11 +777,15 @@ Note that,
 | `m`+`/`/`?` | Normal | Show list of buffer marks/markers
 | `m`+`m` | Normal | Toggle mark on current line
 | `m`+`,` | Normal | Place next mark
-| `m`+`-` | Normal | Purge all marks on current line
+| `m`+`[a-z]` | Normal | Place specific mark (Won't work for: `m`, `n`, `p`)
+| `d`+`m`+`[a-z]` | Normal | Remove specific mark (Won't work for: `m`, `n`, `p`)
 | `m`+`n` | Normal | Jump to next mark
 | `m`+`p` | Normal | Jump to previous mark
-| `m`+`j` | Normal | Jump to next marker
-| `m`+`k` | Normal | Jump to previous marker
+| `]`+`=` | Normal | Jump to next marker
+| `[`+`=` | Normal | Jump to previous marker
+| `m`+`-` | Normal | Purge all on current line
+| `m`+`<Space>` | Normal | Purge marks
+| `m`+`<Backspace>` | Normal | Purge markers
 
 ### Plugin: Easygit
 
@@ -790,19 +814,19 @@ Note that,
 
 | Key   | Mode | Action
 | ----- |:----:| ------------------
-| `m`+`d`+`f` | Visual | Mark lines and open diff if 2nd region
-| `m`+`d`+`a` | Visual | Mark lines for diff
-| `m`+`d`+`s` | Normal | Shows the diff between all the marked areas
-| `m`+`d`+`r` | Normal | Removes the signs denoting the diff regions
+| `<leader>`+`mda` | Visual | Sequentially mark region for diff
+| `<leader>`+`mdf` | Visual | Mark region for diff and compare if more than one
+| `<leader>`+`mds` | Normal | Shows the comparison for all marked regions
+| `<leader>`+`mdr` | Normal | Removes the signs denoting the diff regions
 
 ### Misc Plugins
 
 | Key   | Mode | Action
 | ----- |:----:| ------------------
 | `v` / `V` | Visual/select | Expand/reduce selection (expand-region)
-| `m`+`g` | Normal | Open Magit
-| `m`+`t` | Normal/Visual | Toggle highlighted word (quickhl)
 | `-` | Normal | Choose a window to edit (choosewin)
+| `<leader>`+`mg` | Normal | Open Magit
+| `<leader>`+`mt` | Normal/Visual | Toggle highlighted word (quickhl)
 | `<leader>`+`-` | Normal | Switch editing window with selected (choosewin)
 | `<leader>`+`l` | Normal | Open sidemenu
 | `<leader>`+`o` | Normal/Visual | Open SCM detailed URL in browser (:OpenSCM)
