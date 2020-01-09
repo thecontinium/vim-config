@@ -73,10 +73,11 @@ autocmd FileType clojure
 
 augroup END " }}}
 
-autocmd MyAutoCmd FileType defx do WinEnter | call s:defx_my_settings()
+autocmd MyAutoCmd FileType defx call <SID>defx_my_settings()
 function! s:defx_my_settings() abort
 	nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
 	nnoremap <silent><buffer><expr>					=	 defx#do_action('call', 'DefxCD')
+	nnoremap <silent><buffer><expr> o     <SID>defx_my_toggle_tree()
 endfunction
 
 " Set the vim directory to the selected
@@ -86,6 +87,14 @@ function! g:DefxCD(context) abort
 	silent execute 'close'
 	silent execute 'cd '.l:selected
 	echo 'cd set to '.l:selected
+endfunction
+
+function! s:defx_my_toggle_tree() abort
+	" Open current file, or toggle directory expand/collapse
+	if defx#is_directory()
+		return defx#do_action('open_or_close_tree')
+	endif
+	return defx#do_action('drop')
 endfunction
 
 if dein#tap('neosnippet.vim')
