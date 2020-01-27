@@ -78,7 +78,59 @@ function! s:defx_my_settings() abort
 	nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
 	nnoremap <silent><buffer><expr>					=	 defx#do_action('call', 'DefxCD')
 	nnoremap <silent><buffer><expr> o     <SID>defx_my_toggle_tree()
-endfunction
+
+	Shortcut! ^				(defx) cd defx to current
+	Shortcut! =				(defx) cd vim to current
+	Shortcut! o				(defx) open file and keep defx open
+
+	Shortcut! <CR>    (defx) Toggle collapse/expand directory or open file
+	Shortcut! e       (defx) Toggle collapse/expand directory or open file
+	Shortcut! l       (defx) Toggle collapse/expand directory or open file
+	Shortcut! h       (defx) Colapse directory tree
+	Shortcut! t       (defx) Recursively open tree
+	Shortcut! st      (defx) Open file in new tab
+	Shortcut! sg      (defx) Open file in vertical split
+	Shortcut! sv      (defx) Open file in horizontal split
+	Shortcut! P       (defx) Preview file
+	Shortcut! y       (defx) Yank selected item to clipboard
+	Shortcut! x       (defx) Execute the file by system associated command
+	Shortcut! gx      (defx) Execute the file by system associated command
+	Shortcut! .       (defx) Toggle the enable state of ignored files
+
+	" Shortcut! q       (defx) quit
+ "  Shortcut! se      (defx) save session
+	" Shortcut! <C-r>   (defx) redraw
+	" Shortcut! <C-g>   (defx) print
+	" Shortcut! c       (defx) copy
+	" Shortcut! m       (defx) move
+	" Shortcut! p       (defx) print
+	" Shortcut! dd      (defx) send to trash
+	" Shortcut! K			  (defx) create new directory
+	" Shortcut! N       (defx) create new files and directories if provided. If the input ends with /", it means new directory"
+	"
+	" Shortcut! [g      (defx) previous dirty git item
+	" Shortcut! ]g      (defx) next dirty git item
+	"
+	" Shortcut! \       (defx) move to vim root
+	" Shortcut! &       (defx) move to vim root
+	" Shortcut! <BS>    (defx) move to parent directory
+	" Shortcut! ~       (defx) move to home directory
+	" Shortcut! u       (defx) move up a directory
+	" Shortcut! 2u      (defx) move up 2 directories
+	" Shortcut! 3u      (defx) move up 3 directories
+	" Shortcut! 4u      (defx) move up 4 directories
+	"
+	" Shortcut! *       (defx) invert selection (select all)
+	" Shortcut! <Space> (defx) (un)select file or directory
+	"
+	" Shortcut! S       (defx) toggle sort by time
+	"
+	" Shortcut! w       (defx) toggle width
+	" Shortcut! gd      (defx) open git diff on selected file
+	" Shortcut! gr      (defx) grep in selected directory
+	" Shortcut! gf      (defx) find files in selected directory
+	" Shortcut! gl      (defx) open terminal file explorer
+ endfunction
 
 " Set the vim directory to the selected
 function! g:DefxCD(context) abort
