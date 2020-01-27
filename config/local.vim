@@ -97,39 +97,39 @@ function! s:defx_my_settings() abort
 	Shortcut! gx      (defx) Execute the file by system associated command
 	Shortcut! .       (defx) Toggle the enable state of ignored files
 
-	" Shortcut! q       (defx) quit
- "  Shortcut! se      (defx) save session
-	" Shortcut! <C-r>   (defx) redraw
-	" Shortcut! <C-g>   (defx) print
-	" Shortcut! c       (defx) copy
-	" Shortcut! m       (defx) move
-	" Shortcut! p       (defx) print
-	" Shortcut! dd      (defx) send to trash
-	" Shortcut! K			  (defx) create new directory
-	" Shortcut! N       (defx) create new files and directories if provided. If the input ends with /", it means new directory"
-	"
-	" Shortcut! [g      (defx) previous dirty git item
-	" Shortcut! ]g      (defx) next dirty git item
-	"
-	" Shortcut! \       (defx) move to vim root
-	" Shortcut! &       (defx) move to vim root
-	" Shortcut! <BS>    (defx) move to parent directory
-	" Shortcut! ~       (defx) move to home directory
-	" Shortcut! u       (defx) move up a directory
-	" Shortcut! 2u      (defx) move up 2 directories
-	" Shortcut! 3u      (defx) move up 3 directories
-	" Shortcut! 4u      (defx) move up 4 directories
-	"
-	" Shortcut! *       (defx) invert selection (select all)
-	" Shortcut! <Space> (defx) (un)select file or directory
-	"
-	" Shortcut! S       (defx) toggle sort by time
-	"
-	" Shortcut! w       (defx) toggle width
-	" Shortcut! gd      (defx) open git diff on selected file
-	" Shortcut! gr      (defx) grep in selected directory
-	" Shortcut! gf      (defx) find files in selected directory
-	" Shortcut! gl      (defx) open terminal file explorer
+	Shortcut! q       (defx) quit
+	Shortcut! se      (defx) save session
+	Shortcut! <C-r>   (defx) redraw
+	Shortcut! <C-g>   (defx) print
+	Shortcut! c       (defx) copy
+	Shortcut! m       (defx) move
+	Shortcut! p       (defx) print
+	Shortcut! dd      (defx) send to trash
+	Shortcut! K			  (defx) create new directory
+	Shortcut! N       (defx) create new files and directories if provided. If the input ends with /", it means new directory"
+
+	Shortcut! [g      (defx) previous dirty git item
+	Shortcut! ]g      (defx) next dirty git item
+
+	Shortcut! \       (defx) move to vim root
+	Shortcut! &       (defx) move to vim root
+	Shortcut! <BS>    (defx) move to parent directory
+	Shortcut! ~       (defx) move to home directory
+	Shortcut! u       (defx) move up a directory
+	Shortcut! 2u      (defx) move up 2 directories
+	Shortcut! 3u      (defx) move up 3 directories
+	Shortcut! 4u      (defx) move up 4 directories
+
+	Shortcut! *       (defx) invert selection (select all)
+	Shortcut! <Space> (defx) (un)select file or directory
+
+	Shortcut! S       (defx) toggle sort by time
+
+	Shortcut! w       (defx) toggle width
+	Shortcut! gd      (defx) open git diff on selected file
+	Shortcut! gr      (defx) grep in selected directory
+	Shortcut! gf      (defx) find files in selected directory
+	Shortcut! gl      (defx) open terminal file explorer
  endfunction
 
 " Set the vim directory to the selected
@@ -171,27 +171,74 @@ let g:neomake_cljkondo_maker = {
 let g:neomake_clojure_enabled_makers = ['joker', 'cljkondo']
 let g:neomake_virtualtext_current_error = 0
 
-let g:sexp_mappings = {
-		\ 'sexp_round_head_wrap_list':      ',i',
-		\ 'sexp_round_tail_wrap_list':      ',I',
-		\ 'sexp_square_head_wrap_list':     '',
-		\ 'sexp_square_tail_wrap_list':     '',
-		\ 'sexp_curly_head_wrap_list':      '',
-		\ 'sexp_curly_tail_wrap_list':      '',
-		\ 'sexp_round_head_wrap_element':   ',w',
-		\ 'sexp_round_tail_wrap_element':   ',W',
-		\ 'sexp_square_head_wrap_element':  '',
-		\ 'sexp_square_tail_wrap_element':  '',
-		\ 'sexp_curly_head_wrap_element':   '',
-		\ 'sexp_curly_tail_wrap_element':   '',
-		\ 'sexp_insert_at_list_head':       ',h',
-		\ 'sexp_insert_at_list_tail':       ',l',
-		\ 'sexp_splice_list':               ',@',
-		\ 'sexp_convolute':                 ',?',
-		\ 'sexp_raise_list':                ',o',
-		\ 'sexp_raise_element':             ',O',
-		\ }
+if dein#tap('vim-sexp')
+	let g:sexp_mappings = {
+			\ 'sexp_round_head_wrap_list':      ',i',
+			\ 'sexp_round_tail_wrap_list':      ',I',
+			\ 'sexp_square_head_wrap_list':     '',
+			\ 'sexp_square_tail_wrap_list':     '',
+			\ 'sexp_curly_head_wrap_list':      '',
+			\ 'sexp_curly_tail_wrap_list':      '',
+			\ 'sexp_round_head_wrap_element':   ',w',
+			\ 'sexp_round_tail_wrap_element':   ',W',
+			\ 'sexp_square_head_wrap_element':  '',
+			\ 'sexp_square_tail_wrap_element':  '',
+			\ 'sexp_curly_head_wrap_element':   '',
+			\ 'sexp_curly_tail_wrap_element':   '',
+			\ 'sexp_insert_at_list_head':       ',h',
+			\ 'sexp_insert_at_list_tail':       ',l',
+			\ 'sexp_splice_list':               ',@',
+			\ 'sexp_convolute':                 ',?',
+			\ 'sexp_raise_list':                ',o',
+			\ 'sexp_raise_element':             ',O',
+			\ }
+	autocmd MyAutoCmd FileType clojure call <SID>clojure_my_settings()
+	function! s:clojure_my_settings() abort
+		Shortcut! ,i  (sexp) round head wrap list; surround the current form with () and places the cursor at the front
+		Shortcut! ,I  (sexp) round tail wrap list; surround the current form with () and places the cursor at the end
+		Shortcut! ,w  (sexp) round head wrap element; surround the current element with () and place the cursor at the front
+		Shortcut! ,W  (sexp) round tail wrap element; surround the current element with () and place the cursor at the end
+		Shortcut! ,h  (sexp) insert at list head
+		Shortcut! ,l  (sexp) insert at list tail
+		Shortcut! ,@  (sexp) splice list, splices the current form into its parent: (1 (2 3) 4) => (1 2 3 4)
+		Shortcut! ,?  (sexp) convolute
+		Shortcut! ,o  (sexp) raise list,replaces the parent form with the current form: o in the middle of (1 (2 3) 4) => (2 3)
+		Shortcut! ,O  (sexp) raise_element, replaces the parent form with the current element: O on 2 in (1 (2 3) 4) => (1 2 4)
 
+		" mappings for regular people
+		Shortcut! >f  (sexp) move a form, swap or move the current form right: >f on 2 of (1 (2 3) 4) => (1 4 (2 3))
+		Shortcut! <f  (sexp) move a form, swap or move the current form left: <f on 2 of (1 4 (2 3)) => (1 (2 3) 4)
+		Shortcut! >e  (sexp) move a form
+		Shortcut! <e  (sexp) move a form
+		Shortcut! >)  (sexp) slurp right; move the corresponding parentheses to the right: >) in the inner form of (1 (2 3) 4) => (1 (2 3 4))
+		Shortcut! <(  (sexp) slurp left; move the corresponding parentheses to the left: <( in the inner form of (1 (2 3) 4) => ((1 2 3) 4))
+		Shortcut! >(  (sexp) burp right; move the parentheses: >( in the inner form of (1 (2 3) 4) => (1 2 (3) 4)
+		Shortcut! <(  (sexp) burp left; move the parentheses: <( in the inner form of (1 (2 3) 4) => (1 2 (3) 4)
+		Shortcut! >I  (sexp) insert at the begining of the form
+		Shortcut! <I  (sexp) insett at the end of the form
+
+		Shortcut! ,cu  (conjure) Synchronise connections with your `.conjure.edn` config files, takes flags like `-foo +bar` which will set the `:enabled?` flags of matching connections
+		Shortcut! ,cs  (conjure) Display the current connections in the log buffer
+		Shortcut! ,ew  (conjure) (word under cursor) Evaluate the argument in the appropriate prepl
+		Shortcut! ,ee  (conjure) (visual mode) Evaluates the current (or previous) visual selection
+		Shortcut! ,ee  (conjure) Evaluates the form under the cursor
+		Shortcut! ,er  (conjure) Evaluates the outermost form under the cursor|
+		Shortcut! ,em  (conjure) {KEY} Jump to the mark denoted by the {KEY} you press, evaluate the form found there and then jump back to where you started
+		Shortcut! ,eb  (conjure) Evaluate the entire buffer (not from the disk)
+		Shortcut! ,ef  (conjure) Load and evaluate the file from the disk
+		Shortcut! K    (conjure) Display the documentation for the given symbol in the log buffer
+		Shortcut! ,ss  (conjure) Display the source for the given symbol in the log buffer
+		Shortcut! gd	 (conjure) Go to the source of the given symbol, providing we can find it - falls back to vanilla `gd`
+		Shortcut! ,cl  (conjure) Open and focus the log buffer in a large window
+		Shortcut! ,cq  (conjure) Close the log window if it's open in this tab
+		Shortcut! ,cL  (conjure) Open or close the log depending on it's current state
+		Shortcut! ,tt  (conjure) Run tests in the current namespace and it's `-test` equivalent (as well as the other way around) or with the provided namespace names separated by spaces. |
+		Shortcut! ,ta  (conjure) Run all tests with an optional namespace filter regex. |
+		Shortcut! ,rr  (conjure) Clojure only, refresh changed namespaces
+		Shortcut! ,rR  (conjure) Clojure only, refresh all namespaces
+		Shortcut! ,rC  (conjure) Clojure only, refresh clen namespaces
+	endfunction
+endif
 " autocmd filetype vimwiki
 " \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:call <SID>do_wiki_cr()<CR>"
 " function! s:do_wiki_cr()
