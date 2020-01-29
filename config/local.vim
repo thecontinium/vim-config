@@ -1,4 +1,3 @@
-
 " What to save in sessions:
 
 let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
@@ -72,6 +71,9 @@ autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
 
 augroup END " }}}
+
+Shortcut show shortcut menu and run chosen shortcut
+      \ noremap <silent> ,, :ShortcutsRangeless<Return>
 
 autocmd MyAutoCmd FileType defx call <SID>defx_my_settings()
 function! s:defx_my_settings() abort
