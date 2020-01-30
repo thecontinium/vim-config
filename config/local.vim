@@ -75,6 +75,51 @@ augroup END " }}}
 Shortcut show shortcut menu and run chosen shortcut
       \ noremap <silent> ,, :ShortcutsRangeless<Return>
 
+" Shortcuts for Denite
+
+Shortcut! ;r     (denite) Resumes last Denite window
+Shortcut! ;f	    (denite) File search
+Shortcut! ;b	    (denite) Buffers and MRU
+Shortcut! ;d	    (denite) Directories
+Shortcut! ;v	    (denite) Yank history
+Shortcut! ;l	    (denite) Location list
+Shortcut! ;q	    (denite) Quick fix
+Shortcut! ;n	    (denite) Dein plugin list
+Shortcut! ;g	    (denite) Grep search
+Shortcut! ;j	    (denite) Jump points
+Shortcut! ;u	    (denite) Junk files
+Shortcut! ;o	    (denite) Outline tags
+Shortcut! ;s	    (denite) Sessions
+Shortcut! ;t	    (denite) Tag list
+Shortcut! ;p	    (denite) Jump to previous position
+Shortcut! ;h	    (denite) Help
+Shortcut! ;m	    (denite) Memo list
+Shortcut! ;z	    (denite) Z (jump around)
+Shortcut! ;/	    (denite) Buffer lines
+Shortcut! ;*	    (denite) Match word under cursor with lines
+Shortcut! ;;	    (denite) Command history
+Shortcut! <leader>gl (denite) Git log (all)
+Shortcut! <leader>gs (denite) Git status
+Shortcut! <leader>gc (denite) Git branches
+Shortcut! <leader>gt (denite) Find tags matching word under cursor
+Shortcut! <leader>gf (denite) Find file matching word under cursor
+Shortcut! <leader>gg (denite) Grep word under cursor
+Shortcut! jj	    (denite-window) Leave Insert mode
+Shortcut! kk	    (denite-window) Leave Insert mode
+Shortcut! q	    (denite-window) Exit denite window
+Shortcut! <Escape>   (denite-window) Exit denite window
+Shortcut! Space      (denite-window) Select entry
+Shortcut! Tab        (denite-window) List and choose action
+Shortcut! i          (denite-window) Open filter input
+Shortcut! dd	    (denite-window) Delete entry
+Shortcut! p          (denite-window) Preview entry
+Shortcut! st         (denite-window) Open in a new tab
+Shortcut! sg         (denite-window) Open in a vertical split
+Shortcut! sv         (denite-window) Open in a split
+Shortcut! r          (denite-window) Redraw
+Shortcut! yy         (denite-window) Yank
+Shortcut! '          (denite-window) Quick move
+
 autocmd MyAutoCmd FileType defx call <SID>defx_my_settings()
 function! s:defx_my_settings() abort
 	nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
