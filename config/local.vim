@@ -1,14 +1,14 @@
 " What to save in sessions:
 
 let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
-set sessionoptions+=winpos
-set sessionoptions+=buffers
+" set sessionoptions+=winpos
+" set sessionoptions+=buffers
 " nmap <silent> <Leader>su :<C-u>let v:this_session='' && execute 'redrawtabline'<CR>
-nmap <silent> <Leader>su :<C-u>call g:SessionUnload()<CR>
-function! g:SessionUnload() abort
-	let v:this_session=''
-	silent execute 'redrawtabline'
-endfunction
+" nmap <silent> <Leader>su :<C-u>call g:SessionUnload()<CR>
+" function! g:SessionUnload() abort
+" 	let v:this_session=''
+" 	silent execute 'redrawtabline'
+" endfunction
 
 " terminal mappings
 " map jj to exit terminal-mode
@@ -75,6 +75,9 @@ augroup END " }}}
 Shortcut show shortcut menu and run chosen shortcut
       \ noremap <silent> ,, :ShortcutsRangeless<Return>
 
+Shortcut show shortcut menu
+      \ nnoremap <silent><LocalLeader>' :<C-u>Denite shortcut<CR>
+
 " Shortcuts for Denite
 Shortcut! ;r         (denite) Resumes last Denite window
 Shortcut! ;f	     (denite) File search
@@ -110,7 +113,7 @@ Shortcut! <Escape> (denite-window) Exit denite window
 Shortcut! Space    (denite-window) Select entry
 Shortcut! Tab      (denite-window) List and choose action
 Shortcut! i        (denite-window) Open filter input
-Shortcut! dd	   (denite-window) Delete entry
+Shortcut! dd	     (denite-window) Delete entry
 Shortcut! p        (denite-window) Preview entry
 Shortcut! st       (denite-window) Open in a new tab
 Shortcut! sg       (denite-window) Open in a vertical split
@@ -119,15 +122,37 @@ Shortcut! r        (denite-window) Redraw
 Shortcut! yy       (denite-window) Yank
 Shortcut! '        (denite-window) Quick move
 
+" Actions of gitlog:
+
+" open default action for open seleted commit.
+" preview preview seleted commit.
+" delete run git diff with current commit for current buffer. (just named delete)
+" reset run git reset with current commit.
+" Actions of gitstatus:
+"
+" open open seleted file, default action
+" add run git add for seleted file(s).
+" delete run git diff for seleted file. (just named delete)
+" reset run git reset/checkout or remove for seleted file(s).
+" commit run git commit for seleted file(s).
+" Actions of gitbranch:
+"
+" checkout default action to checkout selected branch.
+" delete delete seleted branch.
+" merge merge seleted branch with current branch.
+" rebase rebase seleted branch with current branch.
+" Actions of gitfiles:
+"
+" view default action to view a file at a certain commit (read-only)
 " Shortcuts for Easy Git
-Shortcut!| <leader>ga (easy-git) Git add current file
-Shortcut!| <leader>gS (easy-git) Git status
-Shortcut!| <leader>gd (easy-git) Git diff
-Shortcut!| <leader>gD (easy-git) Close diff
-Shortcut!| <leader>gc (easy-git) Git commit
-Shortcut!| <leader>gb (easy-git) Git blame
-Shortcut!| <leader>gB (easy-git) Open in browser
-Shortcut!| <leader>gp (easy-git) Git push
+Shortcut! <leader>ga (easy-git) Git add current file
+Shortcut! <leader>gS (easy-git) Git status
+Shortcut! <leader>gd (easy-git) Git diff
+Shortcut! <leader>gD (easy-git) Close diff
+Shortcut! <leader>gc (easy-git) Git commit
+Shortcut! <leader>gb (easy-git) Git blame
+Shortcut! <leader>gB (easy-git) Open in browser
+Shortcut! <leader>gp (easy-git) Git push
 
 
 " Shortcuts for Git Gutter
@@ -181,7 +206,8 @@ function! s:defx_my_settings() abort
 	Shortcut! <C-g>   (defx) print
 	Shortcut! c       (defx) copy
 	Shortcut! m       (defx) move
-	Shortcut! p       (defx) print
+	Shortcut! p       (defx) paste
+	Shortcut! r       (defx) rename
 	Shortcut! dd      (defx) send to trash
 	Shortcut! K			  (defx) create new directory
 	Shortcut! N       (defx) create new files and directories if provided. If the input ends with /", it means new directory"
