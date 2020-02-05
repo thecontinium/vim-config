@@ -75,6 +75,9 @@ augroup END " }}}
 Shortcut show shortcut menu and run chosen shortcut
       \ noremap <silent> ,, :ShortcutsRangeless<Return>
 
+Shortcut show shortcut menu
+      \ nnoremap <silent><LocalLeader>' :<C-u>Denite shortcut<CR>
+
 " Shortcuts for Denite
 Shortcut! ;r         (denite) Resumes last Denite window
 Shortcut! ;f	     (denite) File search
@@ -120,14 +123,14 @@ Shortcut! yy       (denite-window) Yank
 Shortcut! '        (denite-window) Quick move
 
 " Shortcuts for Easy Git
-Shortcut!| <leader>ga (easy-git) Git add current file
-Shortcut!| <leader>gS (easy-git) Git status
-Shortcut!| <leader>gd (easy-git) Git diff
-Shortcut!| <leader>gD (easy-git) Close diff
-Shortcut!| <leader>gc (easy-git) Git commit
-Shortcut!| <leader>gb (easy-git) Git blame
-Shortcut!| <leader>gB (easy-git) Open in browser
-Shortcut!| <leader>gp (easy-git) Git push
+Shortcut! <leader>ga (easy-git) Git add current file
+Shortcut! <leader>gS (easy-git) Git status
+Shortcut! <leader>gd (easy-git) Git diff
+Shortcut! <leader>gD (easy-git) Close diff
+Shortcut! <leader>gc (easy-git) Git commit
+Shortcut! <leader>gb (easy-git) Git blame
+Shortcut! <leader>gB (easy-git) Open in browser
+Shortcut! <leader>gp (easy-git) Git push
 
 
 " Shortcuts for Git Gutter
