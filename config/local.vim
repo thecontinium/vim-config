@@ -67,7 +67,7 @@ augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 
   autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
-		\ | nnoremap <silent><buffer>>,rl :<C-u>vsplit term://lein repl<CR>
+		\ | nnoremap <silent><buffer>,rl :<C-u>vsplit term://lein repl<CR>
 
 	autocmd FileType yaml
 		\ let b:sleuth_automatic = 0
