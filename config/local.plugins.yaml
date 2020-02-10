@@ -5,6 +5,19 @@
 - { repo: thecontinium/vim-denite-sorter-lastmod }
 - { repo: rafi/vim-denite-session, if: 0 }
 - { repo: thecontinium/vim-denite-session, on_source: denite.nvim }
+- repo: lambdalisue/gina.vim
+  on_cmd: Gina
+  hook_post_source: |
+    call gina#custom#mapping#nmap(
+    \     'status', '<C-^>',
+    \     ':<C-u>Gina commit<CR>',
+    \     {'noremap': 1, 'silent': 1},
+    \    )
+    call gina#custom#mapping#nmap(
+    \     'commit', '<C-^>',
+    \     ':<C-u>Gina status<CR>',
+    \     {'noremap': 1, 'silent': 1},
+    \    )
 
 # Startup
 # -------
@@ -95,7 +108,7 @@
     let g:conjure_log_direction = "vertical"
     let g:conjure_log_blacklist = ["ret", "retg:conjure_log_auto_close-multiline", "load-file", "eval"]
     let g:conjure_log_auto_close = "v:false"
-  e hook_post_source: |
+  hook_post_source: |
     call deoplete#custom#option('keyword_patterns', {
     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
     \})

@@ -1,3 +1,7 @@
+" Key Mappings {{{
+" make sure that iTerm sends the right key combination for <S-Return>
+" https://stackoverflow.com/questions/16359878/vim-how-to-map-shift-enter
+" }}}
 " Session Management {{{
 " What to save in sessions:
 
