@@ -67,7 +67,7 @@ augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 
   autocmd FileType clojure
 		\ let b:sleuth_automatic = 0
-		\ | nnoremap <silent><buffer>>,le :<C-u>vsplit term://lein repl<CR>
+		\ | nnoremap <silent><buffer>>,rl :<C-u>vsplit term://lein repl<CR>
 
 	autocmd FileType yaml
 		\ let b:sleuth_automatic = 0
@@ -290,7 +290,7 @@ Shortcut! ,ta  (conjure) Run all tests with an optional namespace filter regex. 
 Shortcut! ,rr  (conjure) Clojure only, refresh changed namespaces
 Shortcut! ,rR  (conjure) Clojure only, refresh all namespaces
 Shortcut! ,rC  (conjure) Clojure only, refresh clen namespaces
-Shortcut! ,le  (clojure) open a lein repl in a new buffer
+Shortcut! ,rl  (clojure) open a lein repl in a new buffer
 " }}}
 " }}}
 " Defx Settings {{{
