@@ -98,7 +98,7 @@
   depends: vim-sexp
 
 - repo: Olical/conjure
-  rev: v2.*.*
+  rev: "*"
   build: bin/compile
   on_ft: clojure
   hook_add: |
