@@ -3,8 +3,6 @@
 # ==========================================
 
 - { repo: thecontinium/vim-denite-sorter-lastmod }
-- { repo: rafi/vim-denite-session, if: 0 }
-- { repo: thecontinium/vim-denite-session, on_source: denite.nvim }
 - repo: lambdalisue/gina.vim
   on_cmd: Gina
   hook_post_source: |
@@ -90,7 +88,6 @@
 - repo: guns/vim-sexp
   on_event: InsertCharPre
   on_ft: clojure
-  depends: neosnippet.vim
 
 - repo: tpope/vim-sexp-mappings-for-regular-people
   on_event: InsertCharPre
@@ -108,10 +105,6 @@
     let g:conjure_log_direction = "vertical"
     let g:conjure_log_blacklist = ["ret", "retg:conjure_log_auto_close-multiline", "load-file", "eval"]
     let g:conjure_log_auto_close = "v:false"
-  hook_post_source: |
-    call deoplete#custom#option('keyword_patterns', {
-    \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
-    \})
 
 - repo: Raimondi/delimitMate
   on_event: InsertEnter
@@ -119,6 +112,12 @@
     let g:delimitMate_expand_cr = 1
     let g:delimitMate_excluded_ft = 'html,clojure'
     let g:neomake_virtualtext_current_error = 0
+
+- repo: thecontinium/snippets
+  depends: ultisnips
+  on_event: FileType
+  if: has('python3')
+  merged: 0
 
 # - { repo: tpope/vim-fireplace, on_ft: clojure }
 # - { repo: tpope/vim-projectionist, on_ft: clojure }
@@ -130,26 +129,34 @@
 #     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
 #     \}
 # c#
-- repo: OmniSharp/omnisharp-vim
-  on_ft: cs
-  hook_post_source: |
-    let g:OmniSharp_server_stdio = 1
-    call deoplete#custom#option('sources', {
-    \ 'cs': ['omnisharp'],
-    \ })
+#- repo: OmniSharp/omnisharp-vim
+#  on_ft: cs
+#  hook_post_source: |
+#    let g:OmniSharp_server_stdio = 1
+#    call deoplete#custom#option('sources', {
+#    \ 'cs': ['omnisharp'],
+#    \ })
 
 
 # ==========================================
 # Commands
 # --------
 # ==========================================
+- { repo: liuchengxu/vim-which-key, if: 0}
+- repo: thecontinium/vim-which-key 
+  on_cmd: WhichKey
+  hook_add: |
+    let g:which_key_map =  {}
+  hook_source: |
+    call which_key#register('', "g:which_key_map")
+
 # Interface
 # ---------
-- repo: RRethy/vim-hexokinase
-  on_ft: [ css, scss, sass, stylus, vim ]
-  build: make hexokinase
-  hook_add: |
-    let g:Hexokinase_ftAutoload = [ 'css', 'scss', 'sass', 'stylus' ]
+# - repo: RRethy/vim-hexokinase
+#   on_ft: [ css, scss, sass, stylus, vim ]
+#   build: make hexokinase
+#   hook_add: |
+#     let g:Hexokinase_ftAutoload = [ 'css', 'scss', 'sass', 'stylus' ]
 
 - repo: thecontinium/vim-shortcut
   on_cmd: [ Shortcut!, Shortcut, ShortcutsRangeless,ShortcutsRangeless! ]
@@ -160,17 +167,31 @@
 # ==========================================
 # Completion
 # ----------
-- repo: Shougo/neosnippet.vim
-  depends: [ neosnippet-snippets, context_filetype.vim ]
-  on_event: InsertCharPre
-  on_ft: snippet
-  hook_add: let g:neosnippet#data_directory = $DATA_PATH . '/snippets'
+- repo: thecontinium/asyncomplete-conjure.vim
+  depends: asyncomplete.vim
   hook_source: |
-    let g:neosnippet#enable_snipmate_compatibility = 1
-    let g:neosnippet#enable_completed_snippet = 1
-    let g:neosnippet#enable_complete_done = 1
-    let g:neosnippet#expand_word_boundary = 1
-    let g:neosnippet#enable_auto_clear_markers = 1
+    autocmd User asyncomplete_setup call asyncomplete#register_source(
+      \ asyncomplete#sources#conjure#get_source_options({
+      \ 'name': 'conjure',
+      \ 'whitelist': ['clojure'],
+      \ 'completor': function('asyncomplete#sources#conjure#completor'),
+      \ }))
+
+- repo: prabirshrestha/asyncomplete-buffer.vim
+  depends: asyncomplete.vim
+  hook_source: |
+    autocmd User asyncomplete_setup call asyncomplete#register_source(
+      \ asyncomplete#sources#buffer#get_source_options({
+      \ 'name': 'buffer',
+      \ 'whitelist': ['*'],
+      \ 'blacklist': ['go'],
+      \ 'completor': function('asyncomplete#sources#buffer#completor'),
+      \ 'config': {
+      \    'max_buffer_size': 5000000,
+      \  },
+      \ }))
+  hook_add: |
+    let g:asyncomplete_buffer_clear_cach = 0
 
 # Only NeoVim ------------------------------
 # ==========================================

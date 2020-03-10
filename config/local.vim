@@ -73,7 +73,20 @@ augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 		\ let b:sleuth_automatic = 0
 augroup END " }}}
 " }}}
+" Which-Key {{{
+let g:which_key_map = { 'name' : 'all' }
+let g:which_key_map.a = 'which_key_ignore'
+let g:which_key_map.A = 'which_key_ignore'
+let g:which_key_map.i = 'which_key_ignore'
+let g:which_key_map.I = 'which_key_ignore'
+let g:which_key_map[';'] = { 'name' : 'local-leader' }
+let g:which_key_map[','] = { 'name' : 'comma' }
+let g:which_key_map[','].c = { 'name' : 'clojure-log' }
+let g:which_key_map[','].e = { 'name' : 'clojure-eval' }
+" }}}
 " Shortcuts {{{
+if dein#tap('vim-shortcut')
+
 Shortcut show shortcut menu and run chosen shortcut
       \ noremap <silent> ,, :ShortcutsRangeless<Return>
 Shortcut show shortcut menu
@@ -291,6 +304,7 @@ Shortcut! ,rr  (conjure) Clojure only, refresh changed namespaces
 Shortcut! ,rR  (conjure) Clojure only, refresh all namespaces
 Shortcut! ,rC  (conjure) Clojure only, refresh clen namespaces
 Shortcut! ,rl  (clojure) open a lein repl in a new buffer
+endif
 " }}}
 " }}}
 " Defx Settings {{{
