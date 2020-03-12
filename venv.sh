@@ -9,12 +9,12 @@ _try_pyenv() {
 			if [ -d "${src}" ]; then
 				echo "===> pyenv virtualenv found '${name}'"
 				ln -fs "${src}" "${__venv}"
+				return 0
 			fi
 		done
-	else
-		echo ":: pyenv not found"
-		return 1
 	fi
+	echo ":: pyenv not found"
+	return 1
 }
 
 _try_python() {
@@ -30,7 +30,7 @@ main() {
 	# Declare a base path for virtual environment
 	local __venv="${XDG_CACHE_HOME:-$HOME/.cache}/vim/venv"
 
-	mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache/vim}"
+	mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/vim"
 
 	if _try_pyenv || _try_python; then
 		"${__venv}/bin/pip" install -U pynvim PyYAML Send2Trash
