@@ -119,6 +119,25 @@
   if: has('python3')
   merged: 0
 
+- repo: Vigemus/iron.nvim
+  if: has('nvim')
+  on_cmd: [ IronRepl, IronReplHere, IronFocus, IronSend, IronWatchCurrentFile ]
+  on_map: { nv: <Plug> }
+  on_func: IronUnwatchFile
+  hook_add: let g:iron_map_defaults = 0 | let g:iron_map_extended = 0
+  hook_source: |
+    lua << EOF
+    \ local iron = require('iron')
+    \
+    \ iron.core.set_config {
+    \   preferred = {
+    \     clojure= 'lein'
+    \     python = 'ipython'
+    \   }
+    \ }
+    \
+    \ EOF
+
 # - { repo: tpope/vim-fireplace, on_ft: clojure }
 # - { repo: tpope/vim-projectionist, on_ft: clojure }
 # - { repo: tpope/vim-salve, on_ft: clojure }
