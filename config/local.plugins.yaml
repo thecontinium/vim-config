@@ -196,7 +196,7 @@
       \ 'completor': function('asyncomplete#sources#conjure#completor'),
       \ }))
 
-- repo: prabirshrestha/asyncomplete-buffer.vim
+- repo: thecontinium/asyncomplete-buffer.vim
   depends: asyncomplete.vim
   hook_source: |
     autocmd User asyncomplete_setup call asyncomplete#register_source(
@@ -210,7 +210,8 @@
       \  },
       \ }))
   hook_add: |
-    let g:asyncomplete_buffer_clear_cach = 0
+    let g:asyncomplete_buffer_clear_cache = 0
+    let g:asyncomplete_buffer_identify_words_regex = '\k\+'
 
 # Only NeoVim ------------------------------
 # ==========================================
