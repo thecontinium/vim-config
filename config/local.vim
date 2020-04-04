@@ -40,9 +40,11 @@ augroup user_plugin_filetype " {{{ all
 augroup END " }}}
 augroup my_user_plugin_denite " {{{ denite
 	autocmd!
-	autocmd FileType denite
-		\ nnoremap <silent><buffer><expr> sa denite#do_map('do_action', 'save')
-augroup END " }}}
+	autocmd FileType denite call s:denite_my_settings()
+augroup END
+function! s:denite_my_settings() abort
+	nnoremap <silent><buffer><expr> sa denite#do_map('do_action', 'save')
+endfunction " }}}
 augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 
 	" save automatically when text is changed
