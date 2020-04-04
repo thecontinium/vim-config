@@ -311,73 +311,81 @@ endif
 " }}}
 " Defx Settings {{{
 autocmd MyAutoCmd FileType defx call <SID>defx_my_settings()
+
 function! s:defx_my_settings() abort
-	nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
-	nnoremap <silent><buffer><expr>					=	 defx#do_action('call', 'DefxCD')
-	nnoremap <silent><buffer><expr> o     <SID>defx_my_toggle_tree()
- endfunction
+  " nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
+  " nnoremap <silent><buffer><expr>					=  defx#do_action('call', '<SID>defx_cd')
+  nnoremap <silent><buffer><expr>					o  <SID>defx_my_toggle_tree()
+  nnoremap <silent><buffer><expr>					U  defx#do_action('call', '<SID>defx_open_scm')
+endfunction
+
+function! s:defx_open_scm(context) abort
+  let l:target = a:context['targets'][0]
+  let l:selected = fnamemodify(l:target, ':~:.')
+  silent execute 'OpenSCM '.l:selected
+endfunction
 
 " Set the vim directory to the selected
-function! g:DefxCD(context) abort
-	let l:target = a:context['targets'][0]
-	let l:selected = fnamemodify(l:target, ':p:h')
-	silent execute 'close'
-	silent execute 'cd '.l:selected
-	echo 'cd set to '.l:selected
+function! s:defx_cd(context) abort
+  let l:target = a:context['targets'][0]
+  let l:selected = fnamemodify(l:target, ':p:h')
+  silent execute 'close'
+  silent execute 'cd '.l:selected
+  echo 'cd set to '.l:selected
 endfunction
 
 function! s:defx_my_toggle_tree() abort
-	" Open current file, or toggle directory expand/collapse
-	if defx#is_directory()
-		return defx#do_action('open_or_close_tree')
-	endif
-	return defx#do_action('drop')
+  " Open current file, or toggle directory expand/collapse
+  if defx#is_directory()
+    return defx#do_action('open_or_close_tree')
+  endif
+  return defx#do_action('drop')
 endfunction
 "}}}
 " Clojure Settings {{{
 " Neomake clojure additions
 if dein#tap('neosnippet.vim')
-	smap <expr><C-o> neosnippet#expandable_or_jumpable()
-		\ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
+  smap <expr><C-o> neosnippet#expandable_or_jumpable()
+    \ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
 endif
 
 let g:neomake_joker_maker = {
-		\ 'exe': 'joker',
-		\ 'args': ['--lint'],
-		\ 'errorformat': '%f:%l:%c: %*[^ ] %t%*[^:]: %m',
-		\ }
+	\ 'exe': 'joker',
+	\ 'args': ['--lint'],
+	\ 'errorformat': '%f:%l:%c: %*[^ ] %t%*[^:]: %m',
+	\ }
 
 let g:neomake_cljkondo_maker = {
-		\ 'exe': 'clj-kondo',
-		\ 'args': ['--lint'],
-		\ 'errorformat': '%f:%l:%c:\ Parse\ %t%*[^:]:\ %m,%f:%l:%c:\ %t%*[^:]:\ %m',
-		\ 'remove_invalid_entries': 1,
-		\ }
+	\ 'exe': 'clj-kondo',
+	\ 'args': ['--lint'],
+	\ 'errorformat': '%f:%l:%c:\ Parse\ %t%*[^:]:\ %m,%f:%l:%c:\ %t%*[^:]:\ %m',
+	\ 'remove_invalid_entries': 1,
+	\ }
 
 let g:neomake_clojure_enabled_makers = ['joker', 'cljkondo']
 let g:neomake_virtualtext_current_error = 0
 
 if dein#tap('vim-sexp')
 	let g:sexp_mappings = {
-			\ 'sexp_round_head_wrap_list':      ',i',
-			\ 'sexp_round_tail_wrap_list':      ',I',
-			\ 'sexp_square_head_wrap_list':     '',
-			\ 'sexp_square_tail_wrap_list':     '',
-			\ 'sexp_curly_head_wrap_list':      '',
-			\ 'sexp_curly_tail_wrap_list':      '',
-			\ 'sexp_round_head_wrap_element':   ',w',
-			\ 'sexp_round_tail_wrap_element':   ',W',
-			\ 'sexp_square_head_wrap_element':  '',
-			\ 'sexp_square_tail_wrap_element':  '',
-			\ 'sexp_curly_head_wrap_element':   '',
-			\ 'sexp_curly_tail_wrap_element':   '',
-			\ 'sexp_insert_at_list_head':       ',h',
-			\ 'sexp_insert_at_list_tail':       ',l',
-			\ 'sexp_splice_list':               ',@',
-			\ 'sexp_convolute':                 ',?',
-			\ 'sexp_raise_list':                ',o',
-			\ 'sexp_raise_element':             ',O',
-			\ }
+		\ 'sexp_round_head_wrap_list':      ',i',
+		\ 'sexp_round_tail_wrap_list':      ',I',
+		\ 'sexp_square_head_wrap_list':     '',
+		\ 'sexp_square_tail_wrap_list':     '',
+		\ 'sexp_curly_head_wrap_list':      '',
+		\ 'sexp_curly_tail_wrap_list':      '',
+		\ 'sexp_round_head_wrap_element':   ',w',
+		\ 'sexp_round_tail_wrap_element':   ',W',
+		\ 'sexp_square_head_wrap_element':  '',
+		\ 'sexp_square_tail_wrap_element':  '',
+		\ 'sexp_curly_head_wrap_element':   '',
+		\ 'sexp_curly_tail_wrap_element':   '',
+		\ 'sexp_insert_at_list_head':       ',h',
+		\ 'sexp_insert_at_list_tail':       ',l',
+		\ 'sexp_splice_list':               ',@',
+		\ 'sexp_convolute':                 ',?',
+		\ 'sexp_raise_list':                ',o',
+		\ 'sexp_raise_element':             ',O',
+		\ }
 endif
 " }}}
 
