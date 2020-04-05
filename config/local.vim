@@ -34,45 +34,53 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 " }}}
 " Manage specific file type mappings {{{
 augroup user_plugin_filetype " {{{ all
-	" set to default so that we get the warnings and options
-	" for manageing swap files
-	autocmd swapexists * nested let v:swapchoice = ''
+" set to default so that we get the warnings and options
+" for manageing swap files
+  autocmd swapexists * nested let v:swapchoice = ''
 augroup END " }}}
+" TODO move denite to a local_plugins directory
 augroup my_user_plugin_denite " {{{ denite
-	autocmd!
-	autocmd FileType denite call s:denite_my_settings()
+  autocmd!
+  autocmd FileType denite call s:denite_my_settings()
 augroup END
+function! s:dein_update(context) abort
+  if a:context['targets'][0]['source_name'] ==# 'dein'
+    call dein#update(split(a:context['targets'][0]['word'],'/')[1])
+  endif
+endfunction
 function! s:denite_my_settings() abort
-	nnoremap <silent><buffer><expr> sa denite#do_map('do_action', 'save')
+  nnoremap <silent><buffer><expr> sa denite#do_map('do_action', 'save')
+  call denite#custom#action('directory', 'dein_update', function('s:dein_update'))
 endfunction " }}}
 augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 
-	" save automatically when text is changed
-	" it will save the current file whenever text is changed in normal mode
-	" or you leave the insert mode.
-	autocmd FileType markdown
-	  \ setlocal nospell path=. suffixesadd=.mmd
-		\ | setlocal updatetime=200
-		\ | au CursorHold <buffer> silent! update
+" save automatically when text is changed
+" it will save the current file whenever text is changed in normal mode
+" or you leave the insert mode.
+autocmd FileType markdown
+  \ setlocal nospell path=. suffixesadd=.mmd
+  \ | setlocal updatetime=200
+  \ | au CursorHold <buffer> silent! update
 
-	autocmd FileType vimwiki,markdown
-		\ let b:sleuth_automatic = 0
-		\ | setlocal concealcursor=nc
-		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
+autocmd FileType vimwiki,markdown
+  \ let b:sleuth_automatic = 0
+  \ | setlocal concealcursor=nc
+  \ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
 
-	" only run vimwikireturn if the popup menu is not showing, otherwise close it
-	autocmd filetype vimwiki
-		\ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
-		\ | setlocal sw=4
-		\ | setlocal sts=4
-		\ | setlocal et
+" only run vimwikireturn if the popup menu is not showing, otherwise close it
+autocmd filetype vimwiki
+  \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
+  \ | setlocal sw=4
+  \ | setlocal sts=4
+  \ | setlocal et
 
-  autocmd FileType clojure
-		\ let b:sleuth_automatic = 0
-		\ | nnoremap <silent><buffer>,rl :<C-u>vsplit term://lein repl<CR>
+autocmd FileType clojure
+  \ let b:sleuth_automatic = 0
+  \ | nnoremap <silent><buffer>,rl :<C-u>vsplit term://lein repl<CR>
 
-	autocmd FileType yaml
-		\ let b:sleuth_automatic = 0
+autocmd FileType yaml
+  \ let b:sleuth_automatic = 0
+
 augroup END " }}}
 " }}}
 " Which-Key {{{
