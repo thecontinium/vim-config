@@ -38,20 +38,6 @@ augroup user_plugin_filetype " {{{ all
 " for manageing swap files
   autocmd swapexists * nested let v:swapchoice = ''
 augroup END " }}}
-" TODO move denite to a local_plugins directory
-augroup my_user_plugin_denite " {{{ denite
-  autocmd!
-  autocmd FileType denite call s:denite_my_settings()
-augroup END
-function! s:dein_update(context) abort
-  if a:context['targets'][0]['source_name'] ==# 'dein'
-    call dein#update(split(a:context['targets'][0]['word'],'/')[1])
-  endif
-endfunction
-function! s:denite_my_settings() abort
-  nnoremap <silent><buffer><expr> sa denite#do_map('do_action', 'save')
-  call denite#custom#action('directory', 'dein_update', function('s:dein_update'))
-endfunction " }}}
 augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 
 " save automatically when text is changed

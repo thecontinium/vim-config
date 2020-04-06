@@ -1,2 +1,3 @@
 !local.vim
 !local.plugins.yaml
+!local.plugins/*
