@@ -32,6 +32,20 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
 " }}}
+" Defx mappings {{{
+autocmd user_events DirChanged * let defx_win = bufwinnr('tab'.tabpagenr())
+  \ | if defx_win != -1
+  \ |   let current_win = winnr()
+  \ |   let cwd = v:event['cwd']
+  \ |   let in_defx_win = current_win == defx_win
+  \ |   if !in_defx_win
+  \ |     execute(defx_win . 'wincmd w')
+  \ |   call defx#call_action('cd', cwd)
+  \ |   if !in_defx_win
+  \ |     execute(current_win . 'wincmd w')
+  \ |   endif
+  \ | endif
+" }}}
 " Manage specific file type mappings {{{
 augroup user_plugin_filetype " {{{ all
 " set to default so that we get the warnings and options
