@@ -344,28 +344,14 @@ function! s:defx_my_toggle_tree() abort
   return defx#do_action('drop')
 endfunction
 "}}}
+
 " Clojure Settings {{{
 " Neomake clojure additions
+
 if dein#tap('neosnippet.vim')
   smap <expr><C-o> neosnippet#expandable_or_jumpable()
     \ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
 endif
-
-let g:neomake_joker_maker = {
-	\ 'exe': 'joker',
-	\ 'args': ['--lint'],
-	\ 'errorformat': '%f:%l:%c: %*[^ ] %t%*[^:]: %m',
-	\ }
-
-let g:neomake_cljkondo_maker = {
-	\ 'exe': 'clj-kondo',
-	\ 'args': ['--lint'],
-	\ 'errorformat': '%f:%l:%c:\ Parse\ %t%*[^:]:\ %m,%f:%l:%c:\ %t%*[^:]:\ %m',
-	\ 'remove_invalid_entries': 1,
-	\ }
-
-let g:neomake_clojure_enabled_makers = ['joker', 'cljkondo']
-let g:neomake_virtualtext_current_error = 0
 
 if dein#tap('vim-sexp')
 	let g:sexp_mappings = {
