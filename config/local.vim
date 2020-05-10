@@ -63,7 +63,7 @@ autocmd FileType vimwiki,markdown
 
 " only run vimwikireturn if the popup menu is not showing, otherwise close it
 autocmd filetype vimwiki
-  \ inoremap <silent><buffer><expr><CR> pumvisible() ? deoplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
+  \ inoremap <silent><buffer><expr><CR> pumvisible() ?  asyncomplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
   \ | setlocal sw=4
   \ | setlocal sts=4
   \ | setlocal et
