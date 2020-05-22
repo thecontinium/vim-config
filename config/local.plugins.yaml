@@ -5,17 +5,7 @@
 - { repo: thecontinium/vim-denite-sorter-lastmod }
 - repo: lambdalisue/gina.vim
   on_cmd: Gina
-  hook_post_source: |
-    call gina#custom#mapping#nmap(
-    \     'status', '<C-^>',
-    \     ':<C-u>Gina commit<CR>',
-    \     {'noremap': 1, 'silent': 1},
-    \    )
-    call gina#custom#mapping#nmap(
-    \     'commit', '<C-^>',
-    \     ':<C-u>Gina status<CR>',
-    \     {'noremap': 1, 'silent': 1},
-    \    )
+  hook_post_source: source $VIM_PATH/config/local.plugins/gina.vim
 
 # Startup
 # -------
@@ -110,7 +100,7 @@
 - repo: 'bakpakin/fennel.vim'
 
 - repo: Olical/conjure
-  rev: "develop"
+  rev: "*"
   on_ft: clojure
   hook_add: |
     let g:conjure_config = {"mappings.prefix": ","}
