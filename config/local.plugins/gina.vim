@@ -23,6 +23,12 @@ call gina#custom#command#option(
       \ 'show',
       \ '--show-signature'
       \)
+
+call gina#custom#command#option(
+      \ '/\%(status\|log\)',
+			\ '--opener',
+			\ 'vsplit'
+			\)
 "}}}
 
 " Custom action branch alias {{{
