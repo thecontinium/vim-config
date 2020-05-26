@@ -2,7 +2,6 @@
 # PLUGINS
 # ==========================================
 
-- { repo: thecontinium/vim-denite-sorter-lastmod }
 - repo: lambdalisue/gina.vim
   on_cmd: Gina
   hook_post_source: source $VIM_PATH/config/local.plugins/gina.vim
@@ -223,6 +222,23 @@
   on_cmd: Denite
   trusted: 1
   hook_source: source $VIM_PATH/config/local.plugins/denite.vim
+
+  # add gina to the ignore pattern setup in the autoload
+- repo: Shougo/neomru.vim
+  on_source: denite.nvim
+  hook_add: |
+    let g:neomru#directory_mru_path = $DATA_PATH . '/mru/dir'
+    let g:neomru#file_mru_path = $DATA_PATH . '/mru/file'
+    let g:unite_source_file_mru_limit = 5000
+    let g:neomru#file_mru_ignore_pattern =
+          \'\~$\|\.\%(o\|exe\|dll\|bak\|zwc\|pyc\|sw[po]\)$'.
+          \'\|\%(^\|/\)\.\%(hg\|git\|bzr\|svn\)\%($\|/\)'.
+          \'\|^\%(\\\\\|/mnt/\|/media/\|/temp/\|/tmp/\|\%(/private\)\=/var/folders/\)'.
+          \'\|\%(^\%(fugitive\)://\)'.
+          \'\|\%(^\%(gina\)://\)'.
+          \'\|\%(^\%(term\)://\)'
+
+- { repo: thecontinium/vim-denite-sorter-lastmod }
 
 # ==========================================
 # Operators
