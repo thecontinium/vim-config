@@ -83,6 +83,9 @@
   on_ft: clojure
   depends: vim-sexp
 
+- repo: gberenfield/cljfold.vim
+  on_ft: clojure
+
 # - repo: Olical/conjure
 #   rev: "*"
 #   build: bin/compile
