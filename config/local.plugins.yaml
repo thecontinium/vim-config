@@ -171,6 +171,10 @@
 # Commands
 # --------
 # ==========================================
+# - repo: Shougo/defx.nvim
+#   on_cmd: Defx
+#   hook_source: source $VIM_PATH/config/local.plugins/defx.vim
+
 - { repo: liuchengxu/vim-which-key, if: 0}
 - repo: thecontinium/vim-which-key
   on_cmd: WhichKey
