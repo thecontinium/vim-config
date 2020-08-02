@@ -2,9 +2,9 @@
 # PLUGINS
 # ==========================================
 
-- repo: lambdalisue/gina.vim
-  on_cmd: Gina
-  hook_post_source: source $VIM_PATH/config/local.plugins/gina.vim
+# - repo: lambdalisue/gina.vim
+#   on_cmd: Gina
+#   hook_post_source: source $VIM_PATH/config/local.plugins/gina.vim
 
 # Startup
 # -------
@@ -16,10 +16,10 @@
 # ---------
 
 # debugging
-- repo: sakhnik/nvim-gdb
-  on_cmd: [ GdbStart, GdbStartLLDB, GdbStartPD, GdbStartBashDB ]
-  hook_post_source: |
-    call dein#remote_plugins()
+# - repo: sakhnik/nvim-gdb
+#   on_cmd: [ GdbStart, GdbStartLLDB, GdbStartPD, GdbStartBashDB ]
+#   hook_post_source: |
+#     call dein#remote_plugins()
 
 # markdown
 # - repo: thecontinium/vim-markdown-composer
@@ -129,25 +129,25 @@
   if: has('python3')
   merged: 0
 
-- repo: Vigemus/iron.nvim
-  if: has('nvim')
-  on_cmd: [ IronRepl, IronReplHere, IronFocus, IronSend, IronWatchCurrentFile ]
-  on_map: { nv: <Plug> }
-  on_func: IronUnwatchFile
-  hook_add: let g:iron_map_defaults = 0 | let g:iron_map_extended = 0
-  hook_source: |
-    lua << EOF
-    \ local iron = require('iron')
-    \
-    \ iron.core.set_config {
-    \   preferred = {
-    \     clojure= 'lein'
-    \     python = 'ipython'
-    \   }
-    \ }
-    \
-    \ EOF
-
+# - repo: Vigemus/iron.nvim
+#   if: has('nvim')
+#   on_cmd: [ IronRepl, IronReplHere, IronFocus, IronSend, IronWatchCurrentFile ]
+#   on_map: { nv: <Plug> }
+#   on_func: IronUnwatchFile
+#   hook_add: let g:iron_map_defaults = 0 | let g:iron_map_extended = 0
+#   hook_source: |
+#     lua << EOF
+#     \ local iron = require('iron')
+#     \
+#     \ iron.core.set_config {
+#     \   preferred = {
+#     \     clojure= 'lein'
+#     \     python = 'ipython'
+#     \   }
+#     \ }
+#     \
+#     \ EOF
+# 
 # - { repo: tpope/vim-fireplace, on_ft: clojure }
 # - { repo: tpope/vim-projectionist, on_ft: clojure }
 # - { repo: tpope/vim-salve, on_ft: clojure }
@@ -175,13 +175,13 @@
 #   on_cmd: Defx
 #   hook_source: source $VIM_PATH/config/local.plugins/defx.vim
 
-- { repo: liuchengxu/vim-which-key, if: 0}
-- repo: thecontinium/vim-which-key
-  on_cmd: WhichKey
-  hook_add: |
-    let g:which_key_map =  {}
-  hook_source: |
-    call which_key#register('', "g:which_key_map")
+# - { repo: liuchengxu/vim-which-key, if: 0}
+# - repo: thecontinium/vim-which-key
+#   on_cmd: WhichKey
+#   hook_add: |
+#     let g:which_key_map =  {}
+#   hook_source: |
+#     call which_key#register('', "g:which_key_map")
 
 # Interface
 # ---------
@@ -191,19 +191,19 @@
 #   hook_add: |
 #     let g:Hexokinase_ftAutoload = [ 'css', 'scss', 'sass', 'stylus' ]
 
-- repo: thecontinium/vim-shortcut
-  on_cmd: [ Shortcut!, Shortcut, ShortcutsRangeless,ShortcutsRangeless! ]
-  hook_source: |
-    let g:shortcut_expand_leader_keys = 0
-
-- repo: easymotion/vim-easymotion
-  on_map: { n: <Plug> }
-  hook_source: |
-    let g:EasyMotion_do_mapping = 0
-    let g:EasyMotion_prompt = 'Jump to → '
-    let g:EasyMotion_keys = 'fjdksweoavn'
-    let g:EasyMotion_smartcase = 1
-    let g:EasyMotion_use_smartsign_us = 1
+# - repo: thecontinium/vim-shortcut
+#   on_cmd: [ Shortcut!, Shortcut, ShortcutsRangeless,ShortcutsRangeless! ]
+#   hook_source: |
+#     let g:shortcut_expand_leader_keys = 0
+# 
+# - repo: easymotion/vim-easymotion
+#   on_map: { n: <Plug> }
+#   hook_source: |
+#     let g:EasyMotion_do_mapping = 0
+#     let g:EasyMotion_prompt = 'Jump to → '
+#     let g:EasyMotion_keys = 'fjdksweoavn'
+#     let g:EasyMotion_smartcase = 1
+#     let g:EasyMotion_use_smartsign_us = 1
 
 # ==========================================
 # Completion
@@ -245,19 +245,19 @@
   hook_source: source $VIM_PATH/config/local.plugins/denite.vim
 
   # add gina to the ignore pattern setup in the autoload
-- repo: Shougo/neomru.vim
-  on_source: denite.nvim
-  hook_add: |
-    let g:neomru#directory_mru_path = $DATA_PATH . '/mru/dir'
-    let g:neomru#file_mru_path = $DATA_PATH . '/mru/file'
-    let g:unite_source_file_mru_limit = 5000
-    let g:neomru#file_mru_ignore_pattern =
-          \'\~$\|\.\%(o\|exe\|dll\|bak\|zwc\|pyc\|sw[po]\)$'.
-          \'\|\%(^\|/\)\.\%(hg\|git\|bzr\|svn\)\%($\|/\)'.
-          \'\|^\%(\\\\\|/mnt/\|/media/\|/temp/\|/tmp/\|\%(/private\)\=/var/folders/\)'.
-          \'\|\%(^\%(fugitive\)://\)'.
-          \'\|\%(^\%(gina\)://\)'.
-          \'\|\%(^\%(term\)://\)'
+# - repo: Shougo/neomru.vim
+#   on_source: denite.nvim
+#   hook_add: |
+#     let g:neomru#directory_mru_path = $DATA_PATH . '/mru/dir'
+#     let g:neomru#file_mru_path = $DATA_PATH . '/mru/file'
+#     let g:unite_source_file_mru_limit = 5000
+#     let g:neomru#file_mru_ignore_pattern =
+#           \'\~$\|\.\%(o\|exe\|dll\|bak\|zwc\|pyc\|sw[po]\)$'.
+#           \'\|\%(^\|/\)\.\%(hg\|git\|bzr\|svn\)\%($\|/\)'.
+#           \'\|^\%(\\\\\|/mnt/\|/media/\|/temp/\|/tmp/\|\%(/private\)\=/var/folders/\)'.
+#           \'\|\%(^\%(fugitive\)://\)'.
+#           \'\|\%(^\%(gina\)://\)'.
+#           \'\|\%(^\%(term\)://\)'
 
 - { repo: thecontinium/vim-denite-sorter-lastmod }
 
