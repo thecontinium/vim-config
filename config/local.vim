@@ -138,7 +138,13 @@ if dein#tap('vim-sexp')
 		\ 'sexp_raise_list':                ',o',
 		\ 'sexp_raise_element':             ',O',
 		\ }
+end
+
+if dein#tap('ale')
+	nmap <silent> [c <Plug>(ale_previous)
+	nmap <silent> ]c <Plug>(ale_next)
 endif
+
 " }}}
 " Gina Settings {{{
 
