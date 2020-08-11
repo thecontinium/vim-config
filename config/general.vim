@@ -62,7 +62,7 @@ if has('wildmenu')
 	set wildignore+=*.jpg,*.jpeg,*.png,*.gif,*.zip,**/tmp/**,*.DS_Store
 	set wildignore+=**/node_modules/**,**/bower_modules/**,*/.sass-cache/*
 	set wildignore+=__pycache__,*.egg-info,.pytest_cache,.mypy_cache/**
-	set wildcharm=<C-z>  " substitue for 'wildchar' (<Tab>) in macros
+	" set wildcharm=<C-z>  " substitue for 'wildchar' (<Tab>) in macros
 endif
 
 " }}}
@@ -168,10 +168,12 @@ endif
 
 if executable('rg')
 	set grepformat=%f:%l:%c:%m
-	let &grepprg = 'rg --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
+	let &grepprg =
+		\ 'rg --hidden --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
 elseif executable('ag')
 	set grepformat=%f:%l:%c:%m
-	let &grepprg = 'ag --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
+	let &grepprg =
+		\ 'ag --hidden --vimgrep' . (&smartcase ? ' --smart-case' : '') . ' --'
 endif
 
 " }}}
