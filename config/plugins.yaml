@@ -13,9 +13,6 @@
 - repo: sgur/vim-editorconfig
 - repo: Shougo/context_filetype.vim
 - repo: jaawerth/nrun.vim
-- repo: justinmk/vim-gtfo
-- { repo: wellle/visual-split.vim, merged: 0 }
-- { repo: wellle/targets.vim, merged: 0 }
 - { repo: rafi/awesome-vim-colorschemes, merged: 0 }
 
 - repo: christoomey/vim-tmux-navigator
@@ -172,7 +169,6 @@
 - { repo: robbles/logstash.vim, on_ft: logstash }
 - { repo: lifepillar/pgsql.vim, on_ft: pgsql }
 - { repo: chr4/nginx.vim, on_ft: nginx }
-- { repo: IN3D/vim-raml, on_ft: raml }
 - { repo: towolf/vim-helm, on_ft: helm }
 
 - repo: pearofducks/ansible-vim
@@ -309,9 +305,20 @@
   on_event: QuickFixCmdPost
   on_map: { n: <Plug> }
   hook_add: |-
+    let g:qf_bufname_or_text = 1
     let g:qf_auto_open_quickfix = 0
     let g:qf_auto_open_loclist = 0
-    let g:qf_mapping_ack_style = 1
+    let g:qf_auto_resize = 0
+    autocmd User preview_open_pre
+      \ let g:vim_markdown_folding_disabled = 1
+      \| let g:vim_markdown_override_foldtext = 0
+      \| let g:vim_markdown_no_default_key_mappings = 1
+      \| let g:vim_markdown_emphasis_multiline = 0
+    autocmd User preview_open_post
+      \ unlet g:vim_markdown_folding_disabled
+      \| let g:vim_markdown_override_foldtext = 1
+      \| unlet g:vim_markdown_no_default_key_mappings
+      \| unlet g:vim_markdown_emphasis_multiline
 
 - repo: wellle/context.vim
   on_cmd: [ ContextToggle, ContextToggleWindow, ContextPeek ]
@@ -328,8 +335,8 @@
   hook_source: |-
     augroup user_plugin_cursorword
       autocmd!
-      autocmd FileType defx,denite,qf let b:cursorword = 0
-      autocmd WinEnter * if &diff | let b:cursorword = 0 | endif
+      autocmd FileType defx,denite,fern,qf let b:cursorword = 0
+      autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif
       autocmd InsertEnter * let b:cursorword = 0
       autocmd InsertLeave * let b:cursorword = 1
     augroup END
@@ -442,10 +449,13 @@
 - repo: prabirshrestha/vim-lsp
   depends: asyncomplete-lsp.vim
   hook_add: |-
+    let g:lsp_async_completion = 1
+    let g:lsp_ignorecase = 1
+    let g:lsp_virtual_text_enabled = 0
     let g:lsp_diagnostics_enabled = 1
     let g:lsp_diagnostics_echo_cursor = 1
-    let g:lsp_diagnostics_echo_delay = 200
-    let g:lsp_virtual_text_enabled = 0
+    let g:lsp_diagnostics_echo_delay = 400
+    let g:lsp_highlight_references_enabled = 0
   hook_source: source $VIM_PATH/config/plugins/lsp-settings.vim
 
 - repo: mattn/vim-lsp-settings
@@ -550,9 +560,9 @@
   on_event: FileType
   hook_add: |-
     let g:UltiSnipsExpandTrigger = '<C-l>'
-    let g:UltiSnipsListSnippets = ''
-    let g:UltiSnipsJumpForwardTrigger = '<C-f>'
-    let g:UltiSnipsJumpBackwardTrigger = '<C-b>'
+    let g:UltiSnipsListSnippets = '<C-Tab>'
+    let g:UltiSnipsJumpForwardTrigger = '<Tab>'
+    let g:UltiSnipsJumpBackwardTrigger = '<S-Tab>'
 
 - repo: honza/vim-snippets
   depends: ultisnips

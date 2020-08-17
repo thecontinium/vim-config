@@ -305,7 +305,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [robbles/logstash.vim] | Highlights logstash configuration files
 | [lifepillar/pgsql.vim] | PostgreSQL syntax and indent
 | [chr4/nginx.vim] | Improved nginx syntax and indent
-| [IN3D/vim-raml] | Syntax and language settings for RAML
 | [towolf/vim-helm] | Syntax for Helm templates (yaml + gotmpl + sprig)
 | [pearofducks/ansible-vim] | Improved YAML support for Ansible
 | [hashivim/vim-terraform] | Base Terraform integration
@@ -471,7 +470,6 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [robbles/logstash.vim]: https://github.com/robbles/logstash.vim
 [lifepillar/pgsql.vim]: https://github.com/lifepillar/pgsql.vim
 [chr4/nginx.vim]: https://github.com/chr4/nginx.vim
-[IN3D/vim-raml]: https://github.com/IN3D/vim-raml
 [towolf/vim-helm]: https://github.com/towolf/vim-helm
 [pearofducks/ansible-vim]: https://github.com/pearofducks/ansible-vim
 [hashivim/vim-terraform]: https://github.com/hashivim/vim-terraform
@@ -698,12 +696,13 @@ Note that,
 | <kbd>-</kbd> | 𝐍 | Choose a window to edit | <small>[t9md/vim-choosewin]</small>
 | <kbd>;</kbd>+<kbd>c</kbd> | 𝐍 | Open context-menu | <small>[plugin/actionmenu.vim]</small>
 | <kbd>gK</kbd> | 𝐍 | Open Zeal or Dash on some file-types | <small>[plugin/devhelp.vim]</small>
+| <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>o</kbd> | 𝐍 | Navigate to previous file on jumplist | <small>[plugin/jumpfile.vim]</small>
+| <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>i</kbd> | 𝐍 | Navigate to next file on jumplist | <small>[plugin/jumpfile.vim]</small>
 | <kbd>Space</kbd>+<kbd>l</kbd> | 𝐍 | Open side-menu helper | <small>[rafi/vim-sidemenu]</small>
 | <kbd>Space</kbd>+<kbd>b</kbd> | 𝐍 | Open structure window | <small>[liuchengxu/vista.vim]</small>
 | <kbd>Space</kbd>+<kbd>a</kbd> | 𝐍 | Show nearby tag in structure window | <small>[liuchengxu/vista.vim]</small>
 | <kbd>Space</kbd>+<kbd>se</kbd> | 𝐍 | Save current workspace session | <small>[plugin/sessions.vim]</small>
 | <kbd>Space</kbd>+<kbd>sl</kbd> | 𝐍 | Load workspace session | <small>[plugin/sessions.vim]</small>
-| <kbd>Space</kbd>+<kbd>o</kbd> | 𝐍 𝐕 | Open SCM detailed URL in browser | <small>[plugin/browser.vim]</small>
 | <kbd>Space</kbd>+<kbd>n</kbd>/<kbd>N</kbd> | 𝐍 | Open alternative file | <small>[kana/vim-altr]</small>
 | <kbd>Space</kbd>+<kbd>tc</kbd> | 𝐍 | Enable scroll-context window | <small>[wellle/context.vim]</small>
 | <kbd>Space</kbd>+<kbd>tp</kbd> | 𝐍 | Peek scroll-context window | <small>[wellle/context.vim]</small>
@@ -759,6 +758,7 @@ Note that,
 | <kbd>Space</kbd>+<kbd>gl</kbd> | 𝐍 | Git log --all | <small>[lambdalisue/gina.vim]</small>
 | <kbd>Space</kbd>+<kbd>gF</kbd> | 𝐍 | Git fetch | <small>[lambdalisue/gina.vim]</small>
 | <kbd>Space</kbd>+<kbd>gp</kbd> | 𝐍 | Git push | <small>[lambdalisue/gina.vim]</small>
+| <kbd>Space</kbd>+<kbd>go</kbd> | 𝐍 𝐕 | Open SCM detailed URL in browser | <small>[lambdalisue/gina.vim]</small>
 
 ### Plugin: Denite
 
@@ -853,8 +853,7 @@ Note that,
 | <kbd>Ctrl</kbd>+<kbd>y</kbd> | 𝐈 | Close pop-up
 | <kbd>Ctrl</kbd>+<kbd>e</kbd> | 𝐈 | Cancel selection and close pop-up
 | <kbd>Ctrl</kbd>+<kbd>l</kbd> | 𝐈 | Expand snippet at cursor
-| <kbd>Ctrl</kbd>+<kbd>f</kbd> | 𝐈 𝐒 | Jump to next snippet placeholder
-| <kbd>Ctrl</kbd>+<kbd>b</kbd> | 𝐈 𝐒 | Jump to previous snippet placeholder
+| <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 𝐒 | Navigate snippet placeholders
 
 ### Plugin: Signature
 
@@ -882,8 +881,8 @@ Big thanks to the dark knight [Shougo](https://github.com/Shougo).
 [config/mappings.vim]: ./config/mappings.vim
 [plugin/whitespace.vim]: ./plugin/whitespace.vim
 [plugin/sessions.vim]: ./plugin/sessions.vim
-[plugin/browser.vim]: ./plugin/browser.vim
 [plugin/devhelp.vim]: ./plugin/devhelp.vim
+[plugin/jumpfile.vim]: ./plugin/jumpfile.vim
 [plugin/actionmenu.vim]: ./plugin/actionmenu.vim
 [Marked 2]: https://marked2app.com
 [Neovim]: https://github.com/neovim/neovim
