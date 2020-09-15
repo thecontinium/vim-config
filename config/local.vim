@@ -32,7 +32,7 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 " }}}
 " Defx mappings {{{
 if dein#tap('defx.nvim')
-  autocmd user_events DirChanged * if bufwinnr('tab'.tabpagenr()) != -1
+  autocmd user_events DirChanged * if bufwinnr('explorer'.tabpagenr()) != -1
 	  \ |  let cw = winnr()
 	  \ |  Defx -toggle  -buffer-name=tab`tabpagenr()`
 	  \ |  execute('lcd ' . v:event['cwd'] )
