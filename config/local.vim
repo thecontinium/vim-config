@@ -34,9 +34,9 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 if dein#tap('defx.nvim')
   autocmd user_events DirChanged * if bufwinnr('explorer'.tabpagenr()) != -1
 	  \ |  let cw = winnr()
-	  \ |  Defx -toggle  -buffer-name=tab`tabpagenr()`
+	  \ |  Defx -toggle  -buffer-name=explorer`tabpagenr()`
 	  \ |  execute('lcd ' . v:event['cwd'] )
-	  \ |  Defx -toggle `getcwd()` -buffer-name=tab`tabpagenr()`
+	  \ |  Defx -toggle `getcwd()` -buffer-name=explorer`tabpagenr()`
 	  \ |  execute(cw .'wincmd w')
 endif
 " }}}
