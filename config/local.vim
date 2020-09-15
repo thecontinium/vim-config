@@ -32,12 +32,17 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 " }}}
 " Defx mappings {{{
 if dein#tap('defx.nvim')
+	nnoremap <silent> <LocalLeader>e
+		\ :<C-u>Defx `getcwd()` -toggle -buffer-name=explorer`tabpagenr()`<CR>
   autocmd user_events DirChanged * if bufwinnr('explorer'.tabpagenr()) != -1
 	  \ |  let cw = winnr()
 	  \ |  Defx -toggle  -buffer-name=explorer`tabpagenr()`
 	  \ |  execute('lcd ' . v:event['cwd'] )
 	  \ |  Defx -toggle `getcwd()` -buffer-name=explorer`tabpagenr()`
 	  \ |  execute(cw .'wincmd w')
+	  \ | elseif bufnr('explorer' . tabpagenr()) != -1
+	  \ |   execute(bufnr('explorer' . tabpagenr()) . 'bwipeout')
+	  \ | endif
 endif
 " }}}
 " Manage specific file type mappings {{{
