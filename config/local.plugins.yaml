@@ -129,6 +129,9 @@
   if: has('python3')
   merged: 0
 
+- repo: prabirshrestha/vim-lsp
+  if: 0
+
 - repo: dense-analysis/ale
   on_event: FileType
   hook_add: |
@@ -140,6 +143,7 @@
     let g:ale_sign_error = '✖'
     let g:ale_sign_warning = 'ⁱ'
     let g:ale_maximum_file_size = 500000
+    let g:lsp_diagnostics_enabled = 0
 
 # - repo: Vigemus/iron.nvim
 #   if: has('nvim')
