@@ -72,6 +72,9 @@
 #     let g:nv_search_paths = ['~/Dropbox//notesy']
 #     let g:nv_default_extension = '.mmd'
 
+# fennel
+- repo: 'bakpakin/fennel.vim'
+
 # clojure
 - repo: guns/vim-sexp
   on_event: InsertCharPre
@@ -85,33 +88,21 @@
 - repo: gberenfield/cljfold.vim
   on_ft: clojure
 
-- repo: clojure-vim/vim-jack-in
-  on_cmd: [ Clj, Lein ]
-- repo: tpope/vim-dispatch
-  on_source: vim-jack-in
-- repo: radenling/vim-dispatch-neovim
-  on_source: vim-dispatch
-
-# - repo: Olical/conjure
-#   rev: "*"
-#   build: bin/compile
-#   on_ft: clojure
-#   hook_add: |
-#     let g:dein#install_process_timeout = 600
-#   hook_source: |
-#     let g:conjure_map_prefix = ","
-#     let g:conjure_log_direction = "vertical"
-#     let g:conjure_log_blacklist = ["ret", "retg:conjure_log_auto_close-multiline", "load-file", "eval"]
-#     let g:conjure_log_auto_close = "v:false"
-
-# fennel
-- repo: 'bakpakin/fennel.vim'
+# - repo: clojure-vim/vim-jack-in
+#   on_cmd: [Clj, Lein]
+# - repo: tpope/vim-dispatch
+#   on_source: vim-jack-in
+# - repo: radenling/vim-dispatch-neovim
+#   on_source: vim-dispatch
 
 - repo: Olical/conjure
   rev: "*"
   on_ft: clojure
   hook_add: |
     let g:conjure#mapping#prefix = ","
+    let g:conjure#mapping#log_split = "lv"
+    let g:conjure#mapping#log_vsplit = "lg"
+    let g:conjure#mapping#log_close_visible= ["q"]
 
 # fennel.fnl syntax
 # - repo: 'bakpakin/fennel.vim'
