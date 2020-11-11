@@ -102,7 +102,7 @@
     let g:conjure#mapping#prefix = ","
     let g:conjure#mapping#log_split = "lv"
     let g:conjure#mapping#log_vsplit = "lg"
-    let g:conjure#mapping#log_close_visible= ["q"]
+#    let g:conjure#mapping#log_close_visible= ["q"]
 
 # fennel.fnl syntax
 # - repo: 'bakpakin/fennel.vim'
