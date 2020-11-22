@@ -179,6 +179,12 @@
 #   on_cmd: Defx
 #   hook_source: source $VIM_PATH/config/local.plugins/defx.vim
 
+- repo: reedes/vim-wordy
+  on_cmd: [ Wordy, NoWordy, NextWordy ]
+  hook_add: |-
+    let g:wordy_spell_dir = $DATA_PATH . '/wordy'
+    set runtimepath+=g:wordy_spell_dir
+
 # - { repo: liuchengxu/vim-which-key, if: 0}
 # - repo: thecontinium/vim-which-key
 #   on_cmd: WhichKey
