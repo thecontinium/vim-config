@@ -151,7 +151,7 @@
 #     \ }
 #     \
 #     \ EOF
-# 
+#
 # - { repo: tpope/vim-fireplace, on_ft: clojure }
 # - { repo: tpope/vim-projectionist, on_ft: clojure }
 # - { repo: tpope/vim-salve, on_ft: clojure }
@@ -205,7 +205,7 @@
 #   on_cmd: [ Shortcut!, Shortcut, ShortcutsRangeless,ShortcutsRangeless! ]
 #   hook_source: |
 #     let g:shortcut_expand_leader_keys = 0
-# 
+#
 # - repo: easymotion/vim-easymotion
 #   on_map: { n: <Plug> }
 #   hook_source: |
@@ -218,8 +218,13 @@
 # ==========================================
 # Completion
 # ----------
+
+- repo: prabirshrestha/asyncomplete.vim
+  hook_add: let g:asyncomplete_auto_completeopt = 0
+  hook_source: source $VIM_PATH/config/plugins/asyncomplete.vim
+
 - repo: thecontinium/asyncomplete-conjure.vim
-  depends: asyncomplete.vim
+  on_source: vim-lsp-settings
   hook_source: |
     autocmd User asyncomplete_setup call asyncomplete#register_source(
       \ asyncomplete#sources#conjure#get_source_options({
@@ -232,7 +237,7 @@
   if: 0
 
 - repo: thecontinium/asyncomplete-buffer.vim
-  depends: asyncomplete.vim
+  on_source: vim-lsp-settings
   hook_source: |
     autocmd User asyncomplete_setup call asyncomplete#register_source(
       \ asyncomplete#sources#buffer#get_source_options({
@@ -247,6 +252,20 @@
   hook_add: |
     let g:asyncomplete_buffer_clear_cache = 0
     let g:asyncomplete_buffer_identify_words_regex = '\k\+'
+
+- repo: htlsne/asyncomplete-look
+  on_source: vim-lsp-settings
+  hook_source: |
+   au User asyncomplete_setup call asyncomplete#register_source({
+      \ 'name': 'look',
+      \ 'allowlist': ['text', 'markdown'],
+      \ 'completor': function('asyncomplete#sources#look#completor'),
+      \ })
+   au User asyncomplete_setup call asyncomplete#register_source({
+      \ 'name': 'look_good_words',
+      \ 'allowlist': ['text', 'markdown'],
+      \ 'completor': function('asyncomplete#sources#look#good_words'),
+      \ })
 
 # Only NeoVim ------------------------------
 # ==========================================

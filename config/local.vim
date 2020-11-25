@@ -1,3 +1,7 @@
+" Async Autocomplete {{{
+let g:asc_look_good_words_file = &spellfile
+autocmd VimEnter * doautocmd <nomodeline> User asyncomplete_setup
+" }}}
 " Key Mappings {{{
 " make sure that iTerm sends the right key combination for <S-Return>
 " https://stackoverflow.com/questions/16359878/vim-how-to-map-shift-enter
