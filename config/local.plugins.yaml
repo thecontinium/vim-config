@@ -185,7 +185,7 @@
     let g:wordy_spell_dir = $DATA_PATH . '/wordy'
     set runtimepath+=g:wordy_spell_dir
 
-# - { repo: liuchengxu/vim-which-key, if: 0}
+- { repo: liuchengxu/vim-which-key, if: 0}
 # - repo: thecontinium/vim-which-key
 #   on_cmd: WhichKey
 #   hook_add: |
@@ -216,8 +216,25 @@
 #     let g:EasyMotion_use_smartsign_us = 1
 
 # ==========================================
-# Completion
+# Completion and code analysis
 # ----------
+
+- repo: mattn/vim-lsp-settings
+  if: 0
+
+- repo: thecontinium/vim-lsp-settings
+  on_event: [ BufReadPre, VimEnter ]
+  merged: 0
+  hook_post_source: |-
+    if ! g:lsp_auto_enable
+      call lsp#enable()
+    endif
+  hook_add: |-
+    let g:lsp_settings = {
+    \   'yaml-language-server': {
+    \     'allowlist': ['yaml', 'yaml.ansible'],
+    \   }
+    \ }
 
 - repo: prabirshrestha/asyncomplete.vim
   hook_add: let g:asyncomplete_auto_completeopt = 0
