@@ -218,12 +218,8 @@
 # Completion and code analysis
 # ----------
 
-- repo: prabirshrestha/asyncomplete.vim
-  hook_add: let g:asyncomplete_auto_completeopt = 0
-  hook_source: source $VIM_PATH/config/plugins/asyncomplete.vim
-
 - repo: thecontinium/asyncomplete-conjure.vim
-  on_source: vim-lsp-settings
+  on_source: asyncomplete.vim
   hook_source: |
     autocmd User asyncomplete_setup call asyncomplete#register_source(
       \ asyncomplete#sources#conjure#get_source_options({
@@ -236,7 +232,7 @@
   if: 0
 
 - repo: thecontinium/asyncomplete-buffer.vim
-  on_source: vim-lsp-settings
+  on_source: asyncomplete.vim
   hook_source: |
     autocmd User asyncomplete_setup call asyncomplete#register_source(
       \ asyncomplete#sources#buffer#get_source_options({
@@ -253,7 +249,7 @@
     let g:asyncomplete_buffer_identify_words_regex = '\k\+'
 
 - repo: htlsne/asyncomplete-look
-  on_source: vim-lsp-settings
+  on_source: asyncomplete.vim
   hook_source: |
    au User asyncomplete_setup call asyncomplete#register_source({
       \ 'name': 'look',
