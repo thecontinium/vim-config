@@ -98,12 +98,9 @@
 - repo: Olical/conjure
   rev: "*"
   on_ft: clojure
-  hook_add: |
-    let g:conjure#mapping#prefix = ","
-    let g:conjure#mapping#log_split = "lv"
-    let g:conjure#mapping#log_vsplit = "lg"
-#    let g:conjure#mapping#log_close_visible= ["q"]
+  hook_add:  source $VIM_PATH/config/local.plugins/conjure.vim
 
+#
 # fennel.fnl syntax
 # - repo: 'bakpakin/fennel.vim'
 
