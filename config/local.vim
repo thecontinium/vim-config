@@ -4,6 +4,17 @@ let g:lsp_settings_filetype_yaml = 'yaml-language-server'
 let g:lsp_settings_filetype_bash = 'bash-language-server'
 let g:lsp_settings_filetype_vim = 'vim-language-server'
 " }}}
+" Command & History {{{
+" -----------------
+
+" Switch history search pairs, matching my zsh shell
+cnoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
+cnoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+cunmap <C-p>
+cunmap <C-n>
+
+
+" }}}
 " Async Autocomplete {{{
 let g:asc_look_good_words_file = &spellfile
 " Key Mappings {{{
