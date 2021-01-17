@@ -99,14 +99,14 @@ function! badge#filename(...) abort
 	if l:filetype =~? g:badge_filetype_blacklist
 		" Empty if owned by certain plugins
 		let l:fn = ''
-	elseif l:filetype =~ '^denite'
-		let l:fn = '⌖  denite'
+	elseif l:filetype ==# 'denite.*\|quickpick-filter'
+		let l:fn = '⌖ '
 	elseif l:filetype ==# 'qf'
 		let l:fn = '⌗ list'
+	elseif l:filetype ==# 'TelescopePrompt'
+		let l:fn = '⌖ '
 	elseif l:filetype ==# 'defx'
-		let l:defx = get(getbufvar(l:bufnr, 'defx', {}), 'context', {})
-		let l:fn = '⌯ ' . get(l:defx, 'buffer_name', 'defx')
-		unlet! l:defx
+		let l:fn = ' '
 	elseif l:filetype ==# 'magit'
 		let l:fn = magit#git#top_dir()
 	elseif l:filetype ==# 'vimfiler'
@@ -167,8 +167,8 @@ function! badge#root() abort
 		let patterns = ['.git', '.git/', '_darcs/', '.hg/', '.bzr/', '.svn/']
 		for pattern in patterns
 			let is_dir = stridx(pattern, '/') != -1
-			let match = is_dir ? finddir(pattern, curr_dir.';')
-				\ : findfile(pattern, curr_dir.';')
+			let match = is_dir ? finddir(pattern, curr_dir . ';')
+				\ : findfile(pattern, curr_dir . ';')
 			if ! empty(match)
 				let dir = fnamemodify(match, is_dir ? ':p:h:h' : ':p:h')
 				call setbufvar('%', 'project_dir', dir)
@@ -207,8 +207,9 @@ function! badge#syntax() abort
 	let l:warnings = 0
 	let l:hints = 0
 	let l:information = 0
-	if exists('*lsp#activate') && get(g:, 'lsp_diagnostics_enabled', 1)
-		let l:counts = lsp#ui#vim#diagnostics#get_buffer_diagnostics_counts()
+	if exists('*lsp#get_buffer_diagnostics_counts')
+			\ && get(g:, 'lsp_diagnostics_enabled', 1)
+		let l:counts = lsp#get_buffer_diagnostics_counts()
 		let l:errors = get(l:counts, 'error', '')
 		let l:warnings = get(l:counts, 'warning', '')
 		let l:hints = get(l:counts, 'hint', '')
@@ -301,6 +302,23 @@ endfunction
 function! badge#indexing() abort
 	let l:out = ''
 
+	if exists('*lsp#get_progress')
+		let s:lsp_progress = lsp#get_progress()
+		if len(s:lsp_progress) > 0 && has_key(s:lsp_progress[0], 'message')
+			" Show only last progress message
+			let s:lsp_progress = s:lsp_progress[0]
+			let l:percent = get(s:lsp_progress, 'percentage')
+			if s:lsp_progress['message'] != '' && l:percent != 100
+				let l:out .= s:lsp_progress['server'] . ':'
+					\ . s:lsp_progress['title'] . ' '
+					\ . s:lsp_progress['message']
+					\ . l:percent
+				if l:percent >= 0
+					let l:out .= ' ' . string(l:percent) . '%'
+				endif
+			endif
+		endif
+	endif
 	if exists('*gutentags#statusline')
 		let l:tags = gutentags#statusline('[', ']')
 		if ! empty(l:tags)
