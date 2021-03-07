@@ -218,6 +218,11 @@
 # Completion and code analysis
 # ----------
 
+- repo: prabirshrestha/asyncomplete.vim
+  on_source: asyncomplete-lsp.vim
+  hook_add: let g:asyncomplete_auto_completeopt = 0
+  hook_source: source $VIM_PATH/config/local.plugins/asyncomplete.vim
+
 - repo: thecontinium/asyncomplete-conjure.vim
   on_source: asyncomplete.vim
   hook_source: |
@@ -225,6 +230,9 @@
       \ asyncomplete#sources#conjure#get_source_options({
       \ 'name': 'conjure',
       \ 'allowlist': ['clojure'],
+      \ 'time': 20,
+      \ 'triggers': {'*': ['/']},
+      \ 'priority': 1,
       \ 'completor': function('asyncomplete#sources#conjure#completor'),
       \ }))
 
