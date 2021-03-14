@@ -300,6 +300,14 @@
 # Operators
 # ---------
 
+- repo: inkarkat/vim-ingo-library
+  on_source: vim-UnconditionalPaste
+
+- repo: inkarkat/vim-UnconditionalPaste
+  on_map: { n: <Plug> }
+  hook_source: |
+    let g:UnconditionalPaste_no_mappings = 1
+
 # ==========================================
 # Text objects
 # ------------

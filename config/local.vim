@@ -17,6 +17,7 @@ cunmap <C-n>
 " }}}
 " Async Autocomplete {{{
 let g:asc_look_good_words_file = &spellfile
+" }}}
 " Key Mappings {{{
 " make sure that iTerm sends the right key combination for <S-Return>
 " https://stackoverflow.com/questions/16359878/vim-how-to-map-shift-enter
@@ -199,5 +200,11 @@ if dein#tap('vim-easymotion')
 	" map  sn <Plug>(easymotion-next)
 	" map  sp <Plug>(easymotion-prev)
 endif
+" }}}
+" - UnconditionalPast Settings {{{
+  nmap Pc <Plug>UnconditionalPasteCharBefore
+  nmap pc <Plug>UnconditionalPasteCharAfter
+  nmap Pn <Plug>UnconditionalPasteInlinedBefore
+  nmap pn <Plug>UnconditionalPasteInlinedAfter
 " }}}
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
