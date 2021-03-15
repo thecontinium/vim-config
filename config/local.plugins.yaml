@@ -304,7 +304,7 @@
   on_source: vim-UnconditionalPaste
 
 - repo: inkarkat/vim-UnconditionalPaste
-  on_map: { n: <Plug> }
+  on_event: [ BufReadPre, VimEnter ]
   hook_source: |
     let g:UnconditionalPaste_no_mappings = 1
 

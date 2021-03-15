@@ -201,10 +201,13 @@ if dein#tap('vim-easymotion')
 	" map  sp <Plug>(easymotion-prev)
 endif
 " }}}
-" - UnconditionalPast Settings {{{
+" - vim-UnconditionalPaste Settings {{{
+
+if dein#tap('vim-UnconditionalPaste')
   nmap Pc <Plug>UnconditionalPasteCharBefore
   nmap pc <Plug>UnconditionalPasteCharAfter
   nmap Pn <Plug>UnconditionalPasteInlinedBefore
   nmap pn <Plug>UnconditionalPasteInlinedAfter
+endif
 " }}}
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
