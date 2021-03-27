@@ -206,8 +206,8 @@ endif
 if dein#tap('vim-UnconditionalPaste')
   nmap Pc <Plug>UnconditionalPasteCharBefore
   nmap pc <Plug>UnconditionalPasteCharAfter
-  nmap Pn <Plug>UnconditionalPasteInlinedBefore
-  nmap pn <Plug>UnconditionalPasteInlinedAfter
+	nmap Pl <Plug>UnconditionalPasteLineBefore
+	nmap pl <Plug>UnconditionalPasteLineAfter
 endif
 " }}}
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
