@@ -91,6 +91,9 @@
 - repo: tpope/vim-repeat
   on-source: conjure
 
+- repo: clojure-vim/vim-clojure
+  on_ft: clojure
+
 - repo: clojure-vim/vim-jack-in
   on_cmd: [Clj, Lein]
 - repo: tpope/vim-dispatch
@@ -213,6 +216,12 @@
 #     let g:EasyMotion_keys = 'fjdksweoavn'
 #     let g:EasyMotion_smartcase = 1
 #     let g:EasyMotion_use_smartsign_us = 1
+
+# ==========================================
+# Interface
+# ---------
+- { repo: haya14busa/vim-asterisk, if: 0 }
+- { repo: thecontinium/vim-asterisk, on_map: { nv: <Plug> }}
 
 # ==========================================
 # Completion and code analysis
