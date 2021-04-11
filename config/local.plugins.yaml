@@ -2,9 +2,10 @@
 # PLUGINS
 # ==========================================
 
-# - repo: lambdalisue/gina.vim
-#   on_cmd: Gina
-#   hook_post_source: source $VIM_PATH/config/local.plugins/gina.vim
+- repo: lambdalisue/gina.vim
+  on_cmd: Gina
+  on_ft: [ gitcommit, gitrebase ]
+  hook_source: source $VIM_PATH/config/local.plugins/gina.vim
 
 # Startup
 # -------
