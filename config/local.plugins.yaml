@@ -38,6 +38,10 @@
 #     endif
 #
 # - { repo: itspriddle/vim-marked, on_ft: markdown }
+- repo: thecontinium/marked-streaming-nvim
+  on_ft: markdown
+  build: ./install.sh
+
 - repo: vimwiki/vimwiki
   on_map: { n: <Plug> }
   on_cmd: [ VimwikiIndex, VimwikiUISelect ]
