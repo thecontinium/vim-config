@@ -40,7 +40,8 @@
 # - { repo: itspriddle/vim-marked, on_ft: markdown }
 - repo: thecontinium/marked-streaming-nvim
   on_ft: markdown
-  build: ./install.sh
+  hook_post_update : |-
+    call system(join([fnamemodify(g:python3_host_prog,":p:h"),"pip install -U pyobjc"],"/"))
   hook_source: |
     let g:marked_streaming_events = 'InsertLeave,CursorHold'
     let g:marked_streaming_open_mapping = '<Leader>O'
