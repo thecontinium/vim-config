@@ -145,60 +145,61 @@ if dein#tap('neosnippet.vim')
 endif
 
 if dein#tap('vim-sexp')
-	let g:sexp_mappings = {
-		\ 'sexp_round_head_wrap_list':      ',i',
-		\ 'sexp_round_tail_wrap_list':      ',I',
-		\ 'sexp_square_head_wrap_list':     '',
-		\ 'sexp_square_tail_wrap_list':     '',
-		\ 'sexp_curly_head_wrap_list':      '',
-		\ 'sexp_curly_tail_wrap_list':      '',
-		\ 'sexp_round_head_wrap_element':   ',w',
-		\ 'sexp_round_tail_wrap_element':   ',W',
-		\ 'sexp_square_head_wrap_element':  '',
-		\ 'sexp_square_tail_wrap_element':  '',
-		\ 'sexp_curly_head_wrap_element':   '',
-		\ 'sexp_curly_tail_wrap_element':   '',
-		\ 'sexp_insert_at_list_head':       ',h',
-		\ 'sexp_insert_at_list_tail':       ',l',
-		\ 'sexp_splice_list':               ',@',
-		\ 'sexp_convolute':                 ',?',
-		\ 'sexp_raise_list':                ',o',
-		\ 'sexp_raise_element':             ',O',
-		\ }
+  let g:sexp_mappings = {
+	  \ 'sexp_round_head_wrap_list':      ',i',
+	  \ 'sexp_round_tail_wrap_list':      ',I',
+	  \ 'sexp_square_head_wrap_list':     '',
+	  \ 'sexp_square_tail_wrap_list':     '',
+	  \ 'sexp_curly_head_wrap_list':      '',
+	  \ 'sexp_curly_tail_wrap_list':      '',
+	  \ 'sexp_round_head_wrap_element':   ',w',
+	  \ 'sexp_round_tail_wrap_element':   ',W',
+	  \ 'sexp_square_head_wrap_element':  '',
+	  \ 'sexp_square_tail_wrap_element':  '',
+	  \ 'sexp_curly_head_wrap_element':   '',
+	  \ 'sexp_curly_tail_wrap_element':   '',
+	  \ 'sexp_insert_at_list_head':       ',h',
+	  \ 'sexp_insert_at_list_tail':       ',l',
+	  \ 'sexp_splice_list':               ',@',
+	  \ 'sexp_convolute':                 ',?',
+	  \ 'sexp_raise_list':                ',o',
+	  \ 'sexp_raise_element':             ',O',
+	  \ }
 end
 
 if dein#tap('ale')
-	nmap <silent> [c <Plug>(ale_previous)
-	nmap <silent> ]c <Plug>(ale_next)
+  nmap <silent> [c <Plug>(ale_previous)
+  nmap <silent> ]c <Plug>(ale_next)
 endif
 
 " }}}
 " Gina Settings {{{
 
 if dein#tap('gina.vim')
-	" nnoremap <silent> <leader>ga :Gina add %:p<CR>
-	" nnoremap <silent> <leader>gd :Gina compare -R<CR>
-	" nnoremap <silent> <leader>gc :Gina commit<CR>
-	" nnoremap <silent> <leader>gb :Gina blame<CR>
-	" nnoremap <silent> <leader>gF :Gina fetch<CR>
-	" nnoremap <silent> <leader>gS :Gina status<CR>
-	" nnoremap <silent> <leader>gp :Gina push<CR>
+  nnoremap <silent> <leader>gL :Gina log :<CR>
+  " nnoremap <silent> <leader>ga :Gina add %:p<CR>
+  " nnoremap <silent> <leader>gd :Gina compare -R<CR>
+  " nnoremap <silent> <leader>gc :Gina commit<CR>
+  " nnoremap <silent> <leader>gb :Gina blame<CR>
+  " nnoremap <silent> <leader>gF :Gina fetch<CR>
+  " nnoremap <silent> <leader>gS :Gina status<CR>
+  " nnoremap <silent> <leader>gp :Gina push<CR>
 endif
 " }}}
 " Easymotion Settings {{{
 
 if dein#tap('vim-easymotion')
-	" nmap ss <Plug>(easymotion-s2)
-	" nmap sd <Plug>(easymotion-s)
-	" nmap sf <Plug>(easymotion-overwin-f)
-	" map  sh <Plug>(easymotion-linebackward)
-	" map  sl <Plug>(easymotion-lineforward)
-	" " map  sj <Plug>(easymotion-j)
-	" " map  sk <Plug>(easymotion-k)
-	" map  s/ <Plug>(easymotion-sn)
-	" omap s/ <Plug>(easymotion-tn)
-	" map  sn <Plug>(easymotion-next)
-	" map  sp <Plug>(easymotion-prev)
+  " nmap ss <Plug>(easymotion-s2)
+  " nmap sd <Plug>(easymotion-s)
+  " nmap sf <Plug>(easymotion-overwin-f)
+  " map  sh <Plug>(easymotion-linebackward)
+  " map  sl <Plug>(easymotion-lineforward)
+  " " map  sj <Plug>(easymotion-j)
+  " " map  sk <Plug>(easymotion-k)
+  " map  s/ <Plug>(easymotion-sn)
+  " omap s/ <Plug>(easymotion-tn)
+  " map  sn <Plug>(easymotion-next)
+  " map  sp <Plug>(easymotion-prev)
 endif
 " }}}
 " - vim-UnconditionalPaste Settings {{{

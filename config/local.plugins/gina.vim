@@ -89,31 +89,37 @@ call gina#custom#mapping#nmap(
 " }}}
 
 " call gina#custom#mapping#nmap(
-" "      \ '/\%(blame\|log\|reflog\)',
-" "      \ 'p',
-" "      \ ':<C-u>call gina#action#call(''preview'')<CR>',
-" "      \ {'noremap': 1, 'silent': 1}
-" "      \)
-"
+"     \ '/\%(blame\|log\|reflog\)',
+"     \ 'p',
+"     \ ':<C-u>call gina#action#call(''preview'')<CR>',
+"     \ {'noremap': 1, 'silent': 1}
+"     \)
+
 " call gina#custom#action#alias(
-"      \ '/\%(blame\|log\|reflog\)',
-"      \ 'changes',
-"      \ 'topleft changes:of:preview',
-"      \)
+"     \ '/\%(blame\|log\|reflog\)',
+"     \ 'changes',
+"     \ 'topleft changes:of:preview',
+"     \)
 " call gina#custom#mapping#nmap(
-"      \ '/\%(blame\|log\|reflog\)',
-"      \ 'c',
-"      \ ':<C-u>call gina#action#call(''changes'')<CR>',
-"      \ {'noremap': 1, 'silent': 1}
-"      \)
-"
+"     \ '/\%(blame\|log\|reflog\)',
+"     \ 'c',
+"     \ ':<C-u>call gina#action#call(''changes'')<CR>',
+"     \ {'noremap': 1, 'silent': 1}
+"     \)
+call gina#custom#mapping#nmap(
+     \ '/\%(blame\|log\|reflog\)',
+     \ 'c',
+     \ ':<C-u>call gina#action#call(''compare'')<CR>',
+     \ {'noremap': 1, 'silent': 1}
+     \)
+
 " call gina#custom#execute(
-"      \ '/\%(ls\|log\|reflog\|grep\)',
-"      \ 'setlocal noautoread',
-"      \)
+"     \ '/\%(ls\|log\|reflog\|grep\)',
+"     \ 'setlocal noautoread',
+"     \)
 " call gina#custom#execute(
-"      \ '/\%(status\|branch\|ls\|log\|reflog\|grep\)',
-"      \ 'setlocal cursorline',
-"      \)
-"
+"     \ '/\%(status\|branch\|ls\|log\|reflog\|grep\)',
+"     \ 'setlocal cursorline',
+"     \)
+
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
