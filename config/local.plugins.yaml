@@ -1,4 +1,4 @@
----
+
 # PLUGINS
 # ==========================================
 
@@ -82,12 +82,20 @@
 #     let g:nv_default_extension = '.mmd'
 
 # fennel
-- repo: 'bakpakin/fennel.vim'
+- repo: bakpakin/fennel.vim
 
-# clojure
+# - repo: eraserhd/parinfer-rust
+#   on_ft: clojure
+#   build: cargo build --release
+#   hook_add: |
+#     let g:parinfer_mode='smart'
+#     let g:parinfer_force_balance=1
+
 - repo: guns/vim-sexp
   on_event: InsertCharPre
   on_ft: clojure
+  hook_add: |
+    let g:sexp_enable_insert_mode_mappings = 0
 
 - repo: tpope/vim-sexp-mappings-for-regular-people
   on_event: InsertCharPre
@@ -99,6 +107,9 @@
 
 - repo: tpope/vim-repeat
   on-source: conjure
+
+- repo: guns/vim-clojure-highlight
+  on_ft: clojure
 
 - repo: clojure-vim/clojure.vim
   on_ft: clojure
@@ -135,12 +146,12 @@
 # fennel.fnl syntax
 # - repo: 'bakpakin/fennel.vim'
 
-- repo: Raimondi/delimitMate
-  on_event: InsertEnter
-  hook_source: |
-    let g:delimitMate_expand_cr = 1
-    let g:delimitMate_excluded_ft = 'html,clojure'
-    let g:neomake_virtualtext_current_error = 0
+# - repo: Raimondi/delimitMate
+#   on_event: InsertEnter
+#   hook_source: |
+#     let g:delimitMate_expand_cr = 1
+#     let g:delimitMate_excluded_ft = 'html,clojure'
+#     let g:neomake_virtualtext_current_error = 0
 
 - repo: thecontinium/snippets
   depends: ultisnips
@@ -148,18 +159,18 @@
   if: has('python3')
   merged: 0
 
-- repo: dense-analysis/ale
-  on_event: FileType
-  hook_add: |
-    let g:ale_disable_lsp = 0
-    let g:ale_echo_delay = 100
-    let g:ale_lint_delay = 1000
-    let g:ale_echo_msg_format = '%linter%: %code: %%s [%severity%]'
-    let g:ale_history_enabled = 0
-    let g:ale_sign_error = '✖'
-    let g:ale_sign_warning = 'ⁱ'
-    let g:ale_maximum_file_size = 500000
-    let g:lsp_diagnostics_enabled = 0
+# - repo: dense-analysis/ale
+#   on_event: FileType
+#   hook_add: |
+#     let g:ale_disable_lsp = 0
+#     let g:ale_echo_delay = 100
+#     let g:ale_lint_delay = 1000
+#     let g:ale_echo_msg_format = '%linter%: %code: %%s [%severity%]'
+#     let g:ale_history_enabled = 0
+#     let g:ale_sign_error = '✖'
+#     let g:ale_sign_warning = 'ⁱ'
+#     let g:ale_maximum_file_size = 500000
+#     let g:lsp_diagnostics_enabled = 0
 
 # - repo: Vigemus/iron.nvim
 #   if: has('nvim')
@@ -252,57 +263,130 @@
 # Completion and code analysis
 # ----------
 
-- repo: prabirshrestha/asyncomplete.vim
-  on_source: asyncomplete-lsp.vim
-  hook_add: let g:asyncomplete_auto_completeopt = 0
-  hook_source: source $VIM_PATH/config/local.plugins/asyncomplete.vim
+# compe
+- { repo: thecontinium/nvim-lspinstall }
+- { repo: ray-x/lsp_signature.nvim, lazy: true }
 
-- repo: thecontinium/asyncomplete-conjure.vim
-  on_source: asyncomplete.vim
-  hook_source: |
-    autocmd User asyncomplete_setup call asyncomplete#register_source(
-      \ asyncomplete#sources#conjure#get_source_options({
-      \ 'name': 'conjure',
-      \ 'allowlist': ['clojure'],
-      \ 'time': 20,
-      \ 'triggers': {'*': ['/']},
-      \ 'priority': 1,
-      \ 'completor': function('asyncomplete#sources#conjure#completor'),
-      \ }))
+- repo: neovim/nvim-lspconfig
+  depends: [ nvim-lspinstall, lsp_signature.nvim ]
+  on_event: VimEnter
+  hook_post_source: luafile $VIM_PATH/config/local.plugins/lspconfig.lua
+
+- repo: hrsh7th/nvim-compe
+  if: has('nvim-0.5')
+  on_event: InsertEnter
+  # depends: compe-tmux
+  hook_post_source: luafile $VIM_PATH/config/local.plugins/compe.lua
+  hook_source: |-
+    augroup user_plugin_compe
+      autocmd!
+      autocmd FileType denite-filter,clap_input
+        \ call compe#setup({'enabled': v:false}, 0)
+    augroup END
+
+- repo: tami5/compe-conjure
+  depends: nvim-compe
+  on_ft: clojure
+
+#- { repo: andersevenrud/compe-tmux, lazy: true }
+
+- repo: hrsh7th/vim-vsnip
+  depends: [ vim-vsnip-integ, friendly-snippets ]
+  on_event: InsertEnter
+  hook_post_source: |-
+    let g:vsnip_filetypes = {}
+    let g:vsnip_filetypes.javascriptreact = ['javascript']
+    let g:vsnip_filetypes.typescriptreact = ['typescript']
+
+- { repo: hrsh7th/vim-vsnip-integ, lazy: true }
+- { repo: rafamadriz/friendly-snippets, lazy: true, merged: 0 }
+
+# asyncomplete off
+- repo: prabirshrestha/vim-lsp
+  if: 0
+
+- repo: mattn/vim-lsp-settings
+  if: 0
+
+- repo: prabirshrestha/async.vim  # only autoload functions, lazy by nature
+  if: 0
 
 - repo: prabirshrestha/asyncomplete-buffer.vim
   if: 0
 
-- repo: thecontinium/asyncomplete-buffer.vim
-  on_source: asyncomplete.vim
-  hook_source: |
-    autocmd User asyncomplete_setup call asyncomplete#register_source(
-      \ asyncomplete#sources#buffer#get_source_options({
-      \ 'name': 'buffer',
-      \ 'allowlist': ['*'],
-      \ 'blocklist': ['go', 'denite', 'denite-filter', 'clap_input'],
-      \ 'completor': function('asyncomplete#sources#buffer#completor'),
-      \ 'config': {
-      \    'max_buffer_size': 5000000,
-      \  },
-      \ }))
-  hook_add: |
-    let g:asyncomplete_buffer_clear_cache = 0
-    let g:asyncomplete_buffer_identify_words_regex = '\k\+'
+- repo: prabirshrestha/asyncomplete.vim
+  if: 0
 
-- repo: htlsne/asyncomplete-look
-  on_source: asyncomplete.vim
-  hook_source: |
-   au User asyncomplete_setup call asyncomplete#register_source({
-      \ 'name': 'look',
-      \ 'allowlist': ['text', 'markdown'],
-      \ 'completor': function('asyncomplete#sources#look#completor'),
-      \ })
-   au User asyncomplete_setup call asyncomplete#register_source({
-      \ 'name': 'look_good_words',
-      \ 'allowlist': ['text', 'markdown'],
-      \ 'completor': function('asyncomplete#sources#look#good_words'),
-      \ })
+- repo: prabirshrestha/asyncomplete-lsp.vim
+  if: 0
+
+- repo: prabirshrestha/asyncomplete-necovim.vim
+  if: 0
+
+- repo: prabirshrestha/asyncomplete-tags.vim
+  if: 0
+
+- repo: prabirshrestha/asyncomplete-file.vim
+  if: 0
+
+- repo: wellle/tmux-complete.vim
+  if: 0
+
+- repo: prabirshrestha/asyncomplete-ultisnips.vim
+  if: 0
+
+# - repo: prabirshrestha/asyncomplete.vim
+#   on_source: asyncomplete-lsp.vim
+#   hook_add: let g:asyncomplete_auto_completeopt = 0
+#   hook_source: source $VIM_PATH/config/local.plugins/asyncomplete.vim
+#
+
+# - repo: thecontinium/asyncomplete-conjure.vim
+#   on_source: asyncomplete.vim
+#   hook_source: |
+#     autocmd User asyncomplete_setup call asyncomplete#register_source(
+#       \ asyncomplete#sources#conjure#get_source_options({
+#       \ 'name': 'conjure',
+#       \ 'allowlist': ['clojure'],
+#       \ 'time': 20,
+#       \ 'triggers': {'*': ['/']},
+#       \ 'priority': 1,
+#       \ 'completor': function('asyncomplete#sources#conjure#completor'),
+#       \ }))
+#
+- repo: prabirshrestha/asyncomplete-buffer.vim
+  if: 0
+
+# - repo: thecontinium/asyncomplete-buffer.vim
+#   on_source: asyncomplete.vim
+#   hook_source: |
+#     autocmd User asyncomplete_setup call asyncomplete#register_source(
+#       \ asyncomplete#sources#buffer#get_source_options({
+#       \ 'name': 'buffer',
+#       \ 'allowlist': ['*'],
+#       \ 'blocklist': ['go', 'denite', 'denite-filter', 'clap_input'],
+#       \ 'completor': function('asyncomplete#sources#buffer#completor'),
+#       \ 'config': {
+#       \    'max_buffer_size': 5000000,
+#       \  },
+#       \ }))
+#   hook_add: |
+#     let g:asyncomplete_buffer_clear_cache = 0
+#     let g:asyncomplete_buffer_identify_words_regex = '\k\+'
+#
+# - repo: htlsne/asyncomplete-look
+#   on_source: asyncomplete.vim
+#   hook_source: |
+#    au User asyncomplete_setup call asyncomplete#register_source({
+#       \ 'name': 'look',
+#       \ 'allowlist': ['text', 'markdown'],
+#       \ 'completor': function('asyncomplete#sources#look#completor'),
+#       \ })
+#    au User asyncomplete_setup call asyncomplete#register_source({
+#       \ 'name': 'look_good_words',
+#       \ 'allowlist': ['text', 'markdown'],
+#       \ 'completor': function('asyncomplete#sources#look#good_words'),
+#       \ })
 
 # Only NeoVim ------------------------------
 # ==========================================

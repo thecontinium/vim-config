@@ -1,8 +1,10 @@
 " Lsp Settings {{{
-let g:lsp_settings_filetype_clojure = 'clj-kondo-lsp'
-let g:lsp_settings_filetype_yaml = 'yaml-language-server'
-let g:lsp_settings_filetype_bash = 'bash-language-server'
-let g:lsp_settings_filetype_vim = 'vim-language-server'
+if dein#tap('vim-lsp-settings')
+	let g:lsp_settings_filetype_clojure = 'clj-kondo-lsp'
+	let g:lsp_settings_filetype_yaml = 'yaml-language-server'
+	let g:lsp_settings_filetype_bash = 'bash-language-server'
+	let g:lsp_settings_filetype_vim = 'vim-language-server'
+endif
 " }}}
 " Command & History {{{
 " -----------------
