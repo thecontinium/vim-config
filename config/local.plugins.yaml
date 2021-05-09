@@ -264,7 +264,7 @@
 # ----------
 
 # compe
-- { repo: thecontinium/nvim-lspinstall }
+- { repo: kabouzeid/nvim-lspinstall }
 - { repo: ray-x/lsp_signature.nvim, lazy: true }
 
 - repo: neovim/nvim-lspconfig

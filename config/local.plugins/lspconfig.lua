@@ -55,11 +55,57 @@ local on_attach = function(client, bufnr)
   })
 end
 
+-- Configure lua language server for neovim development
+local lua_settings = {
+  Lua = {
+    runtime = {
+      -- LuaJIT in the case of Neovim
+      version = 'LuaJIT',
+      path = vim.split(package.path, ';'),
+    },
+    diagnostics = {
+      -- Get the language server to recognize the `vim` global
+      globals = {'vim'},
+    },
+    workspace = {
+      -- Make the server aware of Neovim runtime files
+      library = {
+        [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+        [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+      },
+    },
+  }
+}
+
+-- config that activates keymaps and enables snippet support
+local function make_config()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  capabilities.textDocument.completion.completionItem.snippetSupport = true
+  return {
+    -- enable snippet support
+    capabilities = capabilities,
+    -- map buffer local keybindings when the language server attaches
+    on_attach = on_attach,
+  }
+end
+
 local function setup_servers()
   require'lspinstall'.setup()
+
+  -- get all installed servers
   local servers = require'lspinstall'.installed_servers()
+  -- ... and add manually installed servers
+  table.insert(servers, "clojure_lsp")
+
   for _, server in pairs(servers) do
-    require'lspconfig'[server].setup { on_attach = on_attach }
+    local config = make_config()
+
+    -- language specific config
+    if server == "lua" then
+      config.settings = lua_settings
+    end
+
+    require'lspconfig'[server].setup(config)
   end
 end
 
