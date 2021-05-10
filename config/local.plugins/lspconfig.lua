@@ -4,6 +4,8 @@
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+  local command = vim.api.nvim_command
+
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
@@ -45,6 +47,16 @@ local on_attach = function(client, bufnr)
       augroup END
     ]], false)
   end
+
+  -- Set diagnostic to only show the sign and popup diagnostic
+  -- command('autocmd CursorHold <buffer> lua vim.lsp.diagnostic.show_line_diagnostics()')
+   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+     vim.lsp.diagnostic.on_publish_diagnostics, {
+       -- Enable signs
+       signs = true,
+       virtual_text = false,
+     }
+   )
 
   -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
   require "lsp_signature".on_attach({
