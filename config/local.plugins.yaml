@@ -224,6 +224,13 @@
     let g:wordy_spell_dir = $DATA_PATH . '/wordy'
     set runtimepath+=g:wordy_spell_dir
 
+- repo: thecontinium/vim-which-key
+  if: 0
+
+- repo: folke/which-key.nvim
+  on_event: VimEnter
+  hook_post_source: luafile $VIM_PATH/config/local.plugins/which-key.lua
+
 # - repo: thecontinium/vim-which-key
 #   on_cmd: WhichKey
 #   hook_add: |
