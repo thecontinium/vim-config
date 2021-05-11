@@ -277,6 +277,10 @@
     sign define LspDiagnosticsSignInformation text=▫ texthl=LspDiagnosticsSignInformation linehl= numhl=
     sign define LspDiagnosticsSignHint text=▪ texthl=LspDiagnosticsSignHint linehl= numhl=
 
+- repo: goolord/nvim-clap-lsp
+  depends: vim-clap
+  on_event: VimEnter
+
 - repo: hrsh7th/nvim-compe
   if: has('nvim-0.5')
   on_event: InsertEnter
@@ -418,6 +422,7 @@
 #           \'\|\%(^\%(term\)://\)'
 
 - { repo: thecontinium/vim-denite-sorter-lastmod }
+
 
 # ==========================================
 # Operators

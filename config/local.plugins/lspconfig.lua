@@ -58,6 +58,12 @@ local on_attach = function(client, bufnr)
      }
    )
 
+   vim.lsp.handlers['textDocument/codeAction']     = require'clap-lsp.codeAction'.code_action_handler
+   vim.lsp.handlers['textDocument/definition']     = require'clap-lsp.locations'.definition_handler
+   vim.lsp.handlers['textDocument/documentSymbol'] = require'clap-lsp.symbols'.document_handler
+   vim.lsp.handlers['textDocument/references']     = require'clap-lsp.locations'.references_handler
+   vim.lsp.handlers['workspace/symbol']            = require'clap-lsp.symbols'.workspace_handler
+
   -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
   require "lsp_signature".on_attach({
     bind = true,
