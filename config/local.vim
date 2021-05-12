@@ -64,8 +64,8 @@ if dein#tap('defx.nvim')
 	  \ |  execute('lcd ' . v:event['cwd'] )
 	  \ |  Defx -toggle `getcwd()` -buffer-name=explorer`tabpagenr()`
 	  \ |  execute(cw .'wincmd w')
-	  \ | elseif bufnr('explorer' . tabpagenr()) != -1
-	  \ |   execute(bufnr('explorer' . tabpagenr()) . 'bwipeout')
+	  \ | elseif bufnr('[defx] explorer'.tabpagenr().'-0') != -1
+	  \ |   execute(bufnr('[defx] explorer'.tabpagenr().'-0'). 'bwipeout')
 	  \ | endif
 endif
 " }}}
