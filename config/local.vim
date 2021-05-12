@@ -58,7 +58,7 @@ if dein#tap('defx.nvim')
 		\ :<C-u>Defx `getcwd()` -toggle -buffer-name=explorer`tabpagenr()`<CR>
 	nnoremap <silent> <LocalLeader>a
 		\ :<C-u>Defx `getcwd()` -search=`expand('%:p')` -buffer-name=explorer`tabpagenr()`<CR>
-  autocmd user_events DirChanged * if bufwinnr('explorer'.tabpagenr()) != -1
+  autocmd user_events DirChanged * if bufwinnr('[defx] explorer'.tabpagenr().'-0') != -1
 	  \ |  let cw = winnr()
 	  \ |  Defx -toggle  -buffer-name=explorer`tabpagenr()`
 	  \ |  execute('lcd ' . v:event['cwd'] )
