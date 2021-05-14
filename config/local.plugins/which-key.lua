@@ -27,3 +27,4 @@ wk.setup {
 }
 
 wk.register({["p"]="which_key_ignore"})
+wk.register({["P"]="which_key_ignore"})
