@@ -52,6 +52,39 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
 " }}}
+" Defx mappings {{{
+if dein#tap('defx.nvim')
+  function! s:tab_buffer_name()
+    return 'explorer'.tabpagenr()
+  endfunction
+  function! s:defx_buffer_name()
+    return '[defx] ' . s:tab_buffer_name() . '-0'
+  endfunction
+  function! s:defx_buffer_open()
+    return bufwinnr(s:defx_buffer_name()) != -1
+  endfunction
+  function! s:defx_buffer_exists()
+    return bufnr(s:defx_buffer_name()) != -1
+  endfunction
+  function! s:follow_cd()
+    if s:defx_buffer_open()
+	    let cw = winnr()
+	    execute("Defx -toggle  -buffer-name=" . s:tab_buffer_name())
+	    let g:whatwhat=deepcopy(v:event)
+	    execute('lcd ' . v:event['cwd'] )
+	    execute("Defx -toggle " . getcwd() . " -buffer-name=" . s:tab_buffer_name())
+	    execute(cw .'wincmd w')
+    " elseif s:defx_buffer_exists()
+		  "   execute(bufnr(s:defx_buffer_name() .'bwipeout'))
+    endif
+  endfunction
+  nnoremap <silent> <LocalLeader>e
+	  \ :<C-u>Defx `getcwd()` -toggle -buffer-name=`<SID>tab_buffer_name()`<CR>
+  nnoremap <silent> <LocalLeader>a
+	  \ :<C-u>Defx `getcwd()` -search=`escape(expand('%:p'), ' :')` -buffer-name=`<SID>tab_buffer_name()`<CR>
+  autocmd user_events DirChanged * call s:follow_cd()
+endif
+" }}}
 " Manage specific file type mappings {{{
 augroup user_plugin_filetype " {{{ all
 " set to default so that we get the warnings and options
