@@ -52,23 +52,6 @@ let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
 " }}}
-" Defx mappings {{{
-if dein#tap('defx.nvim')
-  nnoremap <silent> <LocalLeader>e
-	  \ :<C-u>Defx `getcwd()` -toggle -buffer-name=explorer`tabpagenr()`<CR>
-  nnoremap <silent> <LocalLeader>a
-	  \ :<C-u>Defx `getcwd()` -search=`expand('%:p')` -buffer-name=explorer`tabpagenr()`<CR>
-  autocmd user_events DirChanged * if bufwinnr('[defx] explorer'.tabpagenr().'-0') != -1
-	  \ |  let cw = winnr()
-	  \ |  Defx -toggle  -buffer-name=explorer`tabpagenr()`
-	  \ |  execute('lcd ' . v:event['cwd'] )
-	  \ |  Defx -toggle `getcwd()` -buffer-name=explorer`tabpagenr()`
-	  \ |  execute(cw .'wincmd w')
-	  \ | elseif bufnr('[defx] explorer'.tabpagenr().'-0') != -1
-	  \ |   execute(bufnr('[defx] explorer'.tabpagenr().'-0'). 'bwipeout')
-	  \ | endif
-endif
-" }}}
 " Manage specific file type mappings {{{
 augroup user_plugin_filetype " {{{ all
 " set to default so that we get the warnings and options
@@ -105,40 +88,6 @@ autocmd FileType yaml
   \ let b:sleuth_automatic = 0
 
 augroup END " }}}
-" }}}
-" Defx Settings {{{
-autocmd MyAutoCmd FileType defx call <SID>defx_my_settings()
-
-function! s:defx_my_settings() abort
-  " nnoremap <silent><buffer><expr><nowait> ^  defx#do_action('cd', defx#get_candidate().action__path)
-  " nnoremap <silent><buffer><expr>					=  defx#do_action('call', '<SID>defx_cd')
-  nnoremap <silent><buffer><expr>					o  <SID>defx_my_toggle_tree()
-  nnoremap <silent><buffer><expr>					U  defx#do_action('call', '<SID>defx_open_scm')
-endfunction
-
-function! s:defx_open_scm(context) abort
-  let l:target = a:context['targets'][0]
-  let l:selected = fnamemodify(l:target, ':~:.')
-  silent execute 'OpenSCM '.l:selected
-endfunction
-
-" Set the vim directory to the selected
-function! s:defx_cd(context) abort
-  let l:target = a:context['targets'][0]
-  let l:selected = fnamemodify(l:target, ':p:h')
-  silent execute 'close'
-  silent execute 'cd '.l:selected
-  echo 'cd set to '.l:selected
-endfunction
-
-function! s:defx_my_toggle_tree() abort
-  " Open current file, or toggle directory expand/collapse
-  if defx#is_directory()
-    return defx#do_action('open_or_close_tree')
-  endif
-  return defx#do_action('drop')
-endfunction
-"}}}
 " Clojure Settings {{{
 
 if dein#tap('neosnippet.vim')
