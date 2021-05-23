@@ -15,6 +15,8 @@ function! s:dein_update(context) abort
   endif
 endfunction
 call denite#custom#action('directory', 'dein_update', function('s:dein_update'))
+call denite#custom#action('directory',
+  \ 'cd', {context -> execute(printf('tcd %s', context['targets'][0]['action__path']))} )
 
 augroup my_user_plugin_denite
   autocmd!

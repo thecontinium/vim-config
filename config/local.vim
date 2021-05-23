@@ -17,12 +17,13 @@ cunmap <C-n>
 
 
 " }}}
-" Async Autocomplete {{{
-let g:asc_look_good_words_file = &spellfile
-" }}}
-" Key Mappings {{{
-" make sure that iTerm sends the right key combination for <S-Return>
-" https://stackoverflow.com/questions/16359878/vim-how-to-map-shift-enter
+" Fern {{{
+if dein#tap('fern.vim')
+	augroup fern_global
+		autocmd! *
+		autocmd fern_global DirChanged * ++nested execute printf('FernDo Fern\ %s\ -drawer\ -stay -drawer -stay',deepcopy(v:event).cwd)
+	augroup END
+endif
 " }}}
 " Session Management {{{
 " What to save in sessions:
@@ -68,10 +69,12 @@ autocmd FileType markdown
   \ | setlocal updatetime=200
   \ | au CursorHold <buffer> silent! update
 
-autocmd FileType vimwiki,markdown
-  \ let b:sleuth_automatic = 0
-  \ | setlocal concealcursor=nc
-  \ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
+if dein#tap('denite.vim')
+	autocmd FileType vimwiki,markdown
+		\ let b:sleuth_automatic = 0
+		\ | setlocal concealcursor=nc
+		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
+endif
 
 " only run vimwikireturn if the popup menu is not showing, otherwise close it
 autocmd filetype vimwiki
