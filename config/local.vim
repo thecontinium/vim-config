@@ -1,11 +1,3 @@
-" Lsp Settings {{{
-if dein#tap('vim-lsp-settings')
-	let g:lsp_settings_filetype_clojure = 'clj-kondo-lsp'
-	let g:lsp_settings_filetype_yaml = 'yaml-language-server'
-	let g:lsp_settings_filetype_bash = 'bash-language-server'
-	let g:lsp_settings_filetype_vim = 'vim-language-server'
-endif
-" }}}
 " Command & History {{{
 " -----------------
 
@@ -14,8 +6,6 @@ cnoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
 cnoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 cunmap <C-p>
 cunmap <C-n>
-
-
 " }}}
 " Fern {{{
 if dein#tap('fern.vim')
@@ -23,6 +13,11 @@ if dein#tap('fern.vim')
 		autocmd! *
 		autocmd fern_global DirChanged * ++nested execute printf('FernDo Fern\ %s\ -drawer\ -stay -drawer -stay',deepcopy(v:event).cwd)
 	augroup END
+endif
+" }}}
+" Vista {{{
+if dein#tap('vista.vim') &&	has('nvim-0.5')
+	let g:vista_executive_for.clojure = 'nvim_lsp'
 endif
 " }}}
 " Session Management {{{
