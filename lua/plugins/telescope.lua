@@ -22,6 +22,7 @@ telescope.setup{
 		file_ignore_patterns = {},
 
 		find_command = {'rg', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case'},
+		vimgrep_arguments = { 'rg', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case'},
 
 		-- layout_strategy = 'flex',
 		winblend = 7,
@@ -65,6 +66,7 @@ telescope.setup{
 }
 
 telescope.load_extension('session-lens')
+telescope.load_extension('zoxide')
 
 -- Helper function to set the keymaps for telescope functions
 local function map(modes, lhs, rhs, opts)

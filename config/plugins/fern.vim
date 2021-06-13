@@ -161,16 +161,26 @@ function! s:get_selected_paths(helper) abort
 		\ ? fnamemodify(val._path, ':h') : val._path})
 endfunction
 
+lua << EOF
+function _G.fernfind(search_dirs)
+  require'telescope.builtin'.find_files({search_dirs = search_dirs, theme=get_dropdown, previewer=false})
+end
+EOF
 function! s:find(helper) abort
 	let l:paths = s:get_selected_paths(a:helper)
 	silent execute 'wincmd w'
-	call denite#start([{'name': 'file/rec', 'args': l:paths}])
+	call  v:lua.fernfind(l:paths)
 endfunction
 
+lua << EOF
+function _G.ferngrep(search_dirs)
+  require'telescope.builtin'.grep_string({search = vim.fn.input("Grep:"), search_dirs = search_dirs})
+end
+EOF
 function! s:grep(helper) abort
 	let l:paths = s:get_selected_paths(a:helper)
 	silent execute 'wincmd w'
-	call denite#start([{'name': 'grep', 'args': l:paths}])
+	call  v:lua.ferngrep(l:paths)
 endfunction
 
 function! s:enter_project_root(helper) abort

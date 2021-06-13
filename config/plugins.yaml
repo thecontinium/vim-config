@@ -297,11 +297,12 @@
 
 - repo: nvim-telescope/telescope.nvim
   if: has("nvim-0.5")
-  depends: [ todo-comments.nvim, session-lens ]
-  on_cmd: Telescope
+  depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
+  on_lua: 'telescope'
   hook_post_source: lua require('plugins.telescope')
 
 - { repo: rmagatti/session-lens, if: has("nvim-0.5"), lazy: true }
+- { repo: jvgrootveld/telescope-zoxide, if: has("nvim-0.5"), lazy: true }
 
 - repo: simrat39/symbols-outline.nvim
   if: has("nvim-0.5")

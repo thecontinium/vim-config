@@ -1,0 +1,317 @@
+
+# PLUGINS
+# ==========================================
+
+- repo: lambdalisue/gina.vim
+  on_cmd: Gina
+  on_ft: [ gitcommit, gitrebase ]
+  hook_source: source $VIM_PATH/config/local.plugins/gina.vim
+
+# Startup
+# -------
+
+# Lazy Loading
+# ==========================================
+
+# Languages
+# ---------
+
+# debugging
+# - repo: sakhnik/nvim-gdb
+#   on_cmd: [ GdbStart, GdbStartLLDB, GdbStartPD, GdbStartBashDB ]
+#   hook_post_source: |
+#     call dein#remote_plugins()
+
+# markdown
+# - repo: thecontinium/vim-markdown-composer
+#   if: empty($VIM_MINIMAL) && executable('cargo')
+#   on_ft: markdown
+#   hook_source: |
+#     let g:markdown_composer_browser = 'open -a Firefox'
+#     let g:markdown_composer_autostart = 0
+#   hook_post_update: |
+#     call dein#util#_notify("Building: " . g:dein#plugin["name"] )
+#     if has('nvim')
+#       call system("cargo build --release")
+#     else
+#       call system("cargo build --release --no-default-features --features json-rpc")
+#     endif
+#
+# - { repo: itspriddle/vim-marked, on_ft: markdown }
+- repo: thecontinium/marked-streaming-nvim
+  on_ft: markdown
+  hook_post_update : |-
+    call system(join([fnamemodify(g:python3_host_prog,":p:h"),"pip install -U pyobjc"],"/"))
+  hook_source: |
+    let g:marked_streaming_events = 'InsertLeave,CursorHold'
+    let g:marked_streaming_open_mapping = '<Leader>O'
+
+- repo: vimwiki/vimwiki
+  on_map: { n: <Plug> }
+  on_cmd: [ VimwikiIndex, VimwikiUISelect ]
+  hook_add: |
+    let g:vimwiki_use_calendar = 1
+    let g:vimwiki_hl_headers = 1
+    let g:vimwiki_hl_cb_checked = 1
+    let g:vimwiki_autowriteall = 0
+  hook_source: |
+    let g:vimwiki_listsyms = ' .oOx'
+    let g:vimwiki_list = [
+    \   { 'diary_header': 'Diary',
+    \     'diary_link_fmt': '%Y-%m/%d',
+    \     'auto_toc': 1,
+    \     'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/notesy/',
+    \     'syntax': 'markdown',
+    \     'ext': '.mmd' },
+    \   { 'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/wiki/',
+    \     'syntax': 'markdown',
+    \     'ext': '.mmd' }
+    \ ]
+
+# - repo: junegunn/fzf
+#   build: ./install --all
+#   merged: 0
+#
+# - repo: junegunn/fzf.vim
+#   depends: fzf
+#
+# - repo: alok/notational-fzf-vim
+#   depends: fzf.vim
+#   hook_source: |
+#     let g:nv_search_paths = ['~/Dropbox//notesy']
+#     let g:nv_default_extension = '.mmd'
+
+# fennel
+- repo: bakpakin/fennel.vim
+
+# - repo: eraserhd/parinfer-rust
+#   on_ft: clojure
+#   build: cargo build --release
+#   hook_add: |
+#     let g:parinfer_mode='smart'
+#     let g:parinfer_force_balance=1
+
+- repo: guns/vim-sexp
+  on_event: InsertCharPre
+  on_ft: clojure
+  hook_add: |
+    let g:sexp_enable_insert_mode_mappings = 0
+
+- repo: tpope/vim-sexp-mappings-for-regular-people
+  on_event: InsertCharPre
+  on_ft: clojure
+  depends: vim-sexp
+
+- repo: gberenfield/cljfold.vim
+  on_ft: clojure
+
+- repo: tpope/vim-repeat
+  on-source: conjure
+
+- repo: guns/vim-clojure-highlight
+  on_ft: clojure
+
+- repo: clojure-vim/clojure.vim
+  on_ft: clojure
+
+- repo: clojure-vim/vim-jack-in
+  on_cmd: [Clj, Lein]
+- repo: tpope/vim-dispatch
+  on_source: vim-jack-in
+- repo: radenling/vim-dispatch-neovim
+  on_source: vim-dispatch
+
+- repo: Olical/conjure
+  rev: "*"
+  on_ft: clojure
+  hook_add:  source $VIM_PATH/config/local.plugins/conjure.vim
+
+- repo: tpope/vim-projectionist
+  on_ft: clojure
+  hook_add: |-
+    autocmd User ProjectionistDetect
+      \ call projectionist#append(getcwd(),
+      \ {
+      \   'src/*.clj': {
+      \     'alternate': 'test/{}_test.clj',
+      \     'type': 'source'
+      \   },
+      \   'test/*_test.clj': {
+      \     'alternate': 'src/{}.clj',
+      \     'type': 'test'
+      \   },
+      \ })
+
+#
+# fennel.fnl syntax
+# - repo: 'bakpakin/fennel.vim'
+
+# - repo: Raimondi/delimitMate
+#   on_event: InsertEnter
+#   hook_source: |
+#     let g:delimitMate_expand_cr = 1
+#     let g:delimitMate_excluded_ft = 'html,clojure'
+#     let g:neomake_virtualtext_current_error = 0
+
+# - repo: thecontinium/snippets
+#   depends: ultisnips
+#   on_event: FileType
+#   if: has('python3')
+#   merged: 0
+
+# - repo: dense-analysis/ale
+#   on_event: FileType
+#   hook_add: |
+#     let g:ale_disable_lsp = 0
+#     let g:ale_echo_delay = 100
+#     let g:ale_lint_delay = 1000
+#     let g:ale_echo_msg_format = '%linter%: %code: %%s [%severity%]'
+#     let g:ale_history_enabled = 0
+#     let g:ale_sign_error = '✖'
+#     let g:ale_sign_warning = 'ⁱ'
+#     let g:ale_maximum_file_size = 500000
+#     let g:lsp_diagnostics_enabled = 0
+
+# - repo: Vigemus/iron.nvim
+#   if: has('nvim')
+#   on_cmd: [ IronRepl, IronReplHere, IronFocus, IronSend, IronWatchCurrentFile ]
+#   on_map: { nv: <Plug> }
+#   on_func: IronUnwatchFile
+#   hook_add: let g:iron_map_defaults = 0 | let g:iron_map_extended = 0
+#   hook_source: |
+#     lua << EOF
+#     \ local iron = require('iron')
+#     \
+#     \ iron.core.set_config {
+#     \   preferred = {
+#     \     clojure= 'lein'
+#     \     python = 'ipython'
+#     \   }
+#     \ }
+#     \
+#     \ EOF
+#
+# - { repo: tpope/vim-fireplace, on_ft: clojure }
+# - { repo: tpope/vim-projectionist, on_ft: clojure }
+# - { repo: tpope/vim-salve, on_ft: clojure }
+# - repo: clojure-vim/async-clj-omni
+#   on_ft: clojure
+#   hook_source: |
+#     call deoplete#custom#option('keyword_patterns', {
+#     \ 'clojure': '[\w!$%&*+/:<=>?@\^_~\-\.#]*',
+#     \}
+# c#
+#- repo: OmniSharp/omnisharp-vim
+#  on_ft: cs
+#  hook_post_source: |
+#    let g:OmniSharp_server_stdio = 1
+#    call deoplete#custom#option('sources', {
+#    \ 'cs': ['omnisharp'],
+#    \ })
+
+
+# ==========================================
+# Commands
+# --------
+# ==========================================
+
+# - repo: reedes/vim-wordy
+#   on_cmd: [ Wordy, NoWordy, NextWordy ]
+#   hook_add: |-
+#     let g:wordy_spell_dir = $DATA_PATH . '/wordy'
+#     set runtimepath+=g:wordy_spell_dir
+# 
+# - repo: thecontinium/vim-which-key
+#   if: 0
+
+- repo: folke/which-key.nvim
+  on_event: VimEnter
+  hook_post_source: luafile $VIM_PATH/config/local.plugins/which-key.lua
+
+# - repo: thecontinium/vim-which-key
+#   on_cmd: WhichKey
+#   hook_add: |
+#     let g:which_key_map =  {}
+#   hook_source: |
+#     call which_key#register('', "g:which_key_map")
+
+# Interface
+# ---------
+# - repo: RRethy/vim-hexokinase
+#   on_ft: [ css, scss, sass, stylus, vim ]
+#   build: make hexokinase
+#   hook_add: |
+#     let g:Hexokinase_ftAutoload = [ 'css', 'scss', 'sass', 'stylus' ]
+
+# - repo: thecontinium/vim-shortcut
+#   on_cmd: [ Shortcut!, Shortcut, ShortcutsRangeless,ShortcutsRangeless! ]
+#   hook_source: |
+#     let g:shortcut_expand_leader_keys = 0
+#
+# - repo: easymotion/vim-easymotion
+#   on_map: { n: <Plug> }
+#   hook_source: |
+#     let g:EasyMotion_do_mapping = 0
+#     let g:EasyMotion_prompt = 'Jump to → '
+#     let g:EasyMotion_keys = 'fjdksweoavn'
+#     let g:EasyMotion_smartcase = 1
+#     let g:EasyMotion_use_smartsign_us = 1
+
+# ==========================================
+# Interface
+# ---------
+- { repo: haya14busa/vim-asterisk, if: 0 }
+- { repo: thecontinium/vim-asterisk, on_map: { nv: <Plug> }}
+
+# ==========================================
+# Completion and code analysis
+# ----------
+
+# compe
+
+# - repo: neovim/nvim-lspconfig
+#   depends: [ nvim-lspinstall, lsp_signature.nvim ]
+#   on_event: VimEnter
+#   hook_post_source: luafile $VIM_PATH/config/local.plugins/lspconfig.lua
+#   hook_add: |
+#     sign define LspDiagnosticsSignError text=✖ texthl=LspDiagnosticsSignError linehl= numhl=
+#     sign define LspDiagnosticsSignWarning text=⬪ texthl=LspDiagnosticsSignWarning linehl= numhl=
+#     sign define LspDiagnosticsSignInformation text=▫ texthl=LspDiagnosticsSignInformation linehl= numhl=
+#     sign define LspDiagnosticsSignHint text=▪ texthl=LspDiagnosticsSignHint linehl= numhl=
+# 
+# - repo: hrsh7th/nvim-compe
+#   if: has('nvim-0.5')
+#   on_event: InsertEnter
+#   # depends: compe-tmux
+#   hook_post_source: luafile $VIM_PATH/config/local.plugins/compe.lua
+#   hook_source: |-
+#     augroup user_plugin_compe
+#       autocmd!
+#       autocmd FileType denite-filter,clap_input
+#         \ call compe#setup({'enabled': v:false}, 0)
+#     augroup END
+
+- repo: tami5/compe-conjure
+  depends: nvim-compe
+  on_ft: clojure
+
+# Only NeoVim ------------------------------
+# ==========================================
+
+# ==========================================
+# Operators
+# ---------
+
+- repo: inkarkat/vim-ingo-library
+  on_source: vim-UnconditionalPaste
+
+- repo: inkarkat/vim-UnconditionalPaste
+  on_event: [ BufReadPre, VimEnter ]
+  hook_source: |
+    let g:UnconditionalPaste_no_mappings = 1
+
+# ==========================================
+# Text objects
+# ------------
+
+#  vim: set ts=2 sw=2 tw=80 et :
