@@ -122,7 +122,6 @@
   on_source: vim-dispatch
 
 - repo: Olical/conjure
-  rev: "*"
   on_ft: clojure
   hook_add:  source $VIM_PATH/config/local-plugins/conjure.vim
 
