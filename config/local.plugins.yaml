@@ -306,6 +306,12 @@
   depends: nvim-compe
   on_ft: clojure
 
+- repo: nvim-telescope/telescope.nvim
+  if: has("nvim-0.5")
+  depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
+  on_lua: 'telescope'
+  hook_post_source: lua require('local-plugins.telescope')
+
 # Only NeoVim ------------------------------
 # ==========================================
 
