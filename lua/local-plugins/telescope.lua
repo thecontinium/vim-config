@@ -6,11 +6,6 @@ local api = vim.api
 local actions = require('telescope.actions')
 local telescope = require('telescope')
 
-
-local function esc(_)
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<esc>', true, true, true),'',true)
-end
-
 telescope.setup{
 	defaults = {
 		prompt_position = "bottom",
@@ -40,8 +35,8 @@ telescope.setup{
 			  ["<C-Tab>"] = actions.move_selection_previous,
 			  -- ["jj"] = actions.close,
 			  ["<C-q>"] = actions.send_to_qflist,
-			  ["jj"] =  esc,
-			  ["kk"] =  esc,
+			  ["jj"] =  {"<esc>", type = "command"},
+			  ["kk"] =  {"<esc>", type = "command"},
 				-- insert_value
 				-- insert_symbol
 				-- run_builtin
