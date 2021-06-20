@@ -73,10 +73,10 @@ endif
 
 " only run vimwikireturn if the popup menu is not showing, otherwise close it
 autocmd filetype vimwiki
-  \ inoremap <silent><buffer><expr><CR> pumvisible() ?  asyncomplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
-  \ | setlocal sw=4
+  \ setlocal sw=4
   \ | setlocal sts=4
   \ | setlocal et
+  "\ inoremap <silent><buffer><expr><CR> pumvisible() ?  asyncomplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
 
 autocmd FileType clojure
   \ let b:sleuth_automatic = 0
