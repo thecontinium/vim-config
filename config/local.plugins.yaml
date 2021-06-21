@@ -141,7 +141,16 @@
       \   },
       \ })
 
-#
+- repo: RishabhRD/popfix
+  if: has("nvim-0.5")
+  lazy: true
+
+- repo: RishabhRD/nvim-lsputils
+  depends: popfix
+  if: has("nvim-0.5")
+  on_event: VimEnter
+  hook_post_source: lua require('local-plugins.lsputils')
+
 # fennel.fnl syntax
 # - repo: 'bakpakin/fennel.vim'
 
