@@ -174,7 +174,7 @@ endfunction
 
 lua << EOF
 function _G.ferngrep(search_dirs)
-  require'telescope.builtin'.grep_string({search = vim.fn.input("Grep:"), search_dirs = search_dirs})
+  require'telescope.builtin'.grep_string({search = vim.fn.input("Pattern: "), search_dirs = search_dirs})
 end
 EOF
 function! s:grep(helper) abort
