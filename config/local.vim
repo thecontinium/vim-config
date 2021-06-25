@@ -114,8 +114,7 @@ if dein#tap('vim-sexp')
 	  \ 'sexp_curly_tail_wrap_element':   '',
 	  \ 'sexp_insert_at_list_head':       ',h',
 	  \ 'sexp_insert_at_list_tail':       ',l',
-	  \ 'sexp_splice_list':               ',@',
-	  \ 'sexp_convolute':                 ',?',
+	  \ 'sexp_splice_list':               ',d',
 	  \ 'sexp_raise_list':                ',o',
 	  \ 'sexp_raise_element':             ',O',
 	  \ }

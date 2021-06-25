@@ -30,6 +30,37 @@ wk.register({["p"]="which_key_ignore"})
 wk.register({["P"]="which_key_ignore"})
 
 wk.register({
+  [","] = {
+      ["f"]= { "LSP Formatting" },
+      E = { "Conjure Eval Selection" },
+      e = { name = "Conjure Eval",
+            ["!"] = "Replace Form",
+            ["e"] = "Form",
+            ["b"] = "Buffer",
+            ["f"] = "File",
+            ["m"] = "Marked",
+            ["i"] = "Interupt",
+            ["r"] = "Root",
+            ["w"] = "Word",
+            ["c"] = { name= "Comment",
+                      e = "Form",
+                      r = "Root",
+                      w = "Word"
+            },
+      },
+      w = { "Sexp (_element)" },
+      W = { "Sexp (element_)" },
+      i = { "Sexp (_form)" },
+      I = { "Sexp (form_)" },
+      h = { "Sexp _form" },
+      l = { "Sexp form_" },
+      ["?"] = { "Sexp Convolute" },
+      ["d"] = { "Sexp Splice" },
+      ["o"] = { "Sexp Raise form" },
+      ["O"] = { "Sexp Raise element" },
+  },
+})
+wk.register({
   ["<LocalLeader>"] = {
       a = { "Explore File" },
       c = { "Action Menu" },
