@@ -311,6 +311,12 @@
   on_lua: 'telescope'
   hook_post_source: lua require('local-plugins.telescope')
 
+- repo: nvim-treesitter/nvim-treesitter
+  if: 0
+
+- repo: nvim-treesitter/nvim-treesitter-textobjects
+  if: 0
+
 # Only NeoVim ------------------------------
 # ==========================================
 
