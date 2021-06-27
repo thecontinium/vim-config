@@ -123,6 +123,7 @@
 
 - repo: Olical/conjure
   on_ft: clojure
+  rev: v4.21.0
   hook_add:  source $VIM_PATH/config/local-plugins/conjure.vim
 
 - repo: tpope/vim-projectionist
@@ -218,7 +219,7 @@
 #   hook_add: |-
 #     let g:wordy_spell_dir = $DATA_PATH . '/wordy'
 #     set runtimepath+=g:wordy_spell_dir
-# 
+#
 # - repo: thecontinium/vim-which-key
 #   if: 0
 
@@ -276,18 +277,7 @@
 #     sign define LspDiagnosticsSignWarning text=⬪ texthl=LspDiagnosticsSignWarning linehl= numhl=
 #     sign define LspDiagnosticsSignInformation text=▫ texthl=LspDiagnosticsSignInformation linehl= numhl=
 #     sign define LspDiagnosticsSignHint text=▪ texthl=LspDiagnosticsSignHint linehl= numhl=
-# 
-# - repo: hrsh7th/nvim-compe
-#   if: has('nvim-0.5')
-#   on_event: InsertEnter
-#   # depends: compe-tmux
-#   hook_post_source: luafile $VIM_PATH/config/local.plugins/compe.lua
-#   hook_source: |-
-#     augroup user_plugin_compe
-#       autocmd!
-#       autocmd FileType denite-filter,clap_input
-#         \ call compe#setup({'enabled': v:false}, 0)
-#     augroup END
+#
 
 - repo: hrsh7th/nvim-compe
   if: has('nvim-0.5')
@@ -302,8 +292,9 @@
     augroup END
 
 - repo: tami5/compe-conjure
-  depends: nvim-compe
-  on_ft: clojure
+  if: has("nvim-0.5")
+  depends: conjure
+  on_source: nvim-compe
 
 - repo: nvim-telescope/telescope.nvim
   if: has("nvim-0.5")
