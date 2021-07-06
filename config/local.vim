@@ -136,7 +136,7 @@ if dein#tap('gina.vim')
   " nnoremap <silent> <leader>gb :Gina blame<CR>
   " nnoremap <silent> <leader>gF :Gina fetch<CR>
   " nnoremap <silent> <leader>gS :Gina status<CR>
-  " nnoremap <silent> <leader>gp :Gina push<CR>
+  nnoremap <silent> <leader>gp :Gina push<CR>
 endif
 " }}}
 " Easymotion Settings {{{
