@@ -300,13 +300,20 @@
   if: has("nvim-0.5")
   depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
   on_lua: 'telescope'
-  hook_post_source: lua require('local-plugins.telescope')
+  on_cmd: 'Telescope'
+  hook_post_source: lua require('plugins.telescope')
 
-- repo: nvim-treesitter/nvim-treesitter
-  if: 0
+# - repo: nvim-telescope/telescope.nvim
+#   if: has("nvim-0.5")
+#   depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
+#   on_lua: 'telescope'
+#   hook_post_source: lua require('local-plugins.telescope')
 
-- repo: nvim-treesitter/nvim-treesitter-textobjects
-  if: 0
+# - repo: nvim-treesitter/nvim-treesitter
+#   if: 0
+# 
+# - repo: nvim-treesitter/nvim-treesitter-textobjects
+#   if: 0
 
 # Only NeoVim ------------------------------
 # ==========================================

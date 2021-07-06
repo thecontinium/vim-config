@@ -21,9 +21,9 @@ if dein#tap('vista.vim') &&	has('nvim-0.5')
 endif
 " }}}
 " Telescope {{{
-if dein#tap('telescope.nvim')
-	nnoremap <silent><LocalLeader>l :<C-u>Telescope lsp_code_actions theme=get_dropdown result_height=6 width=40<CR>
-endif
+" if dein#tap('telescope.nvim')
+" 	nnoremap <silent><LocalLeader>l :<C-u>Telescope lsp_code_actions theme=get_dropdown result_height=6 width=40<CR>
+" endif
 " }}}
 " Session Management {{{
 " What to save in sessions:
