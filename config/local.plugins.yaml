@@ -142,6 +142,9 @@
       \   },
       \ })
 
+- repo: chrisbra/csv.vim
+  hook_add: let g:csv_default_delim=','
+
 # fennel.fnl syntax
 # - repo: 'bakpakin/fennel.vim'
 

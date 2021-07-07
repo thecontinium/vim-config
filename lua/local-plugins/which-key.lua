@@ -1,7 +1,7 @@
-local wk = require("which-key")
-wk.register({["p"]="which_key_ignore"})
-wk.register({["P"]="which_key_ignore"})
 require ('plugins.which-key')
+local wk = require("which-key")
+wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="p"})
+wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="P"})
 
 -- wk.setup {
 --   plugins = {
