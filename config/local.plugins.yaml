@@ -224,8 +224,9 @@
 #   if: 0
 
 - repo: folke/which-key.nvim
-  on_event: VimEnter
-  hook_post_source: lua require ('local-plugins.which-key')
+  if: has('nvim-0.5')
+  on_cmd: WhichKey
+  hook_post_source: lua require('local-plugins.which-key')
 
 # - repo: thecontinium/vim-which-key
 #   on_cmd: WhichKey
