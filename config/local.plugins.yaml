@@ -307,6 +307,8 @@
   on_cmd: 'Telescope'
   hook_post_source: lua require('plugins.telescope')
 
+- { repo: rmagatti/session-lens, if: 0 }
+- { repo: thecontinium/session-lens, if: has("nvim-0.5"), lazy: true }
 # - repo: nvim-telescope/telescope.nvim
 #   if: has("nvim-0.5")
 #   depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
