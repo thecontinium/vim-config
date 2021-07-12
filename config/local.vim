@@ -73,12 +73,10 @@ autocmd FileType markdown
   \ | setlocal updatetime=200
   \ | au CursorHold <buffer> silent! update
 
-if dein#tap('denite.vim')
-	autocmd FileType vimwiki,markdown
-		\ let b:sleuth_automatic = 0
-		\ | setlocal concealcursor=nc
-		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
-endif
+autocmd FileType vimwiki,markdown
+  \ let b:sleuth_automatic = 0
+  \ | setlocal concealcursor=nc
+  "\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
 
 " only run vimwikireturn if the popup menu is not showing, otherwise close it
 autocmd filetype vimwiki
