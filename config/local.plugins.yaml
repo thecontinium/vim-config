@@ -46,27 +46,33 @@
     let g:marked_streaming_events = 'InsertLeave,CursorHold'
     let g:marked_streaming_open_mapping = '<Leader>O'
 
-- repo: vimwiki/vimwiki
-  on_map: { n: <Plug> }
-  on_cmd: [ VimwikiIndex, VimwikiUISelect ]
-  hook_add: |
-    let g:vimwiki_use_calendar = 1
-    let g:vimwiki_hl_headers = 1
-    let g:vimwiki_hl_cb_checked = 1
-    let g:vimwiki_autowriteall = 0
-  hook_source: |
-    let g:vimwiki_listsyms = ' .oOx'
-    let g:vimwiki_list = [
-    \   { 'diary_header': 'Diary',
-    \     'diary_link_fmt': '%Y-%m/%d',
-    \     'auto_toc': 1,
-    \     'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/notesy/',
-    \     'syntax': 'markdown',
-    \     'ext': '.mmd' },
-    \   { 'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/wiki/',
-    \     'syntax': 'markdown',
-    \     'ext': '.mmd' }
-    \ ]
+- repo: megalithic/zk.nvim
+  if: has('nvim-0.5')
+  on_lua: 'zk'
+  on_ft: markdown
+  hook_post_source: lua require('local-plugins.zk')
+
+# - repo: vimwiki/vimwiki
+#   on_map: { n: <Plug> }
+#   on_cmd: [ VimwikiIndex, VimwikiUISelect ]
+#   hook_add: |
+#     let g:vimwiki_use_calendar = 1
+#     let g:vimwiki_hl_headers = 1
+#     let g:vimwiki_hl_cb_checked = 1
+#     let g:vimwiki_autowriteall = 0
+#   hook_source: |
+#     let g:vimwiki_listsyms = ' .oOx'
+#     let g:vimwiki_list = [
+#     \   { 'diary_header': 'Diary',
+#     \     'diary_link_fmt': '%Y-%m/%d',
+#     \     'auto_toc': 1,
+#     \     'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/notesy/',
+#     \     'syntax': 'markdown',
+#     \     'ext': '.mmd' },
+#     \   { 'path': '~/Library/Mobile\ Documents/9CR7T2DMDG~com~ngocluu~onewriter/Documents/wiki/',
+#     \     'syntax': 'markdown',
+#     \     'ext': '.mmd' }
+#     \ ]
 
 # - repo: junegunn/fzf
 #   build: ./install --all
@@ -300,15 +306,16 @@
   depends: conjure
   on_source: nvim-compe
 
-- repo: nvim-telescope/telescope.nvim
-  if: has("nvim-0.5")
-  depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
-  on_lua: 'telescope'
-  on_cmd: 'Telescope'
-  hook_post_source: lua require('plugins.telescope')
 
-- { repo: rmagatti/session-lens, if: 0 }
-- { repo: thecontinium/session-lens, if: has("nvim-0.5"), lazy: true }
+# - repo: nvim-telescope/telescope.nvim
+#   if: has("nvim-0.5")
+#   depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
+#   on_lua: 'telescope'
+#   on_cmd: 'Telescope'
+#   hook_post_source: lua require('plugins.telescope')
+# 
+# - { repo: rmagatti/session-lens, if: 0 }
+# - { repo: thecontinium/session-lens, if: has("nvim-0.5"), lazy: true }
 # - repo: nvim-telescope/telescope.nvim
 #   if: has("nvim-0.5")
 #   depends: [ todo-comments.nvim, session-lens, telescope-zoxide]

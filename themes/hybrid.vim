@@ -159,7 +159,7 @@ highlight! IndentBlanklineCharOdd cterm=nocombine gui=nocombine guibg=#292B2D
 " ---
 highlight! clear WildMenu
 highlight! link WildMenu UserSelectionBackground
-highlight! link TelescopeSelection WildMenu
+highlight! link TelescopeSelection UserSelectionBackground
 highlight! link TelescopeSelectionCaret UserSelectionCaret
 highlight! link TelescopeBorder UserBorder
 highlight! link TelescopePromptBorder UserBorder
@@ -178,7 +178,7 @@ highlight! link FernSpinner Identifier
 " Plugin: Bqf {{{
 " ---
 " hi default link BqfPreviewFloat Normal
-highlight! BqfPreviewBorder guifg=#525865
+highlight! link BqfPreviewBorder UserBorder
 highlight! link BqfPreviewCursor TermCursor
 highlight! default link BqfPreviewRange TermCursorNC
 " hi default BqfSign ctermfg=14 guifg=Cyan

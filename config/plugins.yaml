@@ -15,10 +15,10 @@
 - repo: tpope/vim-sleuth
   hook_add: let g:sleuth_neighbor_limit = 5
 
-- { repo: folke/lsp-colors.nvim, if: has("nvim-0.5") }
-- { repo: nvim-lua/plenary.nvim, if: has("nvim-0.5") }
-- { repo: nvim-lua/popup.nvim, if: has("nvim-0.5") }
-- { repo: kyazdani42/nvim-web-devicons, if: has("nvim-0.5") }
+- { repo: folke/lsp-colors.nvim, if: has('nvim-0.5') }
+- { repo: nvim-lua/plenary.nvim, if: has('nvim-0.5') }
+- { repo: nvim-lua/popup.nvim, if: has('nvim-0.5') }
+- { repo: kyazdani42/nvim-web-devicons, if: has('nvim-0.5') }
 
 - repo: sgur/vim-editorconfig
   hook_add: |-
@@ -44,7 +44,6 @@
 # --------
 
 - { repo: mbbill/undotree, on_cmd: UndotreeToggle }
-- { repo: jreybert/vimagit, on_cmd: Magit }
 - { repo: tweekmonster/helpful.vim, on_cmd: HelpfulVersion }
 - { repo: lambdalisue/suda.vim, on_event: BufRead }
 
@@ -53,6 +52,12 @@
   hook_add: |-
     let g:caw_no_default_keymappings = 1
     let g:caw_operator_keymappings = 0
+
+- repo: TimUntersberger/neogit
+  depends: diffview.nvim
+  on_cmd: Neogit
+  on_lua: neogit
+  hook_source: lua require('plugins.neogit')
 
 - repo: lambdalisue/gina.vim
   on_cmd: Gina
@@ -138,7 +143,7 @@
   hook_source: |-
     augroup user_plugin_cursorword
       autocmd!
-      autocmd FileType json,yaml,markdown,nginx,dosini,conf
+      autocmd FileType json,yaml,markdown,nginx,dosini,conf,text
         \ let b:cursorword = 1
       autocmd WinEnter * if &diff || &pvw | let b:cursorword = 0 | endif
       autocmd InsertEnter * if get(b:, 'cursorword', 0) == 1
@@ -199,7 +204,7 @@
     augroup user_plugin_indentguides
       autocmd!
       autocmd BufEnter *
-      \ if ! empty(&l:filetype) && empty(&buftype)
+      \ if ! empty(&l:filetype) && empty(&buftype) && ! &previewwindow
       \|   if g:indent_guides_autocmds_enabled == 0 && &l:expandtab
       \|     IndentGuidesEnable
       \|   elseif g:indent_guides_autocmds_enabled == 1 && ! &l:expandtab
@@ -331,27 +336,27 @@
 
 - repo: neovim/nvim-lspconfig
   if: has('nvim-0.5')
-  depends: [ lsp_signature.nvim, todo-comments.nvim, lua-dev.nvim, lspsaga.nvim ]
+  depends: [ lsp_signature.nvim, todo-comments.nvim, lua-dev.nvim ]
   on_event: VimEnter
   hook_post_source: lua require('plugins.lspconfig')
 
-- repo: glepnir/lspsaga.nvim
-  if: has('nvim-0.5')
-  on_cmd: Lspsaga
-  hook_post_source: lua require('plugins.lspsaga')
+# - repo: glepnir/lspsaga.nvim
+#   if: has('nvim-0.5')
+#   on_cmd: Lspsaga
+#   hook_post_source: lua require('plugins.lspsaga')
 
 - { repo: ray-x/lsp_signature.nvim, if: has('nvim-0.5'), lazy: true }
 - { repo: folke/lua-dev.nvim, if: has('nvim-0.5'), lazy: true }
 
 - repo: folke/todo-comments.nvim
-  if: has("nvim-0.5")
+  if: has('nvim-0.5')
   lazy: true
   hook_post_source: lua require('plugins.todo-comments')
 
 - repo: hrsh7th/nvim-compe
   if: has('nvim-0.5')
   on_event: InsertEnter
-  depends: nvim-autopairs
+  depends: [ nvim-autopairs, compe-tmux ]
   # depends: lspkind-nvim
   hook_post_source: lua require('plugins.compe')
   hook_source: |-
@@ -361,12 +366,15 @@
         \ call compe#setup({'enabled': v:false}, 0)
     augroup END
 
+- repo: andersevenrud/compe-tmux
+  if: has('nvim-0.5')
+  on_event: InsertEnter
+  hook_add: let g:loaded_compe_tmux = v:true
+
 # - repo: onsails/lspkind-nvim
-#   if: has("nvim-0.5")
+#   if: has('nvim-0.5')
 #   lazy: true
 #   hook_post_source: lua require('lspkind').init()
-
-# - { repo: andersevenrud/compe-tmux, if: has("nvim-0.5"), lazy: true }
 
 - repo: windwp/nvim-autopairs
   if: has('nvim-0.5')
@@ -386,7 +394,7 @@
 - { repo: rafamadriz/friendly-snippets, lazy: true, merged: 0 }
 
 - repo: folke/trouble.nvim
-  if: has("nvim-0.5")
+  if: has('nvim-0.5')
   on_cmd: [ Trouble, TroubleToggle ]
 
 - repo: sindrets/diffview.nvim
@@ -395,21 +403,31 @@
   hook_post_source: lua require('plugins.diffview')
 
 - repo: nvim-telescope/telescope.nvim
-  if: has("nvim-0.5")
-  depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
-  on_lua: 'telescope'
-  hook_post_source: lua require('plugins.telescope')
+  if: has('nvim-0.5')
+  depends: [ todo-comments.nvim, session-lens, telescope-zoxide ]
+  on_cmd: Telescope
+  on_lua: telescope
+  hook_add: lua require('plugins.telescope').preload()
+  hook_post_source: lua require('plugins.telescope').setup()
 
-- { repo: rmagatti/session-lens, if: has("nvim-0.5"), lazy: true }
-- { repo: jvgrootveld/telescope-zoxide, if: has("nvim-0.5"), lazy: true }
+- repo: rmagatti/session-lens
+  if: has('nvim-0.5')
+  lazy: true
+  hook_post_source: lua require('plugins.session-lens')
+
+- repo: jvgrootveld/telescope-zoxide
+  rev: feature/add-user-configuration
+  if: has('nvim-0.5')
+  lazy: true
+  hook_post_source: lua require('plugins.telescope-zoxide')
 
 - repo: simrat39/symbols-outline.nvim
-  if: has("nvim-0.5")
-  on_cmd: SymbolsOutline, SymbolsOutlineOpen
+  if: has('nvim-0.5')
+  on_cmd: [ SymbolsOutline, SymbolsOutlineOpen ]
   hook_source: lua require('plugins.symbols-outline')
 
 - repo: rmagatti/auto-session
-  if: has("nvim-0.5")
+  if: has('nvim-0.5')
   depends: [ gitsigns.nvim, nvim-lspconfig ]
   on_event: VimEnter
   hook_post_source: lua require('plugins.auto-session')
@@ -464,7 +482,7 @@
 - repo: lambdalisue/fern-renderer-nerdfont.vim
   on_source: fern.vim
   hook_source: |-
-    let g:fern#renderer = "nerdfont"
+    let g:fern#renderer = 'nerdfont'
     let g:fern#renderer#nerdfont#padding = get(g:, 'global_symbol_padding', ' ')
 
 - repo: lambdalisue/glyph-palette.vim
@@ -476,14 +494,14 @@
 # ---------
 
 - repo: nvim-treesitter/nvim-treesitter
-  if: has("nvim-0.5")
+  if: has('nvim-0.5')
   on_event: FileType
   on_cmd: [ TSUpdate, TSInstall, TSInstallInfo, TSModuleInfo, TSConfigInfo ]
   hook_post_update: ':TSUpdate'
   hook_source: lua require('plugins.treesitter')
 
 - repo: nvim-treesitter/nvim-treesitter-textobjects
-  if: has("nvim-0.5")
+  if: has('nvim-0.5')
   depends: nvim-treesitter
   on_event: FileType
   hook_source: lua require('plugins.textobjects')
@@ -528,7 +546,7 @@
     let g:textobj_sandwich_no_default_key_mappings = 1
 
 - repo: mfussenegger/nvim-ts-hint-textobject
-  if: has("nvim-0.5")
+  if: has('nvim-0.5')
   depends: nvim-treesitter
   on_event: FileType
   hook_source: |-
