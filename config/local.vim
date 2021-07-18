@@ -68,6 +68,8 @@ augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 " save automatically when text is changed
 " it will save the current file whenever text is changed in normal mode
 " or you leave the insert mode.
+" markdown filetype file
+au BufRead,BufNewFile *.{mmd} set filetype=markdown
 autocmd FileType markdown
   \ setlocal nospell path=. suffixesadd=.mmd
   \ | setlocal updatetime=200
