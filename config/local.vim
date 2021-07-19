@@ -1,7 +1,10 @@
 " Command & History {{{
 " -----------------
 
-" Switch history search pairs, matching my zsh shell
+"dein {{{ see help
+autocmd VimEnter * call dein#call_hook('post_source')
+"}}}
+" Switch history search pairs, matching my zsh shell {{{
 cnoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
 cnoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 cunmap <C-p>

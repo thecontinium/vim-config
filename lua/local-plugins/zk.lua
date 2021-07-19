@@ -6,6 +6,7 @@ require("zk").setup({
   fuzzy_finder = "fzf", -- or "telescope"
   link_format = "markdown" -- or "wiki"
 })
+require("zk").setup_keymaps()
 
 local lspconfig = require('lspconfig')
 local configs = require('lspconfig/configs')

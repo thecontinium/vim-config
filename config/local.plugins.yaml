@@ -46,14 +46,19 @@
     let g:marked_streaming_events = 'InsertLeave,CursorHold'
     let g:marked_streaming_open_mapping = '<Leader>O'
 
-- repo: megalithic/zk.nvim
+- repo: thecontinium/zk.nvim
   if: has('nvim-0.5')
-  on_lua: 'zk'
+  on_lua: zk
   on_ft: markdown
   hook_post_source: lua require('local-plugins.zk')
-  depends: nvim-fzf
+  # depends: nvim-fzf
 
 - { repo: vijaymarupudi/nvim-fzf, if: has("nvim-0.5"), lazy: true }
+
+- repo: jvgrootveld/telescope-zoxide
+  if: has('nvim-0.5')
+  lazy: true
+  hook_post_source: lua require('plugins.telescope-zoxide')
 
 # - repo: vimwiki/vimwiki
 #   on_map: { n: <Plug> }
