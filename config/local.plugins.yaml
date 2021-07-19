@@ -46,12 +46,12 @@
     let g:marked_streaming_events = 'InsertLeave,CursorHold'
     let g:marked_streaming_open_mapping = '<Leader>O'
 
-- repo: thecontinium/zk.nvim
+- repo: megalithic/zk.nvim
   if: has('nvim-0.5')
   on_lua: zk
   on_ft: markdown
   hook_post_source: lua require('local-plugins.zk')
-  # depends: nvim-fzf
+  depends: nvim-fzf
 
 - { repo: vijaymarupudi/nvim-fzf, if: has("nvim-0.5"), lazy: true }
 
