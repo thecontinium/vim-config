@@ -137,7 +137,7 @@
 
 - repo: Olical/conjure
   on_ft: clojure
-  rev: develop 
+  rev: develop
   hook_add:  source $VIM_PATH/config/local-plugins/conjure.vim
 
 - repo: tpope/vim-projectionist
@@ -321,7 +321,7 @@
 #   on_lua: 'telescope'
 #   on_cmd: 'Telescope'
 #   hook_post_source: lua require('plugins.telescope')
-# 
+#
 # - { repo: rmagatti/session-lens, if: 0 }
 # - { repo: thecontinium/session-lens, if: has("nvim-0.5"), lazy: true }
 # - repo: nvim-telescope/telescope.nvim
@@ -332,7 +332,7 @@
 
 # - repo: nvim-treesitter/nvim-treesitter
 #   if: 0
-# 
+#
 # - repo: nvim-treesitter/nvim-treesitter-textobjects
 #   if: 0
 
