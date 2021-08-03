@@ -137,7 +137,7 @@
 
 - repo: Olical/conjure
   on_ft: clojure
-  rev: develop
+  rev: master
   hook_add:  source $VIM_PATH/config/local-plugins/conjure.vim
 
 - repo: tpope/vim-projectionist
