@@ -51,7 +51,7 @@
   on_lua: zk
   on_ft: markdown
   hook_post_source: lua require('local-plugins.zk')
-  depends: nvim-fzf
+  depends: [nvim-fzf, telescope]
 
 - { repo: vijaymarupudi/nvim-fzf, if: has("nvim-0.5"), lazy: true }
 
