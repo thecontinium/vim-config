@@ -1,7 +1,10 @@
 " Command & History {{{
 " -----------------
 
-" Switch history search pairs, matching my zsh shell
+"dein {{{ see help
+autocmd VimEnter * call dein#call_hook('post_source')
+"}}}
+" Switch history search pairs, matching my zsh shell {{{
 cnoremap <expr> <Up>   pumvisible() ? "\<C-p>" : "\<Up>"
 cnoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 cunmap <C-p>
@@ -13,12 +16,21 @@ if dein#tap('fern.vim')
 		autocmd! *
 		autocmd fern_global DirChanged * ++nested execute printf('FernDo Fern\ %s\ -drawer\ -stay -drawer -stay',deepcopy(v:event).cwd)
 	augroup END
+	if dein#tap('auto-session')
+		let g:auto_session_pre_restore_cmds = ["FernDo close -drawer -stay"]
+		let g:auto_session_pre_save_cmds = ["FernDo close -drawer -stay"]
+	endif
 endif
 " }}}
 " Vista {{{
 if dein#tap('vista.vim') &&	has('nvim-0.5')
 	let g:vista_executive_for.clojure = 'nvim_lsp'
 endif
+" }}}
+" Telescope {{{
+" if dein#tap('telescope.nvim')
+" 	nnoremap <silent><LocalLeader>l :<C-u>Telescope lsp_code_actions theme=get_dropdown result_height=6 width=40<CR>
+" endif
 " }}}
 " Session Management {{{
 " What to save in sessions:
@@ -59,24 +71,24 @@ augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 " save automatically when text is changed
 " it will save the current file whenever text is changed in normal mode
 " or you leave the insert mode.
+" markdown filetype file
+au BufRead,BufNewFile *.{mmd} set filetype=markdown
 autocmd FileType markdown
   \ setlocal nospell path=. suffixesadd=.mmd
   \ | setlocal updatetime=200
   \ | au CursorHold <buffer> silent! update
 
-if dein#tap('denite.vim')
-	autocmd FileType vimwiki,markdown
-		\ let b:sleuth_automatic = 0
-		\ | setlocal concealcursor=nc
-		\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
-endif
+autocmd FileType vimwiki,markdown
+  \ let b:sleuth_automatic = 0
+  \ | setlocal concealcursor=nc
+  "\ | nnoremap <silent><buffer><LocalLeader>f :<C-u>DeniteBufferDir -sorters=sorter/lastmod file/rec grep:::!<CR>
 
 " only run vimwikireturn if the popup menu is not showing, otherwise close it
 autocmd filetype vimwiki
-  \ inoremap <silent><buffer><expr><CR> pumvisible() ?  asyncomplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
-  \ | setlocal sw=4
+  \ setlocal sw=4
   \ | setlocal sts=4
   \ | setlocal et
+  "\ inoremap <silent><buffer><expr><CR> pumvisible() ?  asyncomplete#close_popup() : "<ESC>:VimwikiReturn 1 5<CR>"
 
 autocmd FileType clojure
   \ let b:sleuth_automatic = 0
@@ -109,8 +121,7 @@ if dein#tap('vim-sexp')
 	  \ 'sexp_curly_tail_wrap_element':   '',
 	  \ 'sexp_insert_at_list_head':       ',h',
 	  \ 'sexp_insert_at_list_tail':       ',l',
-	  \ 'sexp_splice_list':               ',@',
-	  \ 'sexp_convolute':                 ',?',
+	  \ 'sexp_splice_list':               ',d',
 	  \ 'sexp_raise_list':                ',o',
 	  \ 'sexp_raise_element':             ',O',
 	  \ }
@@ -132,7 +143,7 @@ if dein#tap('gina.vim')
   " nnoremap <silent> <leader>gb :Gina blame<CR>
   " nnoremap <silent> <leader>gF :Gina fetch<CR>
   " nnoremap <silent> <leader>gS :Gina status<CR>
-  " nnoremap <silent> <leader>gp :Gina push<CR>
+  nnoremap <silent> <leader>gp :Gina push<CR>
 endif
 " }}}
 " Easymotion Settings {{{
