@@ -1,30 +1,13 @@
 " Plugin Keyboard-Mappings
 " ---
 
-if dein#tap('telescope.nvim')
-	nnoremap <silent><LocalLeader>f :<C-u>Telescope find_files theme=get_dropdown previewer=false<CR>
-	nnoremap <silent><LocalLeader>g :<C-u>Telescope live_grep<CR>
-	nnoremap <silent><LocalLeader>b :<C-u>Telescope buffers theme=get_dropdown show_all_buffers=true<CR>
-	nnoremap <silent><LocalLeader>h :<C-u>Telescope highlights<CR>
-	nnoremap <silent><LocalLeader>j :<C-u>Telescope jumplist<CR>
-	nnoremap <silent><LocalLeader>m :<C-u>Telescope marks<CR>
-	nnoremap <silent><LocalLeader>v :<C-u>Telescope registers<CR>
-	nnoremap <silent><LocalLeader>u :<C-u>Telescope spell_suggest<CR>
-	nnoremap <silent><LocalLeader>s :<C-u>Telescope session-lens search_session<CR>
-	nnoremap <silent><LocalLeader>x :<C-u>Telescope oldfiles<CR>
-	nnoremap <silent><LocalLeader>z :<C-u>Telescope zoxide list<CR>
-	nnoremap <silent><LocalLeader>; :<C-u>Telescope command_history<CR>
-	nnoremap <silent><LocalLeader>/ :<C-u>Telescope search_history<CR>
-	nnoremap <silent> <Leader>gg :Telescope grep_string<CR>
-endif
-
 if dein#tap('fern.vim')
-	nnoremap <silent> <LocalLeader>e :<C-u>Fern -toggle -drawer .<CR>
-	nnoremap <silent> <LocalLeader>a :<C-u>Fern -reveal=% -drawer .<CR>
+	nnoremap <LocalLeader>e <cmd>Fern -toggle -drawer .<CR>
+	nnoremap <LocalLeader>a <cmd>Fern -reveal=% -drawer .<CR>
 endif
 
 if dein#tap('symbols-outline.nvim')
-	nnoremap <silent> <Leader>b :<C-u>SymbolsOutline<CR>
+	nnoremap <Leader>o <cmd>SymbolsOutline<CR>
 endif
 
 if dein#tap('vim-vsnip')
@@ -35,16 +18,7 @@ endif
 if dein#tap('emmet-vim')
 	autocmd user_events FileType html,css,vue,javascript,javascriptreact,svelte
 		\ EmmetInstall
-		\ | imap <silent><buffer> <C-y> <Plug>(emmet-expand-abbr)
-endif
-
-if dein#tap('vim-gitgutter')
-	nmap ]g <Plug>(GitGutterNextHunk)
-	nmap [g <Plug>(GitGutterPrevHunk)
-	nmap gS <Plug>(GitGutterStageHunk)
-	xmap gS <Plug>(GitGutterStageHunk)
-	nmap <Leader>gr <Plug>(GitGutterUndoHunk)
-	nmap gs <Plug>(GitGutterPreviewHunk)
+"		\ | imap <silent><buffer> <C-y> <Plug>(emmet-expand-abbr)
 endif
 
 if dein#tap('vim-sandwich')
@@ -96,7 +70,7 @@ if dein#tap('vim-sidemenu')
 endif
 
 if dein#tap('vim-indent-guides')
-	nmap <silent><Leader>ti :<C-u>IndentGuidesToggle<CR>
+	nmap <Leader>ti <cmd>IndentGuidesToggle<CR>
 endif
 
 if dein#tap('vim-signature')
@@ -124,6 +98,16 @@ if dein#tap('vim-signature')
 		\ 'GotoNextMarkerAny': ']=',
 		\ 'GotoPrevMarkerAny': '[=',
 		\ }
+endif
+
+if dein#tap('nvim-bqf')
+	nmap <Leader>q <cmd>lua require('user').qflist.toggle()<CR>
+endif
+
+if dein#tap('goto-preview')
+	nnoremap gpd <cmd>lua require('goto-preview').goto_preview_definition()<CR>
+	nnoremap gpi <cmd>lua require('goto-preview').goto_preview_implementation()<CR>
+	nnoremap gpc <cmd>lua require('goto-preview').close_all_win()<CR>
 endif
 
 if dein#tap('committia.vim')
@@ -155,72 +139,78 @@ if dein#tap('vim-shot-f')
 	omap T  <Plug>(shot-f-T)
 endif
 
+if dein#tap('todo-comments.nvim')
+	nnoremap <LocalLeader>d <cmd>TodoTelescope<CR>
+endif
+
 if dein#tap('trouble.nvim')
-	nnoremap <leader>e <cmd>TroubleToggle lsp_document_diagnostics<cr>
-	nnoremap <leader>r <cmd>TroubleToggle lsp_workspace_diagnostics<cr>
-	nnoremap <leader>xq <cmd>TroubleToggle quickfix<cr>
-	nnoremap <leader>xl <cmd>TroubleToggle loclist<cr>
-	nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+	nnoremap <leader>e <cmd>TroubleToggle lsp_document_diagnostics<CR>
+	nnoremap <leader>r <cmd>TroubleToggle lsp_workspace_diagnostics<CR>
+	nnoremap <leader>xq <cmd>TroubleToggle quickfix<CR>
+	nnoremap <leader>xl <cmd>TroubleToggle loclist<CR>
+	nnoremap ]t <cmd>lua require("trouble").next({skip_groups = true, jump = true})<CR>
+	nnoremap [t <cmd>lua require("trouble").previous({skip_groups = true, jump = true})<CR>
+	nnoremap gR <cmd>TroubleToggle lsp_references<CR>
 endif
 
 if dein#tap('diffview.nvim')
-	nnoremap <silent> <Leader>gv :<C-u>DiffviewOpen<CR>
+	nnoremap <Leader>gv <cmd>DiffviewOpen<CR>
 endif
 
 if dein#tap('vimwiki')
-	nnoremap <silent> <Leader>W :<C-u>VimwikiIndex<CR>
+	nnoremap <Leader>W <cmd>VimwikiIndex<CR>
 endif
 
 if dein#tap('vim-choosewin')
 	nmap -         <Plug>(choosewin)
-	nmap <Leader>- :<C-u>ChooseWinSwapStay<CR>
+	nmap <Leader>- <cmd>ChooseWinSwapStay<CR>
 endif
 
-if dein#tap('vimagit')
-	nnoremap <silent> <Leader>mg :Magit<CR>
+if dein#tap('neogit')
+	nnoremap <Leader>mg <cmd>Neogit<CR>
 endif
 
 if dein#tap('gina.vim')
-	nnoremap <silent> <leader>ga :Gina add %:p<CR>
-	nnoremap <silent> <leader>gd :Gina compare<CR>
-	nnoremap <silent> <leader>gc :Gina commit<CR>
-	nnoremap <silent> <leader>gb :Gina blame --width=40<CR>
-	nnoremap <silent> <leader>gs :Gina status -s<CR>
-	nnoremap <silent> <leader>gl :Gina log --graph --all<CR>
-	nnoremap <silent> <leader>gF :Gina! fetch<CR>
-	nnoremap <silent> <leader>gp :Gina! push<CR>
-	nnoremap <silent> <leader>go :,Gina browse :<CR>
-	vnoremap <silent> <leader>go :Gina browse :<CR>
+	nnoremap <silent> <leader>ga <cmd>Gina add %:p<CR>
+	nnoremap <silent> <leader>gd <cmd>Gina compare<CR>
+	nnoremap <silent> <leader>gc <cmd>Gina commit<CR>
+	nnoremap <silent> <leader>gb <cmd>Gina blame --width=40<CR>
+	nnoremap <silent> <leader>gs <cmd>Gina status -s<CR>
+	nnoremap <silent> <leader>gl <cmd>Gina log --graph --all<CR>
+	nnoremap <silent> <leader>gF <cmd>Gina! fetch<CR>
+	" nnoremap <silent> <leader>gp <cmd>Gina! push<CR>
+	nnoremap <silent> <leader>go <cmd>,Gina browse :<CR>
+	xnoremap <silent> <leader>go :Gina browse :<CR>
 endif
 
-if dein#tap('vim-gitgrep')
-	nnoremap <silent> <Leader>;
-		\ :<C-u>call gitgrep#run('', expand('<cword>'), { 'ignorecase': 1 })<CR>
-	autocmd user_events FileType GitGrep
-		\  nnoremap <buffer> gq :<C-u>quit<CR>
-		\| nmap <buffer> <nowait> <Space> zak
+if dein#tap('zen-mode.nvim')
+	nnoremap <silent> <Leader>z <cmd>ZenMode<CR>
+endif
+
+if dein#tap('rest.nvim')
+	nmap <silent> ,ht <Plug>RestNvim
 endif
 
 if dein#tap('any-jump.vim')
 	" Normal mode: Jump to definition under cursor
-	nnoremap <silent> <leader>ii :AnyJump<CR>
+	nnoremap <silent> <leader>ii <cmd>AnyJump<CR>
 
 	" Visual mode: jump to selected text in visual mode
-	xnoremap <silent> <leader>ii :AnyJumpVisual<CR>
+	xnoremap <silent> <leader>ii <cmd>AnyJumpVisual<CR>
 
 	" Normal mode: open previous opened file (after jump)
-	nnoremap <silent> <leader>ib :AnyJumpBack<CR>
+	nnoremap <silent> <leader>ib <cmd>AnyJumpBack<CR>
 
 	" Normal mode: open last closed search window again
-	nnoremap <silent> <leader>il :AnyJumpLastResults<CR>
+	nnoremap <silent> <leader>il <cmd>AnyJumpLastResults<CR>
 endif
 
 if dein#tap('undotree')
-	nnoremap <Leader>gu :UndotreeToggle<CR>
+	nnoremap <Leader>gu <cmd>UndotreeToggle<CR>
 endif
 
 if dein#tap('thesaurus_query.vim')
-	nnoremap <silent> <Leader>K :<C-u>ThesaurusQueryReplaceCurrentWord<CR>
+	nnoremap <silent> <Leader>K <cmd>ThesaurusQueryReplaceCurrentWord<CR>
 endif
 
 if dein#tap('vim-asterisk')
@@ -236,10 +226,10 @@ if dein#tap('vim-asterisk')
 endif
 
 if dein#tap('sideways.vim')
-	nnoremap <silent> <, :SidewaysLeft<CR>
-	nnoremap <silent> >, :SidewaysRight<CR>
-	nnoremap <silent> [, :SidewaysJumpLeft<CR>
-	nnoremap <silent> ], :SidewaysJumpRight<CR>
+	nnoremap <silent> <, <cmd>SidewaysLeft<CR>
+	nnoremap <silent> >, <cmd>SidewaysRight<CR>
+	nnoremap <silent> [, <cmd>SidewaysJumpLeft<CR>
+	nnoremap <silent> ], <cmd>SidewaysJumpRight<CR>
 	omap <silent> a, <Plug>SidewaysArgumentTextobjA
 	xmap <silent> a, <Plug>SidewaysArgumentTextobjA
 	omap <silent> i, <Plug>SidewaysArgumentTextobjI
@@ -247,15 +237,15 @@ if dein#tap('sideways.vim')
 endif
 
 if dein#tap('splitjoin.vim')
-	nmap sj :SplitjoinJoin<CR>
-	nmap sk :SplitjoinSplit<CR>
+	nmap sj <cmd>SplitjoinJoin<CR>
+	nmap sk <cmd>SplitjoinSplit<CR>
 endif
 
 if dein#tap('linediff.vim')
-	vnoremap <Leader>mdf :Linediff<CR>
-	vnoremap <Leader>mda :LinediffAdd<CR>
-	nnoremap <Leader>mds :<C-u>LinediffShow<CR>
-	nnoremap <Leader>mdr :<C-u>LinediffReset<CR>
+	xnoremap <Leader>mdf :Linediff<CR>
+	xnoremap <Leader>mda :LinediffAdd<CR>
+	nnoremap <Leader>mds <cmd>LinediffShow<CR>
+	nnoremap <Leader>mdr <cmd>LinediffReset<CR>
 endif
 
 if dein#tap('dsf.vim')
@@ -265,7 +255,7 @@ endif
 
 if dein#tap('caw.vim')
 	function! InitCaw() abort
-		if &l:modifiable && &buftype ==# '' && &filetype != 'gitrebase'
+		if &l:modifiable && &buftype ==# '' && &filetype !=# 'gitrebase'
 			xmap <buffer> <Leader>V <Plug>(caw:wrap:toggle)
 			nmap <buffer> <Leader>V <Plug>(caw:wrap:toggle)
 			xmap <buffer> <Leader>v <Plug>(caw:hatpos:toggle)
