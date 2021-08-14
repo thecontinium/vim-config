@@ -98,8 +98,6 @@ wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="P"})
 --       ["/"] = { "Search History" },
 --   },
 -- })
--- 
--- 
 -- wk.register({
 --   ["<Leader>"] = {
 --       ["b"] = { "Symbols"},

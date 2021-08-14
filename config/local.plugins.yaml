@@ -51,14 +51,14 @@
 #   on_lua: zk
 #   on_ft: markdown
 #   hook_post_source: lua require('local-plugins.zk')
-#   depends: [nvim-fzf, telescope]
+#   depends: [nvim-fzf, telescope.nvim]
 
 - { repo: vijaymarupudi/nvim-fzf, if: has("nvim-0.5"), lazy: true }
 
-- repo: jvgrootveld/telescope-zoxide
-  if: has('nvim-0.5')
-  lazy: true
-  hook_post_source: lua require('plugins.telescope-zoxide')
+# - repo: jvgrootveld/telescope-zoxide
+#   if: has('nvim-0.5')
+#   lazy: true
+#   hook_post_source: lua require('plugins.telescope-zoxide')
 
 # - repo: vimwiki/vimwiki
 #   on_map: { n: <Plug> }
@@ -299,7 +299,7 @@
 - repo: hrsh7th/nvim-compe
   if: has('nvim-0.5')
   on_event: InsertEnter
-  # depends: compe-tmux
+  depends: [ nvim-autopairs, compe-tmux, compe-conjure ]
   hook_post_source: lua require('local-plugins.compe')
   hook_source: |-
     augroup user_plugin_compe

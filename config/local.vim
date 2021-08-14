@@ -22,6 +22,10 @@ if dein#tap('fern.vim')
 	endif
 endif
 " }}}
+" zk {{{
+command! -nargs=0 ZkIndex :lua require'lspconfig'.zk.index()
+command! -nargs=? ZkNew :lua require'lspconfig'.zk.new(<args>)
+" }}}
 " Vista {{{
 if dein#tap('vista.vim') &&	has('nvim-0.5')
 	let g:vista_executive_for.clojure = 'nvim_lsp'
@@ -102,7 +106,7 @@ augroup END " }}}
 
 if dein#tap('neosnippet.vim')
   smap <expr><C-o> neosnippet#expandable_or_jumpable()
-    \ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
+   \ ? "\<Plug>(neosnippet_expand_or_jump)" : "\<ESC>o"
 endif
 
 if dein#tap('vim-sexp')
@@ -137,18 +141,18 @@ endif
 
 if dein#tap('gina.vim')
   nnoremap <silent> <leader>gL :Gina log :<CR>
+  nnoremap <silent> <leader>gp :Gina push<CR>
   " nnoremap <silent> <leader>ga :Gina add %:p<CR>
   " nnoremap <silent> <leader>gd :Gina compare -R<CR>
   " nnoremap <silent> <leader>gc :Gina commit<CR>
   " nnoremap <silent> <leader>gb :Gina blame<CR>
   " nnoremap <silent> <leader>gF :Gina fetch<CR>
   " nnoremap <silent> <leader>gS :Gina status<CR>
-  nnoremap <silent> <leader>gp :Gina push<CR>
 endif
 " }}}
 " Easymotion Settings {{{
 
-if dein#tap('vim-easymotion')
+" if dein#tap('vim-easymotion')
   " nmap ss <Plug>(easymotion-s2)
   " nmap sd <Plug>(easymotion-s)
   " nmap sf <Plug>(easymotion-overwin-f)
@@ -160,7 +164,7 @@ if dein#tap('vim-easymotion')
   " omap s/ <Plug>(easymotion-tn)
   " map  sn <Plug>(easymotion-next)
   " map  sp <Plug>(easymotion-prev)
-endif
+" endif
 " }}}
 " - vim-UnconditionalPaste Settings {{{
 
