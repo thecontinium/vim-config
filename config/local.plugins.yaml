@@ -288,13 +288,19 @@
 # - repo: neovim/nvim-lspconfig
 #   depends: [ nvim-lspinstall, lsp_signature.nvim ]
 #   on_event: VimEnter
-#   hook_post_source: luafile $VIM_PATH/config/local.plugins/lspconfig.lua
+#   hook_post_source: luafile $VIM_PATH/config/local-plugins/lspconfig.lua
 #   hook_add: |
 #     sign define LspDiagnosticsSignError text=✖ texthl=LspDiagnosticsSignError linehl= numhl=
 #     sign define LspDiagnosticsSignWarning text=⬪ texthl=LspDiagnosticsSignWarning linehl= numhl=
 #     sign define LspDiagnosticsSignInformation text=▫ texthl=LspDiagnosticsSignInformation linehl= numhl=
 #     sign define LspDiagnosticsSignHint text=▪ texthl=LspDiagnosticsSignHint linehl= numhl=
 #
+
+- repo: neovim/nvim-lspconfig
+  if: has('nvim-0.5')
+  depends: [ lsp_signature.nvim, todo-comments.nvim, lua-dev.nvim ]
+  on_event: VimEnter
+  hook_post_source: lua require('local-plugins.lspconfig')
 
 - repo: hrsh7th/nvim-compe
   if: has('nvim-0.5')
