@@ -296,11 +296,11 @@
 #     sign define LspDiagnosticsSignHint text=▪ texthl=LspDiagnosticsSignHint linehl= numhl=
 #
 
-- repo: neovim/nvim-lspconfig
-  if: has('nvim-0.5')
-  depends: [ lsp_signature.nvim, todo-comments.nvim, lua-dev.nvim ]
-  on_event: VimEnter
-  hook_post_source: lua require('local-plugins.lspconfig')
+# - repo: neovim/nvim-lspconfig
+#   if: has('nvim-0.5')
+#   depends: [ lsp_signature.nvim, todo-comments.nvim, lua-dev.nvim ]
+#   on_event: VimEnter
+#   hook_post_source: lua require('local-plugins.lspconfig')
 
 - repo: hrsh7th/nvim-compe
   if: has('nvim-0.5')
