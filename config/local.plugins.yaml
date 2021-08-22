@@ -277,8 +277,10 @@
 # ==========================================
 # Interface
 # ---------
-- { repo: haya14busa/vim-asterisk, if: 0 }
-- { repo: thecontinium/vim-asterisk, on_map: { nv: <Plug> }}
+
+- repo: thecontinium/vim-asterisk
+  on_map: { nv: <Plug> }
+  overwrite: 1
 
 # ==========================================
 # Completion and code analysis
