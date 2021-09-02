@@ -16,11 +16,11 @@
 - repo: tpope/vim-sleuth
   hook_add: |-
     let g:sleuth_neighbor_limit = 5
-    autocmd user_events FileType markdown,yaml let b:sleuth_automatic = 0
+    autocmd user_events FileType markdown,yaml,help
+      \ let b:sleuth_automatic = 0
 
 - { repo: folke/lsp-colors.nvim, if: has('nvim-0.5') }
 - { repo: nvim-lua/plenary.nvim, if: has('nvim-0.5') }
-- { repo: nvim-lua/popup.nvim, if: has('nvim-0.5') }
 - { repo: kyazdani42/nvim-web-devicons, if: has('nvim-0.5') }
 
 - repo: sgur/vim-editorconfig
@@ -74,7 +74,6 @@
   hook_post_source: lua require('plugins.which-key')
 
 - repo: tversteeg/registers.nvim
-  rev: main
   if: has('nvim-0.5')
   on_cmd: Registers
   on_map: { i: '<C-r>', n: '"' }
@@ -84,7 +83,12 @@
   if: has('nvim-0.5')
   on_map: { n: <Plug>RestNvim }
   on_ft: http
-  hook_post_source: lua require('rest-nvim').setup()
+  hook_post_source: lua require('rest-nvim').setup{skip_ssl_verification=true}
+  hook_add: |
+    augroup user_events
+      autocmd BufNewFile,BufRead *.http setlocal expandtab
+      autocmd FileType httpResult nnoremap <buffer> q <cmd>quit<CR>
+    augroup END
 
 - repo: pechorin/any-jump.vim
   on_cmd: [ AnyJump, AnyJumpVisual ]
@@ -151,7 +155,6 @@
     augroup END
 
 - repo: lewis6991/gitsigns.nvim
-  rev: main
   if: has('nvim-0.5')
   on_event: VimEnter
   hook_post_source: lua require('plugins.gitsigns')
@@ -228,7 +231,7 @@
   hook_source: |-
     let g:calendar_google_calendar = 1
     let g:calendar_google_task = 1
-    "let g:calendar_cache_directory = $XDG_DATA_HOME.'/nvim/calendar'"
+    "let g:calendar_cache_directory = $VIM_DATA_PATH.'/calendar'"
 
 - repo: deris/vim-shot-f
   on_map: { nxo: <Plug> }
@@ -269,12 +272,16 @@
 
 - repo: neovim/nvim-lspconfig
   if: has('nvim-0.5')
-  depends: [ lsp_signature.nvim, todo-comments.nvim, lua-dev.nvim ]
+  depends:
+    - lsp_signature.nvim
+    - todo-comments.nvim
+    - lua-dev.nvim
+    - cmp-nvim-lsp
   on_event: VimEnter
   hook_post_source: lua require('plugins.lspconfig')
 
-- { repo: ray-x/lsp_signature.nvim, if: has('nvim-0.5'), lazy: true }
-- { repo: folke/lua-dev.nvim, if: has('nvim-0.5'), lazy: true }
+- { repo: ray-x/lsp_signature.nvim, lazy: true }
+- { repo: folke/lua-dev.nvim, lazy: true }
 
 - repo: folke/todo-comments.nvim
   if: has('nvim-0.5')
@@ -286,29 +293,26 @@
   on_event: InsertEnter
   hook_post_source: lua require('nvim-autopairs').setup()
 
-- repo: hrsh7th/nvim-compe
+- repo: hrsh7th/nvim-cmp
   if: has('nvim-0.5')
-  on_event: InsertEnter
-  depends: [ nvim-autopairs, compe-tmux, vim-vsnip ]
-  hook_post_source: lua require('plugins.compe')
-  hook_source: |-
-    augroup user_plugin_compe
-      autocmd!
-      autocmd FileType denite-filter,clap_input
-        \ call compe#setup({'enabled': v:false}, 0)
-    augroup END
+  on_event: VimEnter
+  depends: [ nvim-autopairs, vim-vsnip ]
+  hook_post_source: lua require('plugins.cmp')
 
-- repo: andersevenrud/compe-tmux
-  if: has('nvim-0.5')
-  lazy: true
-  hook_add: let g:loaded_compe_tmux = v:true
+- { repo: hrsh7th/cmp-nvim-lsp, lazy: true }
+- { repo: hrsh7th/cmp-nvim-lua, on_source: nvim-cmp }
+- { repo: hrsh7th/cmp-buffer, on_source: nvim-cmp }
+- { repo: hrsh7th/cmp-vsnip, on_source: nvim-cmp }
+- { repo: hrsh7th/cmp-path, on_source: nvim-cmp }
+- { repo: hrsh7th/cmp-emoji, on_source: nvim-cmp }
+- { repo: andersevenrud/compe-tmux, rev: cmp, on_source: nvim-cmp }
 
 - repo: hrsh7th/vim-vsnip
   depends: [ vim-vsnip-integ, friendly-snippets ]
   on_event: InsertEnter
   merged: 0
   hook_add: |-
-    let g:vsnip_snippet_dir = expand('$XDG_DATA_HOME/nvim/vsnip')
+    let g:vsnip_snippet_dir = expand('$VIM_DATA_PATH/vsnip')
     let g:vsnip_snippet_dirs = [ expand('$VIM_PATH/snippets') ]
     let g:vsnip_filetypes = {}
     let g:vsnip_filetypes.javascriptreact = ['javascript']
@@ -324,7 +328,7 @@
 - repo: sindrets/diffview.nvim
   if: has('nvim-0.5')
   on_cmd: DiffviewOpen
-  hook_post_source: lua require('plugins.diffview').init()
+  hook_post_source: lua require('plugins.diffview').setup()
 
 - repo: nvim-telescope/telescope.nvim
   if: has('nvim-0.5')
@@ -340,7 +344,6 @@
   hook_post_source: lua require('plugins.session-lens')
 
 - repo: jvgrootveld/telescope-zoxide
-  rev: main
   if: has('nvim-0.5')
   lazy: true
   hook_post_source: lua require('plugins.telescope-zoxide')
@@ -478,7 +481,8 @@
 # Operators and text objects
 # ---------
 - repo: machakann/vim-sandwich
-  on_map: { vonx: <Plug>(operator-sandwich- }
+  on_map:
+    nxo: [ <Plug>(operator-sandwich-, <Plug>(textobj-sandwich- ]
   hook_add: |-
     let g:sandwich_no_default_key_mappings = 1
     let g:operator_sandwich_no_default_key_mappings = 1
@@ -487,17 +491,17 @@
 - repo: mfussenegger/nvim-ts-hint-textobject
   if: has('nvim-0.5')
   depends: nvim-treesitter
-  on_event: FileType
-  hook_source: |-
-    omap     <silent> m :<C-U>lua require('tsht').nodes()<CR>
-    vnoremap <silent> m <cmd>lua require('tsht').nodes()<CR>
+  on_lua: tsht
 
-- { repo: AndrewRadev/sideways.vim, rev: main, on_map: { onx: <Plug>Sideways }}
-- { repo: AndrewRadev/linediff.vim, on_cmd: Linediff }
+- repo: AndrewRadev/sideways.vim
+  on_map:
+    xo: <Plug>Sideways
+    n: [ SidewaysLeft, SidewaysRight, SidewaysJumpLeft, SidewaysJumpRight ]
+
+- { repo: AndrewRadev/linediff.vim, on_cmd: [ Linediff, LinediffAdd ]}
 
 - repo: AndrewRadev/splitjoin.vim
-  rev: main
-  on_map: { n: <Plug>Splitjoin }
+  on_map: { n: [ SplitjoinJoin, SplitjoinSplit ]}
   hook_add: |-
     let g:splitjoin_join_mapping = ''
     let g:splitjoin_split_mapping = ''

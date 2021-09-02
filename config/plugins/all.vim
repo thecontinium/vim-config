@@ -53,8 +53,8 @@ if dein#tap('accelerated-jk')
 endif
 
 if dein#tap('vim-edgemotion')
-	map gj <Plug>(edgemotion-j)
-	map gk <Plug>(edgemotion-k)
+	nmap gj <Plug>(edgemotion-j)
+	nmap gk <Plug>(edgemotion-k)
 	xmap gj <Plug>(edgemotion-j)
 	xmap gk <Plug>(edgemotion-k)
 endif
@@ -140,7 +140,7 @@ if dein#tap('vim-shot-f')
 endif
 
 if dein#tap('todo-comments.nvim')
-	nnoremap <LocalLeader>d <cmd>TodoTelescope<CR>
+	nnoremap <LocalLeader>dt <cmd>TodoTelescope<CR>
 endif
 
 if dein#tap('trouble.nvim')
@@ -178,7 +178,7 @@ if dein#tap('gina.vim')
 	nnoremap <silent> <leader>gs <cmd>Gina status -s<CR>
 	nnoremap <silent> <leader>gl <cmd>Gina log --graph --all<CR>
 	nnoremap <silent> <leader>gF <cmd>Gina! fetch<CR>
-	" nnoremap <silent> <leader>gp <cmd>Gina! push<CR>
+	nnoremap <silent> <leader>gp <cmd>Gina! push<CR>
 	nnoremap <silent> <leader>go <cmd>,Gina browse :<CR>
 	xnoremap <silent> <leader>go :Gina browse :<CR>
 endif
@@ -214,15 +214,28 @@ if dein#tap('thesaurus_query.vim')
 endif
 
 if dein#tap('vim-asterisk')
-	map *   <Plug>(asterisk-g*)
-	map g*  <Plug>(asterisk-*)
-	map #   <Plug>(asterisk-g#)
-	map g#  <Plug>(asterisk-#)
+	nmap *   <Plug>(asterisk-g*)
+	nmap g*  <Plug>(asterisk-*)
+	nmap #   <Plug>(asterisk-g#)
+	nmap g#  <Plug>(asterisk-#)
+	xmap *   <Plug>(asterisk-g*)
+	xmap g*  <Plug>(asterisk-*)
+	xmap #   <Plug>(asterisk-g#)
+	xmap g#  <Plug>(asterisk-#)
 
-	map z*  <Plug>(asterisk-z*)
-	map gz* <Plug>(asterisk-gz*)
-	map z#  <Plug>(asterisk-z#)
-	map gz# <Plug>(asterisk-gz#)
+	nmap z*  <Plug>(asterisk-z*)
+	nmap gz* <Plug>(asterisk-gz*)
+	nmap z#  <Plug>(asterisk-z#)
+	nmap gz# <Plug>(asterisk-gz#)
+	xmap z*  <Plug>(asterisk-z*)
+	xmap gz* <Plug>(asterisk-gz*)
+	xmap z#  <Plug>(asterisk-z#)
+	xmap gz# <Plug>(asterisk-gz#)
+endif
+
+if dein#tap('nvim-ts-hint-textobject')
+	omap              am <cmd>lua require('tsht').nodes()<CR>
+	xnoremap <silent> am :lua require('tsht').nodes()<CR>
 endif
 
 if dein#tap('sideways.vim')
