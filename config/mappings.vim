@@ -32,7 +32,7 @@ xmap <Leader><Leader> <Esc>
 nnoremap <CR> za
 
 " Focus the current fold by closing all others
-nnoremap <S-Return> zMzvzt
+nnoremap <S-Return> zMzv
 
 " The plugin rhysd/accelerated-jk moves through display-lines in normal mode,
 " these mappings will move through display-lines in visual mode too.
@@ -68,8 +68,8 @@ nnoremap zl z4l
 nnoremap zh z4h
 
 " Resize tab windows after top/bottom window movement
-nnoremap <C-w>K <C-w>K<C-w>=
-nnoremap <C-w>J <C-w>J<C-w>=
+" nnoremap <C-w>K <C-w>K<C-w>=
+" nnoremap <C-w>J <C-w>J<C-w>=
 
 " Improve scroll, credits: https://github.com/Shougo
 " noremap <expr> <C-f> max([winheight(0) - 2, 1])
@@ -212,7 +212,7 @@ cnoremap <Down> <C-n>
 " ---------------
 
 " Switch (window) to the directory of the current opened buffer
-map <Leader>cd :lcd %:p:h<CR>:pwd<CR>
+nmap <Leader>cd :lcd %:p:h<CR>:pwd<CR>
 
 " Open file under the cursor in a vsplit
 nnoremap gf <cmd>vertical wincmd f<CR>
@@ -309,8 +309,8 @@ endif
 
 " Ultimatus Quitos
 if get(g:, 'enable_universal_quit_mapping', 1)
-	autocmd user_events BufWinEnter,BufNew,BufNewFile *
-		\ if empty(&buftype) && ! mapcheck('q', 'n')
+	autocmd user_events BufWinEnter,VimEnter *
+		\  if ! maparg('q', 'n')
 		\|   nnoremap <buffer> q <cmd>quit<CR>
 		\| endif
 endif
@@ -378,7 +378,7 @@ function! s:jump_buffer(direction)
 
 	for i in searchrange
 		let l:nr = jumplist[i]['bufnr']
-		if l:nr != bufnr('%') && bufname(l:nr) !~? "^\a\+://"
+		if l:nr != bufnr('%') && bufname(l:nr) !~? '^\a\+://'
 			let n = abs((i - curjump) * a:direction)
 			echo 'Executing' jumpcmdstr n . ' times'
 			execute 'normal! ' . n . jumpcmdchr

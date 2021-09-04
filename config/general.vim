@@ -14,23 +14,18 @@ set path+=**                 " Directories to search when using gf and friends
 set isfname-==               " Remove =, detects filename in var=/foo/bar
 set virtualedit=block        " Position cursor anywhere in visual block
 set synmaxcol=2500           " Don't syntax highlight long lines
-set formatoptions+=1         " Don't break lines after a one-letter word
-set formatoptions-=t         " Don't auto-wrap text
-set formatoptions-=o         " Disable comment-continuation (normal 'o'/'O')
-if has('patch-7.3.541')
-	set formatoptions+=j       " Remove comment leader when joining lines
-endif
 
 if has('vim_starting')
 	set encoding=utf-8
 	scriptencoding utf-8
 endif
 
-" What to save for views and sessions:
-set viewoptions=folds,cursor,curdir,slash,unix
+" What to save for views and sessions
+set viewoptions=folds,cursor,curdir
 set sessionoptions=curdir,help,tabpages,winsize
 
-if has('mac') && has('vim_starting')
+" Fast cliboard setup for macOS
+if has('mac') && executable('pbcopy') && has('vim_starting')
 	let g:clipboard = {
 		\   'name': 'macOS-clipboard',
 		\   'copy': {
@@ -71,11 +66,11 @@ endif
 set undofile
 if ! has('nvim')
 	set swapfile nobackup
-	set directory=$XDG_DATA_HOME/nvim/swap//
-	set undodir=$XDG_DATA_HOME/nvim/undo//
-	set backupdir=$XDG_DATA_HOME/nvim/backup/
-	set viewdir=$XDG_DATA_HOME/nvim/view/
-	set spellfile=$XDG_DATA_HOME/nvim/spell/en.utf-8.add
+	set directory=$VIM_DATA_PATH/swap//
+	set undodir=$VIM_DATA_PATH/undo//
+	set backupdir=$VIM_DATA_PATH/backup/
+	set viewdir=$VIM_DATA_PATH/view/
+	set spellfile=$VIM_DATA_PATH/spell/en.utf-8.add
 endif
 
 " History saving
@@ -84,7 +79,7 @@ set history=2000
 if has('nvim') && ! has('win32') && ! has('win64')
 	set shada='400,<20,@100,s10,f1,h,r/tmp,r/private/var
 else
-	set viminfo='400,<20,@50,f1,h,n$XDG_CACHE_HOME/viminfo
+	set viminfo='400,<20,@50,f1,h,n$HOME/.cache/viminfo
 endif
 
 augroup user_persistent_undo
@@ -98,8 +93,8 @@ augroup END
 
 " If sudo, disable vim swap/backup/undo/shada/viminfo writing
 if $SUDO_USER !=# '' && $USER !=# $SUDO_USER
-		\ && $HOME !=# expand('~'.$USER, 1)
-		\ && $HOME ==# expand('~'.$SUDO_USER, 1)
+		\ && $HOME !=# expand('~' . $USER, 1)
+		\ && $HOME ==# expand('~' . $SUDO_USER, 1)
 
 	set noswapfile
 	set nobackup
@@ -141,17 +136,13 @@ set autoindent      " Use same indenting on new lines
 " set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
 
-if exists('&breakindent')
-	set breakindentopt=shift:2,min:20
-endif
-
 " }}}
 " Timing {{{
 " ------
 set timeout ttimeout
 set timeoutlen=500   " Time out on mappings
 set ttimeoutlen=10   " Time out on key codes
-set updatetime=400   " Idle time to write swap and trigger CursorHold
+set updatetime=200   " Idle time to write swap and trigger CursorHold
 set redrawtime=2000  " Time in milliseconds for stopping display redraw
 
 " }}}
@@ -162,14 +153,6 @@ set smartcase     " Keep case when searching with *
 set infercase     " Adjust case in insert completion mode
 set incsearch     " Incremental search
 set wrapscan      " Searches wrap around the end of the file
-
-set complete=.,w,b,k  " C-n completion: Scan buffers, windows and dictionary
-
-" Set popup max width/height.
-set pumheight=10
-if exists('+pumwidth')
-	set pumwidth=10
-endif
 
 if exists('+inccommand')
 	set inccommand=nosplit
@@ -186,7 +169,7 @@ elseif executable('ag')
 endif
 
 " }}}
-" Behavior {{{
+" Formatting {{{
 " --------
 set nowrap                      " No wrap by default
 set linebreak                   " Break long lines at 'breakat'
@@ -198,7 +181,23 @@ set switchbuf=uselast           " Use last window with quickfix entries
 set backspace=indent,eol,start  " Intuitive backspacing in insert mode
 set diffopt=filler,iwhite       " Diff mode: show fillers, ignore whitespace
 
-set completeopt=menuone         " Always show menu, even for one item
+if exists('&breakindent')
+	set breakindentopt=shift:2,min:20
+endif
+
+set formatoptions+=1         " Don't break lines after a one-letter word
+set formatoptions-=t         " Don't auto-wrap text
+set formatoptions-=o         " Disable comment-continuation (normal 'o'/'O')
+if has('patch-7.3.541')
+	set formatoptions+=j       " Remove comment leader when joining lines
+endif
+
+" }}}
+" Completion {{{
+" --------
+set complete=.,w,b,k  " C-n completion: Scan buffers, windows and dictionary
+
+set completeopt=menu,menuone    " Always show menu, even for one item
 if has('patch-7.4.775')
 	set completeopt+=noselect     " Do not select a match in the menu.
 endif
@@ -225,13 +224,11 @@ set noruler             " Disable default status ruler
 set list                " Show hidden characters
 
 set showtabline=2       " Always show the tabs line
+set helpheight=0        " Disable help window resizing
 set winwidth=30         " Minimum width for active window
 set winminwidth=10      " Minimum width for inactive windows
-" set winheight=4         " Minimum height for active window
-" set winminheight=4      " Minimum height for inactive window
-set pumheight=15        " Pop-up menu's line height
-set helpheight=12       " Minimum help window height
-set previewheight=12    " Completion preview height
+" set winheight=1         " Minimum height for active window
+" set winminheight=0      " Minimum height for inactive window
 
 set noshowcmd           " Don't show command in status line
 set cmdheight=1         " Height of the command line
@@ -241,6 +238,12 @@ set laststatus=2        " Always show a status line
 set colorcolumn=+0      " Column highlight at textwidth's max character-limit
 set display=lastline
 
+" Set popup max width/height.
+set pumheight=15        " Pop-up menu's line height
+if exists('+pumwidth')
+	set pumwidth=10       " Pop-up menu's line width
+endif
+
 " UI Symbols
 " icons:  ▏│ ¦ ╎ ┆ ⋮ ⦙ ┊ 
 let &showbreak='↳  '
@@ -249,7 +252,7 @@ set listchars=tab:\▏\ ,extends:⟫,precedes:⟪,nbsp:␣,trail:·
 if has('folding') && has('vim_starting')
 	set foldenable
 	set foldmethod=indent
-	set foldlevelstart=99
+	set foldlevel=99
 endif
 
 if has('patch-7.4.314')
@@ -299,7 +302,7 @@ augroup user_general_settings
 	autocmd VimResized * wincmd =
 
 	" Force write shada on leaving nvim
-	" autocmd VimLeave * if has('nvim') | wshada! | endif
+	autocmd VimLeave * if has('nvim') | wshada! | endif
 
 	" Check if file changed when its window is focus, more eager than 'autoread'
 	autocmd FocusGained * checktime
@@ -333,10 +336,9 @@ augroup user_general_settings
 	" When editing a file, always jump to the last known cursor position.
 	" Credits: https://github.com/farmergreg/vim-lastplace
 	autocmd BufReadPost *
-		\ if index(['gitcommit', 'gitrebase', 'svn', 'hgcommit'], &filetype) == -1 &&
-		\      index(['quickfix', 'nofile', 'help', 'prompt'], &buftype) == -1 &&
-		\      ! &diff && ! &previewwindow &&
-		\      line("'\"") > 0 && line("'\"") <= line("$")
+		\ if index(['gitcommit', 'gitrebase', 'svn', 'hgcommit'], &filetype) == -1
+		\      && empty(&buftype) && ! &diff && ! &previewwindow
+		\      && line("'\"") > 0 && line("'\"") <= line("$")
 		\|   if line("w$") == line("$")
 		\|     execute "normal! g`\""
 		\|   elseif line("$") - line("'\"") > ((line("w$") - line("w0")) / 2) - 1
@@ -351,15 +353,12 @@ augroup user_general_settings
 augroup END
 
 " }}}
-
 augroup user_plugin_filetype " {{{
 	autocmd!
 
-	autocmd FileType apache setlocal path+=./;/
+	autocmd FileType apache,html setlocal path+=./;/
 
 	autocmd FileType helm setlocal commentstring=#\ %s
-
-	autocmd FileType html setlocal path+=./;/
 
 	autocmd FileType crontab setlocal nobackup nowritebackup
 
@@ -374,7 +373,7 @@ augroup user_plugin_filetype " {{{
 
 	autocmd FileType python
 		\ setlocal expandtab smarttab nosmartindent
-		\ | setlocal tabstop=4 softtabstop=4 shiftwidth=4 textwidth=80
+		\ | setlocal tabstop=4 shiftwidth=4 textwidth=80
 
 	autocmd FileType markdown
 		\ setlocal expandtab spell autoindent formatoptions=tcroqn2 comments=n:>
@@ -382,8 +381,9 @@ augroup user_plugin_filetype " {{{
 	" https://webpack.github.io/docs/webpack-dev-server.html#working-with-editors-ides-supporting-safe-write
 	autocmd FileType css,javascript,javascriptreact setlocal backupcopy=yes
 
-augroup END " }}}
+augroup END
 
+" }}}
 " Internal vim plugins {{{
 let g:sh_no_error = 1
 let g:python_recommended_style = 0
@@ -391,25 +391,15 @@ let g:vimsyntax_noerror = 1
 let g:vim_indent_cont = &shiftwidth
 let g:ruby_no_expensive = 1
 let g:PHP_removeCRwhenUnix = 0
-" }}}
 
+" }}}
 " Theme {{{
 " ---
-"
 " Autoloads theme according to user selected colorschemes
 
-function! s:theme_init()
-	" Load cached colorscheme or hybrid by default
-	if ! exists('g:colors_name')
-		set background=dark
-		silent! execute 'colorscheme' s:theme_cached_scheme('hybrid')
-	endif
-endfunction
-
 function! s:theme_autoload()
-	" source $VIM_PATH/themes/hybrid.vim
 	if exists('g:colors_name')
-		let theme_path = $VIM_PATH . '/themes/' . g:colors_name . '.vim'
+		let theme_path = expand($VIM_PATH . '/themes/' . g:colors_name . '.vim')
 		if filereadable(theme_path)
 			execute 'source' fnameescape(theme_path)
 		endif
@@ -419,53 +409,31 @@ function! s:theme_autoload()
 endfunction
 
 function! s:theme_cache_file()
-	return $XDG_DATA_HOME . '/nvim/theme.txt'
+	return expand($VIM_DATA_PATH . '/theme.txt')
 endfunction
 
-function! s:theme_cached_scheme(default)
+function! s:cached_colorscheme(default)
 	let l:cache_file = s:theme_cache_file()
 	return filereadable(l:cache_file) ? readfile(l:cache_file)[0] : a:default
-endfunction
-
-function! s:theme_cleanup()
-	if ! exists('g:colors_name')
-		return
-	endif
-	highlight clear
 endfunction
 
 augroup user_theme
 	autocmd!
 	autocmd ColorScheme * call s:theme_autoload()
+
 	if has('patch-8.0.1781') || has('nvim-0.3.2')
-		autocmd ColorSchemePre * call s:theme_cleanup()
+		autocmd ColorSchemePre * if exists('g:colors_name')
+			\| highlight clear
+			\| endif
 	endif
 augroup END
 
-call s:theme_init()
-" }}}
+" Load cached colorscheme or hybrid by default
+if has('vim_starting') && ! exists('g:colors_name')
+	set background=dark
+	execute 'colorscheme' s:cached_colorscheme('hybrid')
+endif
 
-" ### Disabled {{{
-" if exists('+previewpopup')
-" 	set previewpopup=height:10,width:60
-" endif
-
-" Pseudo-transparency for completion menu and floating windows
-" if has('termguicolors') && &termguicolors
-" 	if exists('&pumblend')
-" 		set pumblend=10
-" 	endif
-" 	if exists('&winblend')
-" 		set winblend=10
-" 	endif
-" endif
-
-" if has('nvim-0.4')
-" 		set signcolumn=auto:1-2
-" " 	set signcolumn=yes
-" " elseif exists('&signcolumn')
-" " 	set signcolumn=auto
-" endif
 " }}}
 
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :

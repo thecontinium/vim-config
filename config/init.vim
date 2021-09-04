@@ -11,7 +11,8 @@ augroup user_events
 augroup END
 
 " Initializes options
-let s:package_manager = get(g:, 'etc_package_manager', 'dein')
+let s:default_manager = 'dein'
+let s:package_manager = get(g:, 'etc_package_manager', s:default_manager)
 if empty(s:package_manager) || s:package_manager ==# 'none'
 	finish
 endif
@@ -51,29 +52,30 @@ let g:loaded_2html_plugin = 1
 let g:loaded_logiPat = 1
 let g:loaded_rrhelper = 1
 let g:no_gitrebase_maps = 1
+let g:no_man_maps = 1  " See share/nvim/runtime/ftplugin/man.vim
 
-" let g:loaded_netrw = 1
-" let g:loaded_netrwPlugin = 1
-" let g:loaded_netrwSettings = 1
-" let g:loaded_netrwFileHandlers = 1
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
+let g:loaded_netrwSettings = 1
+let g:loaded_netrwFileHandlers = 1
 
 " Set main configuration directory as parent directory
 let $VIM_PATH =
 	\ get(g:, 'etc_vim_path',
 	\   exists('*stdpath') ? stdpath('config') :
 	\   ! empty($MYVIMRC) ? fnamemodify(expand($MYVIMRC, 1), ':h') :
-	\   ! empty($VIMCONFIG) ? expand($VIMCONFIG, 1) :
 	\   ! empty($VIM_PATH) ? expand($VIM_PATH, 1) :
 	\   fnamemodify(resolve(expand('<sfile>:p')), ':h:h')
 	\ )
 
 " Set data directory
-let $XDG_DATA_HOME =
-  \ expand(($XDG_DATA_HOME ? $XDG_DATA_HOME : '~/.local/share'), 1)
+let $VIM_DATA_PATH = exists('*stdpath') ? stdpath('data') :
+	\ expand(($XDG_DATA_HOME ? $XDG_DATA_HOME : '~/.local/share') . '/nvim', 1)
 
 " Collection of user plugin list config file-paths
 let s:config_paths = get(g:, 'etc_config_paths', [
 	\ $VIM_PATH . '/config/plugins.yaml',
+	\ $VIM_PATH . '/config/plugins.local.yaml',
 	\ $VIM_PATH . '/config/local.plugins.yaml',
 	\ $VIM_PATH . '/usr/vimrc.yaml',
 	\ $VIM_PATH . '/usr/vimrc.json',
@@ -94,10 +96,10 @@ function! s:main()
 
 		" Ensure data directories
 		for s:path in [
-				\ $XDG_DATA_HOME . '/nvim/backup',
-				\ $XDG_DATA_HOME . '/nvim/sessions',
-				\ $XDG_DATA_HOME . '/nvim/swap',
-				\ $XDG_DATA_HOME . '/nvim/undo',
+				\ $VIM_DATA_PATH . '/backup',
+				\ $VIM_DATA_PATH . '/sessions',
+				\ $VIM_DATA_PATH . '/swap',
+				\ $VIM_DATA_PATH . '/undo',
 				\ $VIM_PATH . '/spell' ]
 			if ! isdirectory(s:path)
 				call mkdir(s:path, 'p', 0770)
@@ -105,10 +107,10 @@ function! s:main()
 		endfor
 
 		" Try setting up the custom virtualenv created by ./venv.sh
-		let l:virtualenv = $XDG_DATA_HOME . '/nvim/venv/bin/python'
+		let l:virtualenv = $VIM_DATA_PATH . '/venv/bin/python'
 		if empty(l:virtualenv) || ! filereadable(l:virtualenv)
 			" Fallback to old virtualenv location
-			let l:virtualenv = $XDG_DATA_HOME . '/nvim/venv/neovim3/bin/python'
+			let l:virtualenv = $VIM_DATA_PATH . '/venv/neovim3/bin/python'
 		endif
 
 		" Python interpreter settings
@@ -132,14 +134,15 @@ endfunction
 
 " Use dein as a plugin manager
 function! s:use_dein()
-	let l:cache_path = $XDG_DATA_HOME . '/nvim/dein'
+	let l:cache_path = $VIM_DATA_PATH . '/dein'
 
 	if has('vim_starting')
 		let g:dein#auto_recache = v:true
 		" let g:dein#lazy_rplugins = v:true
 		let g:dein#install_progress_type = 'echo'
 		let g:dein#install_message_type = 'echo'
-		let g:dein#install_max_processes = 8
+		let g:dein#install_max_processes = 10
+		let g:dein#enable_notification = v:true
 
 		" Add dein to vim's runtimepath
 		if &runtimepath !~# '/dein.vim'
@@ -194,13 +197,14 @@ function! s:use_dein()
 		endif
 	endif
 
-	filetype plugin indent on
-	syntax enable
+	autocmd user_events VimEnter *
+		\ filetype plugin indent on
+		\| syntax enable
 endfunction
 
 function! s:use_plug() abort
 	" vim-plug package-manager initialization
-	let l:cache_root = $XDG_DATA_HOME . '/nvim/plug'
+	let l:cache_root = $VIM_DATA_PATH . '/plug'
 	let l:cache_init = l:cache_root . '/init.vimplug'
 	let l:cache_repos = l:cache_root . '/repos'
 
@@ -211,7 +215,7 @@ function! s:use_plug() abort
 	if &runtimepath !~# '/init.vimplug'
 
 		if ! isdirectory(l:cache_init)
-			silent !curl -fLo $XDG_DATA_HOME/nvim/plug/init.vimplug/autoload/plug.vim
+			silent !curl -fLo $VIM_DATA_PATH/plug/init.vimplug/autoload/plug.vim
 				\ --create-dirs
 				\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
