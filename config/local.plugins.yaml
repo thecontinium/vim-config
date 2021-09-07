@@ -322,6 +322,18 @@
   on_source: nvim-compe
 
 
+- repo: nvim-treesitter/nvim-treesitter
+  overwrite: 1
+  if: 0
+
+- repo: nvim-treesitter/nvim-treesitter-textobjects
+  overwrite: 1
+  if: 0
+
+- repo: mfussenegger/nvim-ts-hint-textobject
+  overwrite: 1
+  if: 0
+
 # - repo: nvim-telescope/telescope.nvim
 #   if: has("nvim-0.5")
 #   depends: [ todo-comments.nvim, session-lens, telescope-zoxide]
