@@ -197,9 +197,9 @@ function! s:use_dein()
 		endif
 	endif
 
-	autocmd user_events VimEnter *
-		\ filetype plugin indent on
-		\| syntax enable
+	filetype plugin indent on
+	syntax enable
+
 endfunction
 
 function! s:use_plug() abort
