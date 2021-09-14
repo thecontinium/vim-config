@@ -50,7 +50,7 @@ _G.cmp_setup_org = function()
 		{ 'orgmode', 'emoji', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux' })}
 end
 
-_G.cmp_setup_conjure = function()
+_G.cmp_setup_clojure = function()
 	require('cmp').setup.buffer{ sources = cmp_source_list(
 		{ 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux', 'conjure' })}
 end
@@ -61,7 +61,7 @@ vim.api.nvim_exec([[
 		autocmd FileType markdown,text call v:lua.cmp_setup_markdown()
 		autocmd FileType lua call v:lua.cmp_setup_lua()
 		autocmd FileType org call v:lua.cmp_setup_org()
-		autocmd FileType clojure call v:lua.cmp_setup_conjure()
+		autocmd FileType clojure call v:lua.cmp_setup_clojure()
 	augroup END
 ]], false)
 
