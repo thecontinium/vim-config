@@ -324,6 +324,14 @@
 
 - { repo: PaterJason/cmp-conjure, on_source: nvim-cmp, depends: conjure }
 
+- repo: nvim-treesitter/nvim-treesitter
+  overwrite: 1
+  if: has('nvim-0.5')
+  on_event: FileType
+  on_cmd: [ TSUpdate, TSInstall, TSInstallInfo, TSModuleInfo, TSConfigInfo ]
+  hook_post_update: ':TSUpdate'
+  hook_source: lua require('local-plugins.treesitter')
+
 # - repo: nvim-treesitter/nvim-treesitter
 #   overwrite: 1
 #   if: 0
