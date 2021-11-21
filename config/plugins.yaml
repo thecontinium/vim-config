@@ -132,8 +132,7 @@
 - { repo: rcarriga/nvim-notify, if: has('nvim-0.5') }  # lazy by nature
 - { repo: rafi/vim-sidemenu, on_map: { nv: <Plug> }}
 
-# - repo: hoob3rt/lualine.nvim
-- repo: shadmansaleh/lualine.nvim
+- repo: nvim-lualine/lualine.nvim
   if: has('nvim-0.5')
   on_event: VimEnter
   hook_post_source: lua require('plugins.lualine')
@@ -268,9 +267,6 @@
 # Completion and code analysis
 # ----------
 
-- { repo: williamboman/nvim-lsp-installer, if: has('nvim-0.5'), lazy: true }
-- { repo: kosayoda/nvim-lightbulb, if: has('nvim-0.5') }
-
 - repo: neovim/nvim-lspconfig
   if: has('nvim-0.5')
   depends:
@@ -278,10 +274,13 @@
     - lsp_signature.nvim
     - todo-comments.nvim
     - lua-dev.nvim
+    - nvim-lightbulb
     - cmp-nvim-lsp
   on_event: VimEnter
   hook_post_source: lua require('plugins.lspconfig')
 
+- { repo: williamboman/nvim-lsp-installer, lazy: true }
+- { repo: kosayoda/nvim-lightbulb, lazy: true }
 - { repo: ray-x/lsp_signature.nvim, lazy: true }
 - { repo: folke/lua-dev.nvim, lazy: true }
 
