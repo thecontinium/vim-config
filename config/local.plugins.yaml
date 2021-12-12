@@ -332,6 +332,13 @@
   hook_post_update: ':TSUpdate'
   hook_source: lua require('local-plugins.treesitter')
 
+- repo: kristijanhusak/orgmode.nvim
+  overwrite: 1
+  if: has('nvim-0.5')
+  depends: nvim-treesitter
+  # on_ft: org
+  hook_post_source: lua require('plugins.orgmode')
+
 # - repo: nvim-treesitter/nvim-treesitter
 #   overwrite: 1
 #   if: 0
