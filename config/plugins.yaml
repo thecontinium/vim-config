@@ -9,19 +9,15 @@
 - repo: Shougo/dein.vim
 - repo: thinca/vim-localrc
 - { repo: rafi/awesome-vim-colorschemes, merged: 0 }
+- { repo: folke/lsp-colors.nvim, if: has('nvim-0.5') }
+- { repo: nvim-lua/plenary.nvim, if: has('nvim-0.5') }
+- { repo: kyazdani42/nvim-web-devicons, if: has('nvim-0.5') }
 
 - repo: christoomey/vim-tmux-navigator
   if: "! (has('win32') || has('win64'))"
 
 - repo: tpope/vim-sleuth
-  hook_add: |-
-    let g:sleuth_neighbor_limit = 5
-    autocmd user_events FileType markdown,yaml,help
-      \ let b:sleuth_automatic = 0
-
-- { repo: folke/lsp-colors.nvim, if: has('nvim-0.5') }
-- { repo: nvim-lua/plenary.nvim, if: has('nvim-0.5') }
-- { repo: kyazdani42/nvim-web-devicons, if: has('nvim-0.5') }
+  hook_add: let g:sleuth_no_filetype_indent_on = 1
 
 - repo: sgur/vim-editorconfig
   hook_add: |-
@@ -46,12 +42,10 @@
 - { repo: tweekmonster/helpful.vim, on_cmd: HelpfulVersion }
 - { repo: lambdalisue/suda.vim, on_event: BufRead }
 
-- repo: tyru/caw.vim
-  on_map: { nx: <Plug> }
-  depends: nvim-ts-context-commentstring
-  hook_add: |-
-    let g:caw_no_default_keymappings = 1
-    let g:caw_operator_keymappings = 0
+- repo: b3nj5m1n/kommentary
+  if: has('nvim-0.5')
+  on_event: FileType
+  hook_source: lua require('plugins.kommentary')
 
 - repo: TimUntersberger/neogit
   depends: diffview.nvim
@@ -239,7 +233,7 @@
 
 - repo: kristijanhusak/orgmode.nvim
   if: has('nvim-0.5')
-  # on_ft: org
+  on_source: nvim-treesitter
   hook_post_source: lua require('plugins.orgmode')
 
 - repo: vimwiki/vimwiki
