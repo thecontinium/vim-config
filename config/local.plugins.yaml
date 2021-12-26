@@ -7,6 +7,14 @@
   on_ft: [ gitcommit, gitrebase ]
   hook_source: source $VIM_PATH/config/local-plugins/gina.vim
 
+# - { repo: thecontinium/nvim-lsp-installer, lazy: true,  overwrite: 1}
+
+- repo: mickael-menu/zk-nvim
+  if: has('nvim-0.5')
+  depends: [ nvim-lspconfig ]
+  on_event: VimEnter
+  hook_post_source: lua require('local-plugins.zk')
+
 # Startup
 # -------
 
