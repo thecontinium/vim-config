@@ -1,125 +1,58 @@
+lua require('plugins.gina')
 
-source $VIM_PATH/config/plugins/gina.vim
+function! s:get_extension(host) abort
+	return { a:host : [
+									\   [
+									\     '\vhttps?://(%domain)/(.{-})/(.{-})%(\.git)?$',
+									\     '\vgit://(%domain)/(.{-})/(.{-})%(\.git)?$',
+									\     '\vgit\@(%domain):(.{-})/(.{-})%(\.git)?$',
+									\     '\vssh://git\@(%domain)/(.{-})/(.{-})%(\.git)?$',
+									\   ], {
+									\     'root':  'https://github.com/\2/\3/tree/%r1/',
+									\     '_':     'https://github.com/\2/\3/blob/%r1/%pt%{#L|}ls%{-}le',
+									\     'exact': 'https://github.com/\2/\3/blob/%h1/%pt%{#L|}ls%{-}le',
+									\   },
+									\ ]}
+endfunction
 
-" Custom command options {{{
-" call gina#custom#command#option(
-"      \ 'commit', '-v|--verbose'
-"      \)
-" call gina#custom#command#option(
-"      \ '/\%(status\|commit\)',
-"      \ '-u|--untracked-files'
-"      \)
-" call gina#custom#command#option(
-"      \ 'status',
-"      \ '-b|--branch'
-"      \)
-" call gina#custom#command#option(
-"      \ 'status',
-"      \ '-s|--short'
-"      \)
-call gina#custom#command#option(
-      \ '/\%(commit\|tag\)',
-      \ '--restore'
-      \)
-
-call gina#custom#command#option(
-      \ '/\%(commit\|status\)',
-      \ '--group=comst'
-      \)
-" call gina#custom#command#option(
-"      \ 'show',
-"      \ '--show-signature'
-"      \)
+call extend(g:gina#command#browse#translation_patterns, s:get_extension('the\.continium'))
+call extend(g:gina#command#browse#translation_patterns, s:get_extension('mn\.dimension'))
 
 " call gina#custom#command#option(
-"      \ '/\%(status\|log\)',
-"      \ '--opener',
-"      \ 'vsplit'
-"      \)
-"}}}
+"       \ '/\%(commit\|tag\)',
+"       \ '--restore'
+"       \)
 
-" Custom action branch alias {{{
-" call gina#custom#action#alias(
-"      \ 'branch', 'track',
-"      \ 'checkout:track'
-"      \)
-" call gina#custom#action#alias(
-"      \ 'branch', 'merge',
-"      \ 'commit:merge'
-"      \)
-" call gina#custom#action#alias(
-"      \ 'branch', 'rebase',
-"      \ 'commit:rebase'
-"      \)
-"}}}
-
-" Custom mappings {{{
+" call gina#custom#command#option(
+"       \ '/\%(commit\|status\)',
+"       \ '--group=comst'
+"       \)
 " call gina#custom#mapping#nmap(
-"      \ 'branch', 'g<CR>',
-"      \ '<Plug>(gina-commit-checkout-track)'
-"      \)
-call gina#custom#mapping#nmap(
-      \ 'status', '<C-^>',
-      \ ':<C-u>Gina commit<CR>',
-      \ {'noremap': 1, 'silent': 1}
-      \)
-call gina#custom#mapping#nmap(
-      \ 'commit', '<C-^>',
-      \ ':<C-u>Gina status<CR>',
-      \ {'noremap': 1, 'silent': 1}
-      \)
-call gina#custom#mapping#nmap(
-      \ 'status', '<C-6>',
-      \ ':<C-u>Gina commit<CR>',
-      \ {'noremap': 1, 'silent': 1}
-      \)
-call gina#custom#mapping#nmap(
-      \ 'commit', '<C-6>',
-      \ ':<C-u>Gina status<CR>',
-      \ {'noremap': 1, 'silent': 1}
-      \)
-"}}}
+"       \ 'status', '<C-^>',
+"       \ ':<C-u>Gina commit<CR>',
+"       \ {'noremap': 1, 'silent': 1}
+"       \)
+" call gina#custom#mapping#nmap(
+"       \ 'commit', '<C-^>',
+"       \ ':<C-u>Gina status<CR>',
+"       \ {'noremap': 1, 'silent': 1}
+"       \)
+" call gina#custom#mapping#nmap(
+"       \ 'status', '<C-6>',
+"       \ ':<C-u>Gina commit<CR>',
+"       \ {'noremap': 1, 'silent': 1}
+"       \)
+" call gina#custom#mapping#nmap(
+"       \ 'commit', '<C-6>',
+"       \ ':<C-u>Gina status<CR>',
+"       \ {'noremap': 1, 'silent': 1}
+"       \)
 
-" Custom action alias for blame, log & reflog{{{
-" call gina#custom#action#alias(
+" call gina#custom#mapping#nmap(
 "      \ '/\%(blame\|log\|reflog\)',
-"      \ 'preview',
-"      \ 'topleft show:commit:preview',
+"      \ 'c',
+"      \ ':<C-u>call gina#action#call(''compare'')<CR>',
+"      \ {'noremap': 1, 'silent': 1}
 "      \)
-" }}}
-
-" call gina#custom#mapping#nmap(
-"     \ '/\%(blame\|log\|reflog\)',
-"     \ 'p',
-"     \ ':<C-u>call gina#action#call(''preview'')<CR>',
-"     \ {'noremap': 1, 'silent': 1}
-"     \)
-
-" call gina#custom#action#alias(
-"     \ '/\%(blame\|log\|reflog\)',
-"     \ 'changes',
-"     \ 'topleft changes:of:preview',
-"     \)
-" call gina#custom#mapping#nmap(
-"     \ '/\%(blame\|log\|reflog\)',
-"     \ 'c',
-"     \ ':<C-u>call gina#action#call(''changes'')<CR>',
-"     \ {'noremap': 1, 'silent': 1}
-"     \)
-call gina#custom#mapping#nmap(
-     \ '/\%(blame\|log\|reflog\)',
-     \ 'c',
-     \ ':<C-u>call gina#action#call(''compare'')<CR>',
-     \ {'noremap': 1, 'silent': 1}
-     \)
-
-" call gina#custom#execute(
-"     \ '/\%(ls\|log\|reflog\|grep\)',
-"     \ 'setlocal noautoread',
-"     \)
-" call gina#custom#execute(
-"     \ '/\%(status\|branch\|ls\|log\|reflog\|grep\)',
-"     \ 'setlocal cursorline',
-"     \)
 
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
