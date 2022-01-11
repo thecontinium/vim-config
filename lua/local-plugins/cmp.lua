@@ -4,21 +4,10 @@
 
 local cmp = require('cmp')
 
-_G.cmp_source_list = function(arr)
+-- Source setup. Helper function for cmp source presets.
+_G.cmp_get_sources = function(arr)
 	local config = {
-		buffer = {
-			name = 'buffer',
-			-- option = {
-			-- 	-- Use all visible buffers
-			-- 	get_bufnrs = function()
-			-- 		local bufs = {}
-			-- 		for _, win in ipairs(vim.api.nvim_list_wins()) do
-			-- 			bufs[vim.api.nvim_win_get_buf(win)] = true
-			-- 		end
-			-- 		return vim.tbl_keys(bufs)
-			-- 	end,
-			-- },
-		},
+		buffer = { name = 'buffer' },
 		nvim_lsp = { name = 'nvim_lsp' },
 		nvim_lua = { name = 'nvim_lua' },
 		path  = { name = 'path' },
@@ -35,36 +24,38 @@ _G.cmp_source_list = function(arr)
 	return sources
 end
 
-_G.cmp_setup_markdown = function()
-	require('cmp').setup.buffer{ sources = cmp_source_list(
-		{ 'emoji', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux' })}
-end
+-- Labels for completion candidates.
+local completion_labels = {
+	nvim_lsp = "[LSP]",
+	nvim_lua = "[Lua]",
+	-- buffer   = "[Buf]",
+	spell    = "[Spell]",
+	path     = "[Path]",
+	-- vsnip    = "[VSnip]",
+	tmux     = "[Tmux]",
+	orgmode  = "[Org]"
+}
 
-_G.cmp_setup_lua = function()
-	require('cmp').setup.buffer{ sources = cmp_source_list(
-		{ 'nvim_lua', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux' })}
-end
-
-_G.cmp_setup_org = function()
-	require('cmp').setup.buffer{ sources = cmp_source_list(
-		{ 'orgmode', 'emoji', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux' })}
-end
-
-_G.cmp_setup_clojure = function()
-	require('cmp').setup.buffer{ sources = cmp_source_list(
-		{ 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux', 'conjure' })}
-end
-
+-- Completion sources according to specific file-types.
 vim.api.nvim_exec([[
 	augroup user_cmp
 		autocmd!
-		autocmd FileType markdown,text call v:lua.cmp_setup_markdown()
-		autocmd FileType lua call v:lua.cmp_setup_lua()
-		autocmd FileType org call v:lua.cmp_setup_org()
-		autocmd FileType clojure call v:lua.cmp_setup_clojure()
+		autocmd FileType markdown,text
+			\ lua require('cmp').setup.buffer{ sources = cmp_get_sources(
+			\ {'emoji', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux'})}
+		autocmd FileType lua
+			\ lua require('cmp').setup.buffer{ sources = cmp_get_sources(
+			\ {'nvim_lua', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux'})}
+		autocmd FileType org
+			\ lua require('cmp').setup.buffer{ sources = cmp_get_sources(
+			\ {'orgmode', 'emoji', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux'})}
+		autocmd filetype clojure
+			\ lua require('cmp').setup.buffer{ sources = cmp_get_sources(
+		  \ { 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux', 'conjure' })}
 	augroup END
 ]], false)
 
+-- Detect if words are before cursor position.
 local has_words_before = function()
 	if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then
 		return false
@@ -73,28 +64,42 @@ local has_words_before = function()
 	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
-local t = function(str)
-	return vim.api.nvim_replace_termcodes(str, true, true, true)
+-- Feed proper terminal codes
+local feedkey = function(key, mode)
+	vim.api.nvim_feedkeys(
+		vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
--- Setup cmp
+-- :h cmp
 cmp.setup {
-	sources = cmp_source_list({
+
+	-- Set default cmp sources
+	sources = cmp_get_sources({
 		'nvim_lsp',
 		'buffer',
 		'path',
 		'vsnip',
 		'tmux',
-		'conjure',
 	}),
 
+	snippet = {
+		expand = function(args)
+			-- Using https://github.com/hrsh7th/vim-vsnip for snippets.
+			vim.fn['vsnip#anonymous'](args.body)
+		end,
+	},
+
 	mapping = {
-		['<C-p>'] = cmp.mapping.select_prev_item(),
-		['<C-n>'] = cmp.mapping.select_next_item(),
+		['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+		['<C-p>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
+		['<C-n>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
+		-- ['<C-y>'] = cmp.config.disable,
+		['<C-e>'] = cmp.mapping({
+			i = cmp.mapping.abort(),
+			c = cmp.mapping.close(),
+		}),
 		['<C-u>'] = cmp.mapping.scroll_docs(-4),
 		['<C-d>'] = cmp.mapping.scroll_docs(4),
-		['<C-Space>'] = cmp.mapping.complete(),
-		['<C-e>'] = cmp.mapping.close(),
 		['<C-c>'] = function(fallback)
 			cmp.close()
 			fallback()
@@ -103,26 +108,26 @@ cmp.setup {
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
 		}),
-		['<Tab>'] = cmp.mapping(function(_)
+		['<Tab>'] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
 			elseif vim.fn['vsnip#available']() == 1 then
-				vim.api.nvim_feedkeys(t('<Plug>(vsnip-expand-or-jump)'), '', true)
+				feedkey('<Plug>(vsnip-expand-or-jump)', '')
 			elseif has_words_before() then
 				cmp.complete()
 			else
-				vim.fn.feedkeys(t('<Tab>'), 'n')
+				fallback()
 			end
 		end, { 'i', 's' }),
-		['<S-Tab>'] = cmp.mapping(function(_)
+		['<S-Tab>'] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item()
 			elseif vim.fn['vsnip#jumpable'](-1) == 1 then
-				vim.api.nvim_feedkeys(t('<Plug>(vsnip-jump-prev)'), '', true)
+				feedkey('<Plug>(vsnip-jump-prev)', '')
 			elseif has_words_before() then
 				cmp.complete()
 			else
-				vim.api.nvim_feedkeys(t('<C-h>'), 'n')
+				fallback()
 			end
 		end, { 'i', 's' }),
 	},
@@ -135,6 +140,7 @@ cmp.setup {
 	formatting = {
 		format = function(entry, vim_item)
 			-- Prepend with a fancy icon
+			-- See lua/lsp_kind.lua
 			local symbol = require('lsp_kind').preset()[vim_item.kind]
 			if symbol ~= nil then
 				vim_item.kind = symbol
@@ -142,17 +148,9 @@ cmp.setup {
 			end
 
 			-- Set menu source name
-			vim_item.menu = ({
-				nvim_lsp = "[LSP]",
-				nvim_lua = "[Lua]",
-				buffer   = "[Buf]",
-				spell    = "[Spell]",
-				path     = "[Path]",
-				vsnip    = "[VSnip]",
-				tmux     = "[Tmux]",
-				conjure  = "[Conjure]",
-				orgmode  = "[Org]"
-			})[entry.source.name]
+			if completion_labels[entry.source.name] then
+				vim_item.menu = completion_labels[entry.source.name]
+			end
 
 			vim_item.dup = ({
 				nvim_lua = 0,
@@ -162,12 +160,5 @@ cmp.setup {
 			return vim_item
 		end,
 	},
-
-	snippet = {
-		expand = function(args)
-			vim.fn['vsnip#anonymous'](args.body)
-		end,
-	},
-
 }
 
