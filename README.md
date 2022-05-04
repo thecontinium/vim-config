@@ -2,7 +2,7 @@
 
 Lean mean Neovim machine, 30-45ms startup time.
 
-Works best with [Neovim] 0.5.x ⚠️ For Vim 8.x, use the
+Works best with [Neovim] ≥0.6 ⚠️ For Vim 8.x, use the
 [`vim` git tag](https://github.com/rafi/vim-config/tree/vim).
 
 > I encourage you to fork this repo and create your own experience.
@@ -36,7 +36,7 @@ Works best with [Neovim] 0.5.x ⚠️ For Vim 8.x, use the
     * [Commands](#commands)
     * [Interface](#interface)
     * [Completion & Code-Analysis](#completion--code-analysis)
-    * [Fern](#fern)
+    * [File Explorer](#file-explorer)
     * [Syntax](#syntax)
     * [Operators & Text Objects](#operators--text-objects)
 * [Custom Key-mappings](#custom-key-mappings)
@@ -49,13 +49,14 @@ Works best with [Neovim] 0.5.x ⚠️ For Vim 8.x, use the
   * [Editor UI](#editor-ui)
   * [Custom Tools & Plugins](#custom-tools--plugins)
   * [Window Management](#window-management)
+  * [Plugin: Sandwich](#plugin-sandwich)
   * [Plugin: Gitsigns](#plugin-gitsigns)
   * [Plugin: Gina](#plugin-gina)
   * [Plugin: Telescope](#plugin-telescope)
-  * [Plugin: Fern](#plugin-fern)
   * [Plugin: LSP](#plugin-lsp)
+  * [Plugin: Spectre](#plugin-spectre)
   * [Plugin: Any-Jump](#plugin-any-jump)
-  * [Plugin: Signature](#plugin-signature)
+  * [Plugin: Marks](#plugin-marks)
 
 <!-- vim-markdown-toc -->
 </details>
@@ -65,9 +66,8 @@ Works best with [Neovim] 0.5.x ⚠️ For Vim 8.x, use the
 * Fast startup time
 * Robust, yet light-weight
 * Lazy-load 95% of plugins with [Shougo/dein.vim]
-* LSP installers (`:LspInstall <filetype>`)
+* LSP installers (`:LspInstall <server>`)
 * Custom side-menu (try it! <kbd>Space</kbd>+<kbd>l</kbd>)
-* Custom context-menu (try it! <kbd>;</kbd>+<kbd>c</kbd>)
 * Auto-complete extensive setup with [nvim-lspconfig] and [nvim-cmp]
   (try <kbd>Tab</kbd> in insert-mode)
 * [telescope.nvim] centric work-flow with lists (try <kbd>;</kbd>+<kbd>f</kbd>…)
@@ -85,7 +85,7 @@ Works best with [Neovim] 0.5.x ⚠️ For Vim 8.x, use the
 ## Prerequisites
 
 * [Neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim)
-  (`brew install neovim`) ≥ v0.5.0
+  (`brew install neovim`) ≥ v0.6.0
 * Plugins are parsed [from YAML](./config/plugins.yaml) and cached.
   Ensure **one** of these tools is installed:
   * [yj](https://github.com/sclevine/yj) (`brew install yj`)
@@ -114,29 +114,26 @@ Enjoy! :smile:
 
 ## Language-Server Protocol (LSP)
 
-To leverage LSP auto-completions and other functionalities, once you open a
-file in Neovim, run `:LspInstall <language>` to use [kabouzeid/nvim-lspinstall]
-installation feature. Use <kbd>Tab</kbd> to list available servers.
+To leverage LSP auto-completions and other functionalities, run
+`:LspInstall <server>` to use [williamboman/nvim-lsp-installer] installation
+feature. Use <kbd>Tab</kbd> to list available servers.
 
-Here are some useful LSP server installations:
+Instead, you can use the UI with ':LspInstallInfo'.
 
-* `:LspInstall bash`
-* `:LspInstall diagnosticls`
-* `:LspInstall dockerfile`
-* `:LspInstall go`
-* `:LspInstall json`
-* `:LspInstall lua`
-* `:LspInstall python`
-* `:LspInstall typescript`
-* `:LspInstall vim`
-* `:LspInstall yaml`
-* and [more](https://github.com/kabouzeid/nvim-lspinstall/tree/main/lua/lspinstall/servers)…
+Here's some popular servers to install:
+
+* `:LspInstall html cssls jsonls yamlls`
+* `:LspInstall gopls`
+* `:LspInstall pylsp`
+* `:LspInstall bashls vimls sumneko_lua`
+* `:LspInstall tsserver`
+* and [more](https://github.com/williamboman/nvim-lsp-installer#available-lsps)…
 
 See [lua/plugins/lspconfig.lua] and [lua/lsp/*] for built-in
-mapping and configuration for several language-servers. You'll need utilities
+mapping and configuration for some language-servers. You'll need utilities
 like `npm` and `curl` to install some extensions. For more information, see:
 
-* Plugin used for installation: [kabouzeid/nvim-lspinstall] and
+* Plugin used for installation: [williamboman/nvim-lsp-installer] and
   [supported language-servers].
 * Plugin used for configuration: [neovim/nvim-lspconfig]
 
@@ -208,7 +205,7 @@ For **custom configuration**, create the `config/local.vim` file
 and add your personal vimscript there.
 
 For **installing plugins**, create a `config/plugins.local.yaml` file and
-manage your own plugin collection.  If you want to disable some of the plugins
+manage your own plugin collection. If you want to disable some of the plugins
 I use, you can overwrite them, _e.g._:
 
 ```yaml
@@ -259,12 +256,8 @@ return {
 
 ## Structure
 
-* [after/](./after) - Language specific custom settings
-* [autoload/](./autoload) - Action-menu and badge functions
+* [after/](./after) - Language specific custom settings and plugins
 * [config/](./config) - Configuration
-  * [plugins/](./config/plugins) - Plugin configurations
-    * [all.vim](./config/plugins/all.vim) - Plugin mappings
-    * […](./config/plugins)
   * [general.vim](./config/general.vim) - General configuration
   * [init.vim](./config/init.vim) - Package-manager initialization
   * **plugins.local.yaml** - Custom user plugins
@@ -278,7 +271,6 @@ return {
   * [plugins/](./lua/plugins) - Plugins configurations
   * [badge.lua](./lua/badge.lua) - Badges for status lines
   * [user.lua](./lua/user.lua) - Custom functions
-* [plugin/](./plugin) - Custom written plugins
 * [snippets/](./snippets) - Personal code snippets
 * [themes/](./themes) - Colorscheme overrides
 * [filetype.vim](./filetype.vim) - Custom filetype detection
@@ -288,7 +280,6 @@ return {
 * Plugin management with cache and lazy loading for speed
 * Auto-completion with Language-Server Protocol (LSP)
 * Project-aware tabline
-* Fern as file-manager + Git status icons
 * Extensive syntax highlighting with [nvim-treesitter].
 
 _Note_ that 95% of the plugins are **[lazy-loaded]**.
@@ -305,12 +296,12 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [Shougo/dein.vim] | Dark powered Vim/Neovim plugin manager
 | [thinca/vim-localrc] | Enable configuration file of each directory
 | [rafi/awesome-colorschemes] | Awesome color-schemes
-| [christoomey/tmux-navigator] | Seamless navigation between tmux panes and vim splits
-| [tpope/vim-sleuth] | Heuristically set buffer indent options
 | [folke/lsp-colors.nvim] | LSP diagnostics highlight groups for colorschemes
 | [nvim-lua/plenary.nvim] | Lua functions library
-| [nvim-lua/popup.nvim] | An implementation of the Popup API from vim in Neovim
 | [kyazdani42/nvim-web-devicons] | Lua fork of vim-devicons
+| [nathom/filetype.nvim] | A faster version of filetype.vim
+| [christoomey/tmux-navigator] | Seamless navigation between tmux panes and vim splits
+| [tpope/vim-sleuth] | Heuristically set buffer indent options
 | [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
 
 ### Lazy-Loaded Plugins
@@ -319,10 +310,11 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 
 | Name           | Description
 | -------------- | ----------------------
-| [tyru/caw.vim] | Robust comment plugin with operator support
+| [kyazdani42/nvim-tree.lua] | File explorer written in Lua
 | [mbbill/undotree] | Ultimate undo history visualizer
 | [tweekmonster/helpful.vim] | Display vim version numbers in docs
 | [lambdalisue/suda.vim] | An alternative sudo.vim for Vim and Neovim
+| [b3nj5m1n/kommentary] | Commenting plugin, written in Lua
 | [TimUntersberger/neogit] | Magit clone for Neovim
 | [lambdalisue/gina.vim] | Asynchronously control git repositories
 | [folke/zen-mode.nvim] | Distraction-free coding for Neovim
@@ -330,6 +322,7 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [tversteeg/registers.nvim] | Preview the contents of the registers
 | [NTBBloodbath/rest.nvim] | A fast Neovim http client written in Lua
 | [pechorin/any-jump.vim] | Jump to any definition and references without overhead
+| [windwp/nvim-spectre] | Find the enemy and replace them with dark power
 | [kana/vim-niceblock] | Make blockwise Visual mode more useful
 | [t9md/vim-choosewin] | Choose window to use, like tmux's 'display-pane'
 | [mzlogin/vim-markdown-toc] | Generate table of contents for Markdown files
@@ -345,12 +338,12 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 | [rhysd/accelerated-jk] | Up/down movement acceleration
 | [haya14busa/vim-edgemotion] | Jump to the edge of block
 | [t9md/vim-quickhl] | Highlight words quickly
-| [rcarriga/nvim-notify] | Fancy notification manager for NeoVim
 | [rafi/vim-sidemenu] | Small side-menu useful for terminal users
 | [hoob3rt/lualine.nvim] | statusline plugin written in pure lua
+| [rcarriga/nvim-notify] | Fancy notification manager for NeoVim
 | [itchyny/cursorword] | Underlines word under cursor
 | [lewis6991/gitsigns.nvim] | Git signs written in pure lua
-| [kshenoy/vim-signature] | Display and toggle marks
+| [chentau/marks.nvim] | Interacting with and manipulating marks
 | [nathanaelkane/vim-indent-guides] | Visually display indent levels in code
 | [kevinhwang91/nvim-bqf] | Better quickfix window in Neovim
 | [norcalli/nvim-colorizer.lua] | The fastest Neovim colorizer
@@ -365,62 +358,60 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 
 | Name           | Description
 | -------------- | ----------------------
-| [kabouzeid/nvim-lspinstall] | Provides the missing :LspInstall for nvim-lspconfig
-| [kosayoda/nvim-lightbulb] | VSCode 💡 for neovim's built-in LSP
 | [neovim/nvim-lspconfig] | Quickstart configurations for the Nvim LSP client
+| [williamboman/nvim-lsp-installer] | Provides the missing :LspInstall for nvim-lspconfig
+| [kosayoda/nvim-lightbulb] | VSCode 💡 for neovim's built-in LSP
 | [ray-x/lsp_signature.nvim] | LSP signature hint when you type
 | [folke/lua-dev.nvim] | Dev setup for Lua
+| [jose-elias-alvarez/null-ls.nvim] | Inject LSP diagnostics, code actions, and more
 | [folke/todo-comments.nvim] | Highlight, list and search todo comments in your projects
-| [hrsh7th/nvim-cmp] | Completion plugin for neovim written in Lua
-| [andersevenrud/compe-tmux] | Tmux completion source for nvim-compe/cmp
 | [windwp/nvim-autopairs] | autopairs for neovim written by lua
+| [hrsh7th/nvim-cmp] | Completion plugin for neovim written in Lua
+| [hrsh7th/cmp-nvim-lsp] | nvim-cmp source for neovim builtin LSP client
+| [hrsh7th/cmp-nvim-lua] | nvim-cmp source for nvim lua
+| [hrsh7th/cmp-buffer] | nvim-cmp source for buffer words
+| [hrsh7th/cmp-vsnip] | nvim-cmp source for vim-vsnip
+| [hrsh7th/cmp-path] | nvim-cmp source for path
+| [hrsh7th/cmp-emoji] | nvim-cmp source for emoji
+| [andersevenrud/compe-tmux] | Tmux completion source for nvim-compe/cmp
 | [hrsh7th/vim-vsnip] | Snippet plugin for vim/nvim that supports LSP/VSCode's snippet format
 | [hrsh7th/vim-vsnip-integ] | vim-vsnip integrations to other plugins
 | [rafamadriz/friendly-snippets] | Preconfigured snippets for different languages
 | [folke/trouble.nvim] | Pretty lists to help you solve all code diagnostics
-| [sindrets/diffview.nvim] | Tabpage interface for easily cycling through diffs
+| [sindrets/diffview.nvim] | Tabpage interface for cycling through diffs
 | [nvim-telescope/telescope.nvim] | Find, Filter, Preview, Pick. All lua, all the time
 | [rmagatti/session-lens] | Session-switcher extension for rmagatti/auto-session
+| [nvim-telescope/telescope-ui-select.nvim] | Sets vim.ui.select to telescope
 | [jvgrootveld/telescope-zoxide] | Telescope extension for Zoxide
 | [simrat39/symbols-outline.nvim] | Tree like view for symbols using LSP
 | [rmagatti/auto-session] | Automated session manager for Neovim
 | [sbdchd/neoformat] | Plugin for formatting code
+| [SmiteshP/nvim-gps] | Shows context of the current cursor position in file
 | [mattn/emmet-vim] | Provides support for expanding abbreviations alá emmet
-
-#### Fern
-
-| Name           | Description
-| -------------- | ----------------------
-| [lambdalisue/fern.vim] | General purpose asynchronous tree viewer in pure vim
-| [lambdalisue/nerdfont.vim] | Fundemental plugin to handle Nerd Fonts
-| [lambdalisue/fern-git-status.vim] | Fern git status badge integration
-| [lambdalisue/fern-mapping-git.vim] | Fern git related mappings
-| [lambdalisue/fern-bookmark.vim] | Fern bookmark plugin
-| [yuki-yano/fern-preview.vim] | File preview window to fern.vim
-| [lambdalisue/fern-renderer-nerdfont.vim] | Fern nerdfont integration
-| [lambdalisue/glyph-palette.vim] | Universal nerdfont palette
 
 #### Syntax
 
 | Name           | Description
 | -------------- | ----------------------
 | [nvim-treesitter/nvim-treesitter] | Nvim Treesitter configurations and abstraction layer
-| [nvim-treesitter/nvim-treesitter-textobjects] | textobjects using tree-sitter queries
+| [nvim-treesitter/nvim-treesitter-textobjects] | Textobjects using treesitter queries
+| [JoosepAlviste/nvim-ts-context-commentstring] | Set the commentstring based on the cursor location
+| [windwp/nvim-ts-autotag] | Use treesitter to auto close and auto rename html tag
+| [monkoose/matchparen.nvim] | Alternative to matchparen built-in plugin
+| [iloginow/vim-stylus] | Better vim plugin for stylus
 | [chrisbra/csv.vim] | Handling column separated data
 | [tpope/vim-git] | Git runtime files
 | [dag/vim-fish] | Fish shell edit support
 | [towolf/vim-helm] | Syntax for Helm templates (yaml + gotmpl + sprig)
-| [mboughaba/i3config.vim] | i3 window manager config syntax
 | [mustache/vim-mustache-handlebars] | Mustache and handlebars syntax
 | [digitaltoad/vim-pug] | Pug (formerly Jade) syntax and indentation
 | [keith/swift.vim] | Swift support
 | [lifepillar/pgsql.vim] | PostgreSQL syntax and indent
-| [chr4/nginx.vim] | Improved nginx syntax and indent
 | [vim-jp/syntax-vim-ex] | Improved Vim syntax highlighting
 | [MTDL9/vim-log-highlighting] | Syntax highlighting for generic log files
 | [tmux-plugins/vim-tmux] | Plugin for tmux.conf
 | [reasonml-editor/vim-reason-plus] | Reason syntax and indent
-| [plasticboy/vim-markdown] | Markdown syntax highlighting
+| [preservim/vim-markdown] | Markdown syntax highlighting
 | [pearofducks/ansible-vim] | Improved YAML support for Ansible
 | [hashivim/vim-terraform] | Base Terraform integration
 
@@ -438,18 +429,19 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [Shougo/dein.vim]: https://github.com/Shougo/dein.vim
 [thinca/vim-localrc]: https://github.com/thinca/vim-localrc
 [rafi/awesome-colorschemes]: https://github.com/rafi/awesome-vim-colorschemes
-[christoomey/tmux-navigator]: https://github.com/christoomey/vim-tmux-navigator
-[tpope/vim-sleuth]: https://github.com/tpope/vim-sleuth
 [folke/lsp-colors.nvim]: https://github.com/folke/lsp-colors.nvim
 [nvim-lua/plenary.nvim]: https://github.com/nvim-lua/plenary.nvim
-[nvim-lua/popup.nvim]: https://github.com/nvim-lua/popup.nvim
 [kyazdani42/nvim-web-devicons]: https://github.com/kyazdani42/nvim-web-devicons
+[nathom/filetype.nvim]: https://github.com/nathom/filetype.nvim
+[christoomey/tmux-navigator]: https://github.com/christoomey/vim-tmux-navigator
+[tpope/vim-sleuth]: https://github.com/tpope/vim-sleuth
 [sgur/vim-editorconfig]: https://github.com/sgur/vim-editorconfig
 
+[kyazdani42/nvim-tree.lua]: https://github.com/kyazdani42/nvim-tree.lua
 [mbbill/undotree]: https://github.com/mbbill/undotree
 [tweekmonster/helpful.vim]: https://github.com/tweekmonster/helpful.vim
 [lambdalisue/suda.vim]: https://github.com/lambdalisue/suda.vim
-[tyru/caw.vim]: https://github.com/tyru/caw.vim
+[b3nj5m1n/kommentary]: https://github.com/b3nj5m1n/kommentary
 [TimUntersberger/neogit]: https://github.com/TimUntersberger/neogit
 [lambdalisue/gina.vim]: https://github.com/lambdalisue/gina.vim
 [folke/zen-mode.nvim]: https://github.com/folke/zen-mode.nvim
@@ -457,6 +449,7 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [tversteeg/registers.nvim]: https://github.com/tversteeg/registers.nvim
 [NTBBloodbath/rest.nvim]: https://github.com/NTBBloodbath/rest.nvim
 [pechorin/any-jump.vim]: https://github.com/pechorin/any-jump.vim
+[windwp/nvim-spectre]: https://github.com/windwp/nvim-spectre
 [kana/vim-niceblock]: https://github.com/kana/vim-niceblock
 [t9md/vim-choosewin]: https://github.com/t9md/vim-choosewin
 [mzlogin/vim-markdown-toc]: https://github.com/mzlogin/vim-markdown-toc
@@ -468,12 +461,12 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [rhysd/accelerated-jk]: https://github.com/rhysd/accelerated-jk
 [haya14busa/vim-edgemotion]: https://github.com/haya14busa/vim-edgemotion
 [t9md/vim-quickhl]: https://github.com/t9md/vim-quickhl
-[rcarriga/nvim-notify]: https://github.com/rcarriga/nvim-notify
 [rafi/vim-sidemenu]: https://github.com/rafi/vim-sidemenu
 [hoob3rt/lualine.nvim]: https://github.com/hoob3rt/lualine.nvim
+[rcarriga/nvim-notify]: https://github.com/rcarriga/nvim-notify
 [itchyny/cursorword]: https://github.com/itchyny/vim-cursorword
 [lewis6991/gitsigns.nvim]: https://github.com/lewis6991/gitsigns.nvim
-[kshenoy/vim-signature]: https://github.com/kshenoy/vim-signature
+[chentau/marks.nvim]: https://github.com/chentau/marks.nvim
 [nathanaelkane/vim-indent-guides]: https://github.com/nathanaelkane/vim-indent-guides
 [kevinhwang91/nvim-bqf]: https://github.com/kevinhwang91/nvim-bqf
 [norcalli/nvim-colorizer.lua]: https://github.com/norcalli/nvim-colorizer.lua
@@ -484,15 +477,22 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [kristijanhusak/orgmode.nvim]: https://github.com/kristijanhusak/orgmode.nvim
 [vimwiki/vimwiki]: https://github.com/vimwiki/vimwiki
 
-[kabouzeid/nvim-lspinstall]: https://github.com/kabouzeid/nvim-lspinstall
-[kosayoda/nvim-lightbulb]: https://github.com/kosayoda/nvim-lightbulb
 [neovim/nvim-lspconfig]: https://github.com/neovim/nvim-lspconfig
+[williamboman/nvim-lsp-installer]: https://github.com/williamboman/nvim-lsp-installer
+[kosayoda/nvim-lightbulb]: https://github.com/kosayoda/nvim-lightbulb
 [ray-x/lsp_signature.nvim]: https://github.com/ray-x/lsp_signature.nvim
 [folke/lua-dev.nvim]: https://github.com/folke/lua-dev.nvim
+[jose-elias-alvarez/null-ls.nvim]: https://github.com/jose-elias-alvarez/null-ls.nvim
 [folke/todo-comments.nvim]: https://github.com/folke/todo-comments.nvim
-[hrsh7th/nvim-cmp]: https://github.com/hrsh7th/nvim-cmp
-[andersevenrud/compe-tmux]: https://github.com/andersevenrud/compe-tmux
 [windwp/nvim-autopairs]: https://github.com/windwp/nvim-autopairs
+[hrsh7th/nvim-cmp]: https://github.com/hrsh7th/nvim-cmp
+[hrsh7th/cmp-nvim-lsp]: https://github.com/hrsh7th/cmp-nvim-lsp
+[hrsh7th/cmp-nvim-lua]: https://github.com/hrsh7th/cmp-nvim-lua
+[hrsh7th/cmp-buffer]: https://github.com/hrsh7th/cmp-buffer
+[hrsh7th/cmp-vsnip]: https://github.com/hrsh7th/cmp-vsnip
+[hrsh7th/cmp-path]: https://github.com/hrsh7th/cmp-path
+[hrsh7th/cmp-emoji]: https://github.com/hrsh7th/cmp-emoji
+[andersevenrud/compe-tmux]: https://github.com/andersevenrud/compe-tmux
 [hrsh7th/vim-vsnip]: https://github.com/hrsh7th/vim-vsnip
 [hrsh7th/vim-vsnip-integ]: https://github.com/hrsh7th/vim-vsnip-integ
 [rafamadriz/friendly-snippets]: https://github.com/rafamadriz/friendly-snippets
@@ -500,39 +500,34 @@ _Note_ that 95% of the plugins are **[lazy-loaded]**.
 [sindrets/diffview.nvim]: https://github.com/sindrets/diffview.nvim
 [nvim-telescope/telescope.nvim]: https://github.com/nvim-telescope/telescope.nvim
 [rmagatti/session-lens]: https://github.com/rmagatti/session-lens
+[nvim-telescope/telescope-ui-select.nvim]: https://github.com/nvim-telescope/telescope-ui-select.nvim
 [jvgrootveld/telescope-zoxide]: https://github.com/jvgrootveld/telescope-zoxide
 [simrat39/symbols-outline.nvim]: https://github.com/simrat39/symbols-outline.nvim
 [rmagatti/auto-session]: https://github.com/rmagatti/auto-session
 [sbdchd/neoformat]: https://github.com/sbdchd/neoformat
+[SmiteshP/nvim-gps]: https://github.com/SmiteshP/nvim-gps
 [mattn/emmet-vim]: https://github.com/mattn/emmet-vim
-
-[lambdalisue/fern.vim]: https://github.com/lambdalisue/fern.vim
-[lambdalisue/nerdfont.vim]: https://github.com/lambdalisue/nerdfont.vim
-[lambdalisue/fern-git-status.vim]: https://github.com/lambdalisue/fern-git-status.vim
-[lambdalisue/fern-mapping-git.vim]: https://github.com/lambdalisue/fern-mapping-git.vim
-[lambdalisue/fern-bookmark.vim]: https://github.com/lambdalisue/fern-bookmark.vim
-[yuki-yano/fern-preview.vim]: https://github.com/yuki-yano/fern-preview.vim
-[lambdalisue/fern-renderer-nerdfont.vim]: https://github.com/lambdalisue/fern-renderer-nerdfont.vim
-[lambdalisue/glyph-palette.vim]: https://github.com/lambdalisue/glyph-palette.vim
 
 [nvim-treesitter/nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [nvim-treesitter/nvim-treesitter-textobjects]: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+[JoosepAlviste/nvim-ts-context-commentstring]: https://github.com/JoosepAlviste/nvim-ts-context-commentstring
+[windwp/nvim-ts-autotag]: https://github.com/windwp/nvim-ts-autotag
+[monkoose/matchparen.nvim]: https://github.com/monkoose/matchparen.nvim
 
+[iloginow/vim-stylus]: https://github.com/iloginow/vim-stylus
 [chrisbra/csv.vim]: https://github.com/chrisbra/csv.vim
 [tpope/vim-git]: https://github.com/tpope/vim-git
 [dag/vim-fish]: https://github.com/dag/vim-fish
 [towolf/vim-helm]: https://github.com/towolf/vim-helm
-[mboughaba/i3config.vim]: https://github.com/mboughaba/i3config.vim
 [mustache/vim-mustache-handlebars]: https://github.com/mustache/vim-mustache-handlebars
 [digitaltoad/vim-pug]: https://github.com/digitaltoad/vim-pug
 [keith/swift.vim]: https://github.com/keith/swift.vim
 [lifepillar/pgsql.vim]: https://github.com/lifepillar/pgsql.vim
-[chr4/nginx.vim]: https://github.com/chr4/nginx.vim
 [vim-jp/syntax-vim-ex]: https://github.com/vim-jp/syntax-vim-ex
 [MTDL9/vim-log-highlighting]: https://github.com/MTDL9/vim-log-highlighting
 [tmux-plugins/vim-tmux]: https://github.com/tmux-plugins/vim-tmux
 [reasonml-editor/vim-reason-plus]: https://github.com/reasonml-editor/vim-reason-plus
-[plasticboy/vim-markdown]: https://github.com/plasticboy/vim-markdown
+[preservim/vim-markdown]: https://github.com/preservim/vim-markdown
 [pearofducks/ansible-vim]: https://github.com/pearofducks/ansible-vim
 [hashivim/vim-terraform]: https://github.com/hashivim/vim-terraform
 
@@ -551,7 +546,7 @@ Note that,
 
 * **Leader** key set as <kbd>Space</kbd>
 * **Local-Leader** key set as <kbd>;</kbd> and used for navigation and search
-  (Telescope and Fern)
+  (Telescope and Tree)
 * Disable <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> in normal mode by enabling `g:elite_mode` in `.vault.vim`
 
 <details open>
@@ -608,10 +603,10 @@ Note that,
 | <kbd>></kbd> | 𝐕 | Indent to right and re-select | `>gv|`
 | <kbd>Tab</kbd> | 𝐕 | Indent to right and re-select | `>gv|`
 | <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent to left and re-select | `<gv`
-| <kbd>gc</kbd> | 𝐍 𝐕 | Caw (comments plugin) prefix | <small>[tyru/caw.vim]</small>
-| <kbd>gcc</kbd> | 𝐍 𝐕 | Toggle comments | <small>[tyru/caw.vim]</small>
-| <kbd>Space</kbd>+<kbd>v</kbd> | 𝐍 𝐕 | Toggle single-line comments | <small>[tyru/caw.vim]</small>
-| <kbd>Space</kbd>+<kbd>V</kbd> | 𝐍 𝐕 | Toggle comment block | <small>[tyru/caw.vim]</small>
+| <kbd>gc</kbd> | 𝐍 𝐕 | Comment prefix | <small>[b3nj5m1n/kommentary]</small>
+| <kbd>gcc</kbd> | 𝐍 𝐕 | Toggle comments | <small>[b3nj5m1n/kommentary]</small>
+| <kbd>Space</kbd>+<kbd>v</kbd> | 𝐍 𝐕 | Toggle single-line comments | <small>[b3nj5m1n/kommentary]</small>
+| <kbd>Space</kbd>+<kbd>V</kbd> | 𝐍 𝐕 | Toggle comment block | <small>[b3nj5m1n/kommentary]</small>
 | <kbd>Space</kbd>+<kbd>j</kbd> or <kbd>k</kbd> | 𝐍 𝐕 | Move lines down/up | `:m` …
 | <kbd>Space</kbd>+<kbd>d</kbd> | 𝐍 𝐕 | Duplicate line or selection |
 | <kbd>Space</kbd>+<kbd>cn</kbd> / <kbd>cN</kbd> | 𝐍 𝐕 | Change current word in a repeatable manner |
@@ -674,13 +669,13 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>;</kbd>+<kbd>c</kbd> | 𝐍 | Open context-menu | <small>[plugin/actionmenu.vim]</small>
 | <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>o</kbd> | 𝐍 | Navigate to previous file on jumplist | <small>s:jump_buffer</small>
 | <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>i</kbd> | 𝐍 | Navigate to next file on jumplist | <small>s:jump_buffer</small>
 | <kbd>-</kbd> | 𝐍 | Choose a window to edit | <small>[t9md/vim-choosewin]</small>
 | <kbd>Space</kbd>+<kbd>-</kbd> | 𝐍 | Switch editing window with selected | <small>[t9md/vim-choosewin]</small>
 | <kbd>Space</kbd>+<kbd>l</kbd> | 𝐍 | Open side-menu helper | <small>[rafi/vim-sidemenu]</small>
 | <kbd>Space</kbd>+<kbd>o</kbd> | 𝐍 | Open structure window | <small>[simrat39/symbols-outline.nvim]</small>
+| <kbd>Space</kbd>+<kbd>f</kbd> | 𝐍 | Show current structure scope | <small>[SmiteshP/nvim-gps]</small>
 | <kbd>Space</kbd>+<kbd>S</kbd> | 𝐍 𝐕 | Source selection | `y:execute @@`
 | <kbd>Space</kbd>+<kbd>?</kbd> | 𝐍 | Open the macOS dictionary on current word | `:!open dict://`
 | <kbd>Space</kbd>+<kbd>P</kbd> | 𝐍 | Use Marked 2 for real-time Markdown preview | <small>[Marked 2]</small>
@@ -715,12 +710,28 @@ Note that,
 | <kbd>ssg</kbd> | 𝐍 | Vertical split with previous buffer | `:vsplit │ wincmd p │ e#`
 | <kbd>sh</kbd> | 𝐍 | Toggle colorscheme background=dark/light | `:set background` …
 
+### Plugin: Sandwich
+
+| Key            | Mode  | Action                       |
+| -------------- |:-----:| ---------------------------- |
+| <kbd>ds</kbd>  | 𝐍     | Delete around with query     |
+| <kbd>dss</kbd> | 𝐍     | Delete around automatically  |
+| <kbd>cs</kbd>  | 𝐍     | Change around with query     |
+| <kbd>css</kbd> | 𝐍     | Change around automatically  |
+| <kbd>sa</kbd>  | 𝐍 𝐕 𝐎 | Trigger add operator         |
+| <kbd>sd</kbd>  | 𝐍 𝐕   | Trigger delete operator      |
+| <kbd>sdb</kbd> | 𝐍     | Delete around automatically  |
+| <kbd>sr</kbd>  | 𝐍 𝐕   | Trigger replace operator     |
+| <kbd>srb</kbd> | 𝐍     | Replace around automatically |
+| <kbd>ir</kbd>  | 𝐕 𝐎   | Inner automatically          |
+| <kbd>ab</kbd>  | 𝐕 𝐎   | Around automatically         |
+
 ### Plugin: Gitsigns
 
 | Key   | Mode | Action             |
 | ----- |:----:| ------------------ |
 | <kbd>]g</kbd> or <kbd>]g</kbd> | 𝐍 | Next/previous Git hunk |
-| <kbd>gs</kbd> | 𝐍 | Preview hunk |
+| <kbd>gs</kbd>                  | 𝐍 | Preview hunk |
 | <kbd>Space</kbd>+<kbd>hp</kbd> | 𝐍 | Preview hunk |
 | <kbd>Space</kbd>+<kbd>hb</kbd> | 𝐍 | Blame line |
 | <kbd>Space</kbd>+<kbd>hs</kbd> | 𝐍 𝐕 | Stage hunk |
@@ -785,13 +796,13 @@ Note that,
 | <kbd>e</kbd> | 𝐍 | Send to quickfix list
 | <kbd>dd</kbd> | 𝐍 | Delete entry (buffer list)
 
-### Plugin: Fern
+### Plugin: Nvim-Tree
 
 | Key   | Mode | Action
 | ----- |:----:| ------------------
 | <kbd>;e</kbd> | 𝐍 | Open file-explorer (toggle)
 | <kbd>;a</kbd> | 𝐍 | Focus current file in file-explorer
-| **Within _Fern_ window** ||
+| **Within _Nvim-Tree_ window** ||
 | <kbd>j</kbd> or <kbd>k</kbd> | 𝐍 | Move up and down the tree
 | <kbd>J</kbd> or <kbd>K</kbd> or <kbd>Space</kbd> | 𝐍 | Select entries up/downwards
 | <kbd>l</kbd> or <kbd>Return</kbd> | 𝐍 | Toggle collapse/expand directory or open file
@@ -827,14 +838,23 @@ Note that,
 | Key   | Mode | Action
 | ----- |:----:| ------------------
 | <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 | Navigate completion-menu
-| <kbd>Enter</kbd> | 𝐈 | Select completion or expand snippet
-| <kbd>Ctrl</kbd>+<kbd>j</kbd>/<kbd>k</kbd>/<kbd>d</kbd>/<kbd>u</kbd> | 𝐈 | Movement in completion pop-up
-| <kbd>Ctrl</kbd>+<kbd>Return</kbd> | 𝐈 | Expand Emmet sequence
-| <kbd>Ctrl</kbd>+<kbd>Space</kbd> | 𝐈 | Refresh and show candidates
-| <kbd>Ctrl</kbd>+<kbd>y</kbd> | 𝐈 | Close pop-up
-| <kbd>Ctrl</kbd>+<kbd>e</kbd> | 𝐈 | Cancel selection and close pop-up
-| <kbd>Ctrl</kbd>+<kbd>l</kbd> | 𝐈 | Expand snippet at cursor
 | <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 𝐒 | Navigate snippet placeholders
+| <kbd>Ctrl</kbd>+<kbd>Space</kbd> | 𝐈 | Open completion menu
+| <kbd>Enter</kbd> | 𝐈 | Select completion or expand snippet
+| <kbd>Ctrl</kbd>+<kbd>p</kbd>/<kbd>n</kbd> | 𝐈 | Movement in completion pop-up
+| <kbd>Ctrl</kbd>+<kbd>b</kbd>/<kbd>f</kbd> | 𝐈 | Scroll documentation
+| <kbd>Ctrl</kbd>+<kbd>y</kbd> | 𝐈 | Expand Emmet sequence
+| <kbd>Ctrl</kbd>+<kbd>e</kbd> | 𝐈 | Abort selection and close pop-up
+| <kbd>Ctrl</kbd>+<kbd>l</kbd> | 𝐈 | Expand snippet at cursor
+
+### Plugin: Spectre
+
+| Key   | Mode | Action
+| ----- |:----:| ------------------
+| <kbd>Space</kbd>+<kbd>so</kbd> | 𝐍 | Open spectre window
+| <kbd>Space</kbd>+<kbd>sw</kbd> | 𝐍 | Open spectre window with current word
+| <kbd>Space</kbd>+<kbd>s</kbd> | 𝐕 | Open spectre window with visual selection
+| <kbd>Space</kbd>+<kbd>sp</kbd> | 𝐍 | Search in current file
 
 ### Plugin: Any-Jump
 
@@ -845,35 +865,31 @@ Note that,
 | <kbd>Space</kbd>+<kbd>ib</kbd> | 𝐍 | Open previous opened file (after jump)
 | <kbd>Space</kbd>+<kbd>il</kbd> | 𝐍 | Open last closed search window again
 
-### Plugin: Signature
+### Plugin: Marks
 
 | Key   | Mode | Action
 | ----- |:----:| ------------------
-| <kbd>m/</kbd> or <kbd>m?</kbd> | 𝐍 | Show list of buffer marks/markers
-| <kbd>mm</kbd> | 𝐍 | Toggle mark on current line
-| <kbd>m,</kbd> | 𝐍 | Place next mark
-| <kbd>m</kbd> <kbd>a-z</kbd> | 𝐍 | Place specific mark (Won't work for: <kbd>mm</kbd>, <kbd>mn</kbd>, <kbd>mp</kbd>)
-| <kbd>dm</kbd> <kbd>a-z</kbd> | 𝐍 | Remove specific mark (Won't work for: <kbd>mm</kbd>, <kbd>mn</kbd>, <kbd>mp</kbd>)
-| <kbd>mn</kbd> | 𝐍 | Jump to next mark
-| <kbd>mp</kbd> | 𝐍 | Jump to previous mark
-| <kbd>]=</kbd> | 𝐍 | Jump to next marker
-| <kbd>[=</kbd> | 𝐍 | Jump to previous marker
-| <kbd>m-</kbd> | 𝐍 | Purge all on current line
-| <kbd>m</kbd> <kbd>Space</kbd> | 𝐍 | Purge marks
-| <kbd>m</kbd> <kbd>Backspace</kbd> | 𝐍 | Purge markers
+| <kbd>m,</kbd> | 𝐍 | Set the next available alphabetical (lowercase) mark
+| <kbd>m;</kbd> | 𝐍 | Toggle the next available mark at the current line
+| <kbd>m</kbd> <kbd>a-z</kbd> | 𝐍 | Set mark
+| <kbd>dm</kbd> <kbd>a-z</kbd> | 𝐍 | Remove mark
+| <kbd>dm-</kbd> | 𝐍 | Delete all marks on the current line
+| <kbd>dm<Space></kbd>  | 𝐍 | Delete all marks in the current buffer
+| <kbd>m]</kbd>  | 𝐍 | Move to next mark
+| <kbd>m[</kbd>  | 𝐍 | Move to previous mark
+| <kbd>m:</kbd>  | 𝐍 | Preview mark, prompts you for a specific mark.
 
 </details>
 
 [Neovim]: https://github.com/neovim/neovim
-[supported language-servers]: https://github.com/kabouzeid/nvim-lspinstall/tree/main/lua/lspinstall/servers
+[supported language-servers]: https://github.com/williamboman/nvim-lsp-installer#available-lsps
 [lua/lsp/*]: ./lua/lsp/
 [lua/plugins/lspconfig.lua]: ./lua/plugins/lspconfig.lua
 [nvim-lspconfig]: https://github.com/neovim/nvim-lspconfig
 [nvim-cmp]: https://github.com/hrsh7th/nvim-cmp
 [telescope.nvim]: https://github.com/nvim-telescope/telescope.nvim
-[lazy-loaded]: ./config/plugins.yaml#L39
+[lazy-loaded]: ./config/plugins.yaml#L35
 [config/mappings.vim]: ./config/mappings.vim
 [plugin/whitespace.vim]: ./plugin/whitespace.vim
-[plugin/actionmenu.vim]: ./plugin/actionmenu.vim
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [Marked 2]: https://marked2app.com

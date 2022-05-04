@@ -1,4 +1,3 @@
-
 " hybrid custom
 " ===
 
@@ -22,13 +21,12 @@ let g:terminal_color_14 = '#75daa9'
 let g:terminal_color_15 = '#cfcfcf'
 " }}}
 
-" Tabline {{{
-highlight! UserBorder         ctermfg=254 guifg=#525865
-highlight! UserSelectionCaret ctermfg=139 guifg=#B294BB ctermbg=97 guibg=#4D2238
-highlight! UserSelectionBackground                      ctermbg=97 guibg=#4D2238
-highlight! UserFloat          ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
-" highlight! link UserFloat NormalFloat
-highlight! link UserPreviewLine UserSelectionBackground
+" Float and selection {{{
+highlight! FloatBorder ctermfg=254 guifg=#525865
+highlight! link NormalFloat Pmenu
+" highlight! NormalFloat ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE
+" highlight! NormalFloat ctermfg=250 ctermbg=237 guifg=#c5c8c6 guibg=#373b41
+highlight! WildMenu    ctermfg=NONE guifg=NONE ctermbg=97 guibg=#4D2238
 " ctermbg=236 guibg=#323232
 " #ACAFAE  #2C3237
 " #2a2e36  #525865
@@ -77,6 +75,11 @@ highlight! link jsFutureKeys PreProc
 highlight! WarningMsg  ctermfg=100 guifg=#CCC566
 highlight! link QuickFixLine WildMenu
 highlight! link lspReference Visual
+
+highlight! DiagnosticError ctermfg=1   guifg=Red
+highlight! DiagnosticWarn  ctermfg=3   guifg=Orange
+highlight! DiagnosticInfo  ctermfg=4   guifg=LightBlue
+highlight! DiagnosticHint  ctermfg=143 guifg=#b5bd68
 
 " if has('nvim') || has('patch-7.4.2218')
 " 	highlight EndOfBuffer gui=NONE guifg=#303030
@@ -130,6 +133,13 @@ hi! link mkdItalic htmlItalic
 
 " }}}
 
+" LSP {{{
+" ---
+highlight! LspReferenceRead ctermbg=237 guibg=#3D3741
+highlight! LspReferenceText ctermbg=237 guibg=#373B41
+highlight! LspReferenceWrite ctermbg=237 guibg=#374137
+" }}}
+
 " Plugin: IndentGuides {{{
 " ---
 " highlight! IndentGuidesOdd  guifg=#292B2D guibg=#232527
@@ -138,38 +148,57 @@ hi! link mkdItalic htmlItalic
 
 " Plugin: IndentBlankline {{{
 " ---
-highlight! IndentBlanklineChar cterm=nocombine gui=nocombine guibg=#232527
-highlight! IndentBlanklineCharOdd cterm=nocombine gui=nocombine guibg=#292B2D
+" highlight! IndentBlanklineChar cterm=nocombine gui=nocombine guibg=#232527
+" highlight! IndentBlanklineCharOdd cterm=nocombine gui=nocombine guibg=#292B2D
+
 " highlight! IndentBlanklineSpaceChar cterm=nocombine gui=nocombine guifg=#373b41
 " highlight! IndentBlanklineSpaceCharBlankline cterm=nocombine gui=nocombine guifg=#373b41
 " highlight! IndentBlanklineContextChar cterm=nocombine ctermbg=110 gui=nocombine guibg=#81a2be
 " }}}
 
-" Plugin: Telescope {{{
+" Plugin: nvim-cmp {{{
 " ---
-highlight! clear WildMenu
-highlight! link WildMenu UserSelectionBackground
-highlight! link TelescopeSelection UserSelectionBackground
-highlight! link TelescopeSelectionCaret UserSelectionCaret
-highlight! link TelescopeBorder UserBorder
-highlight! link TelescopePromptBorder UserBorder
-highlight! link TelescopeResultsBorder UserBorder
-highlight! link TelescopePreviewBorder UserBorder
-highlight! link TelescopePreviewLine UserPreviewLine
+highlight! link CmpItemAbbrMatch IncSearch
+highlight! link CmpItemAbbrMatchFuzzy IncSearch
+" ctermfg=12 guifg=#4EA9D7
+
+highlight! link CmpItemKindVariable PreProc
+highlight! link CmpItemKindInterface PreProc
+highlight! link CmpItemKindText PreProc
+
+highlight! link CmpItemKindFunction Identifier
+highlight! link CmpItemKindMethod Identifier
+
+highlight! link CmpItemKindSnippet Statement
+highlight! link CmpItemKindFile Statement
+highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
+highlight! CmpItemKindProperty guibg=NONE guifg=#D4D4D4
+highlight! CmpItemKindUnit guibg=NONE guifg=#D4D4D4
+highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
+
 " }}}
 
-" Plugin: Fern {{{
+" Plugin: Telescope {{{
 " ---
-highlight! FernGitStatusBracket  ctermfg=234 ctermbg=NONE guifg=bg guibg=NONE
-highlight! FernGitStatusIndex    ctermfg=10  guifg=#A3D572
-highlight! FernGitStatusWorktree ctermfg=1   guifg=#D370A3
-highlight! link FernSpinner Identifier
+highlight! TelescopeSelectionCaret ctermfg=139 guifg=#B294BB ctermbg=97 guibg=#4D2238
+highlight! link TelescopeSelection WildMenu
+highlight! link TelescopeBorder FloatBorder
+highlight! link TelescopePromptBorder FloatBorder
+highlight! link TelescopeResultsBorder FloatBorder
+highlight! link TelescopePreviewBorder FloatBorder
+highlight! link TelescopePreviewLine WildMenu
+" }}}
+
+" Plugin: NvimTree {{{
+" ---
+highlight! link NvimTreeIndentMarker FloatBorder
+
 " }}}
 
 " Plugin: Bqf {{{
 " ---
 " hi default link BqfPreviewFloat Normal
-highlight! link BqfPreviewBorder UserBorder
+highlight! link BqfPreviewBorder FloatBorder
 highlight! link BqfPreviewCursor TermCursor
 highlight! default link BqfPreviewRange TermCursorNC
 " hi default BqfSign ctermfg=14 guifg=Cyan
@@ -181,6 +210,10 @@ highlight! default link BqfPreviewRange TermCursorNC
 highlight! GitSignsAdd ctermfg=22 guifg=#008500 ctermbg=234 guibg=#1c1c1c
 highlight! GitSignsChange ctermfg=58 guifg=#808200 ctermbg=234 guibg=#1c1c1c
 highlight! GitSignsDelete ctermfg=52 guifg=#800000 ctermbg=234 guibg=#1c1c1c
+" Word diff in previews:
+highlight! GitSignsAddInline ctermbg=10 guibg=#2F5C36 guifg=#DDFFC3
+highlight! GitSignsDeleteInline ctermfg=167 guifg=#cc6666 ctermbg=97 guibg=#4D2238
+highlight! GitSignsChangeInline ctermbg=58 guibg=#808200
 " }}}
 
 " Plugin: simrat39/symbols-outline.nvim {{{
@@ -194,9 +227,10 @@ highlight! link ShotFGraph SpellRare
 highlight! link ShotFBlank DiffAdd
 " }}}
 
-" Plugin: vim-signature {{{
-highlight! SignatureMarkText    ctermfg=11 guifg=#756207 ctermbg=234 guibg=#1c1c1c
-highlight! SignatureMarkerText  ctermfg=12 guifg=#4EA9D7 ctermbg=234 guibg=#1c1c1c
+" Plugin: chentau/marks.nvim {{{
+highlight! MarkSignHL ctermfg=12 guifg=#4EA9D7
+" highlight! default link MarkSignNumHL CursorLineNr
+" highlight! default link MarkVirtTextHL Comment
 " }}}
 
 " Plugin: vim-choosewin {{{

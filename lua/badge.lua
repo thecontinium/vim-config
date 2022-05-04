@@ -123,6 +123,9 @@ function M.icon()
 				end
 			end
 		end
+		if icon == nil then
+			icon = ''
+		end
 		vim.api.nvim_buf_set_var(0, cache_key, icon)
 
 		return icon
@@ -177,7 +180,10 @@ function M.utility_title()
 			Trouble = '',
 			DiffviewFiles = '',
 			NeogitStatus = '',
+			NvimTree = '',
 			Outline = '',
+			['lsp-installer'] = '',
+			spectre_panel = '',
 		}
 		local padding = vim.g.global_symbol_padding or ' '
 		return icons[vim.bo.filetype] .. padding .. '%y'

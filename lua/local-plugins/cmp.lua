@@ -15,6 +15,7 @@ _G.cmp_get_sources = function(arr)
 		vsnip = { name = 'vsnip' },
 		tmux  = { name = 'tmux', option = { all_panes = true }},
 		latex = { name = 'latex_symbols' },
+		conjure = { name = 'conjure' },
 	}
 	local sources = {}
 	for _, name in ipairs(arr) do
@@ -23,8 +24,6 @@ _G.cmp_get_sources = function(arr)
 	return sources
 end
 
---     
---    ⮡
 -- Labels for completion candidates.
 local completion_labels = {
 	nvim_lsp = "[LSP]",
@@ -50,6 +49,9 @@ vim.api.nvim_exec([[
 		autocmd FileType org
 			\ lua require('cmp').setup.buffer{ sources = cmp_get_sources(
 			\ {'orgmode', 'emoji', 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux'})}
+		autocmd filetype clojure
+			\ lua require('cmp').setup.buffer{ sources = cmp_get_sources(
+		  \ { 'nvim_lsp', 'buffer', 'path', 'vsnip', 'tmux', 'conjure' })}
 	augroup END
 ]], false)
 
@@ -96,8 +98,6 @@ cmp.setup {
 			i = cmp.mapping.abort(),
 			c = cmp.mapping.close(),
 		}),
-		['<C-b>'] = cmp.mapping.scroll_docs(-4),
-		['<C-f>'] = cmp.mapping.scroll_docs(4),
 		['<C-u>'] = cmp.mapping.scroll_docs(-4),
 		['<C-d>'] = cmp.mapping.scroll_docs(4),
 		['<C-c>'] = function(fallback)
@@ -134,7 +134,7 @@ cmp.setup {
 
 	documentation = {
 		border = 'rounded',
-		winhighlight = 'NormalFloat:NormalFloat,FloatBorder:FloatBorder',
+		winhighlight = 'NormalFloat:UserFloat,FloatBorder:UserBorder',
 	},
 
 	formatting = {
@@ -161,3 +161,4 @@ cmp.setup {
 		end,
 	},
 }
+

@@ -1,70 +1,86 @@
-local function map(mode, lhs, rhs, opts)
-  local map_opts = {noremap = true, silent = true, expr = false}
-  opts = vim.tbl_extend("force", map_opts, opts or {})
-  vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
-end
+local zk = require("zk")
+local commands = require("zk.commands")
 
--- telescope-zettelkasten
-function _G.search_zettel()
-  require("telescope.builtin").find_files {
-    prompt_title = "Search ZK",
-    hidden = true,
-    shorten_path = false,
-    cwd = vim.env.ZK_NOTEBOOK_DIR or "",
-  }
-end
+zk.setup({
+  -- can be "telescope", "fzf" or "select" (`vim.ui.select`)
+  -- it's recommended to use "telescope" or "fzf"
+  picker = "telescope",
 
-map("n", "<leader>zf", "<cmd>lua _G.search_zettel()<cr>")
--- require('telescope').load_extension('zk')
--- map("n", "<leader>zn", "<cmd>lua require('telescope').extensions.zk.zk_notes()<cr>")
--- map("n", "<leader>zg", "<cmd>lua require('telescope').extensions.zk.zk_grep()<cr>")
--- map("n", "<leader>zb", "<cmd>lua require('telescope').extensions.zk.zk_backlinks()<cr>")
-
-local lspconfig = require'lspconfig'
-local configs = require'lspconfig/configs'
-
-configs.zk = {
-  default_config = {
-    cmd = {'zk', 'lsp'};
-    filetypes = {'markdown'};
-    root_dir = lspconfig.util.root_pattern('.zk');
-    settings = {};
-  };
-}
-
-configs.zk.index = function()
-  vim.lsp.buf.execute_command({
-    command = "zk.index",
-    arguments = {vim.api.nvim_buf_get_name(0)},
-  })
-end
-
-configs.zk.new = function(...)
-  vim.lsp.buf_request(0, 'workspace/executeCommand',
-    {
-        command = "zk.new",
-        arguments = {
-            vim.api.nvim_buf_get_name(0),
-            ...
-        },
+  lsp = {
+    -- `config` is passed to `vim.lsp.start_client(config)`
+    config = {
+      cmd = { "zk", "lsp" },
+      name = "zk",
+      -- on_attach = ...
+      -- etc, see `:h vim.lsp.start_client()`
     },
-    function(_, _, result)
-      if not (result and result.path) then return end
-      vim.cmd("edit " .. result.path)
-    end
-  )
+
+    -- automatically attach buffers in a zk notebook that match the given filetypes
+    auto_attach = {
+      enabled = true,
+      filetypes = { "markdown" },
+    },
+  },
+})
+
+-- Built-in Commands
+
+-- Indexes the notebook
+-- :ZkIndex [{options}]
+
+-- cd into the notebook root
+-- params(optional) additional options
+-- :ZkCd [{options}]
+
+-- Creates a new note and uses the last visual selection as the content while replacing the selection with a link to the new note
+-- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zknew
+-- :'<,'>ZkNewFromContentSelection [{options}]
+
+-- Opens a notes picker, filters for notes that match the text in the last visual selection
+-- params(optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zklist
+-- :'<,'>ZkMatch [{options}]
+
+-- Creates and edits a new note
+-- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zknew
+-- :ZkNew [{options}]
+vim.api.nvim_set_keymap("n", "<LocalLeader>kc", "<cmd>ZkNew<CR>", { noremap = true })
+
+-- Creates a new note and uses the last visual selection as the title while replacing the selection with a link to the new note
+-- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zknew
+-- :'<,'>ZkNewFromTitleSelection [{options}]
+vim.api.nvim_set_keymap("x", "<LocalLeader>kc", ":'<'>ZkNewFromTitleSelection<CR>", { noremap = true })
+
+-- Opens a notes picker
+-- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zklist
+-- :ZkNotes [{options}]
+vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkNotes<CR>", { noremap = true })
+
+-- Opens a notes picker for the backlinks of the current buffer
+-- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zklist
+-- :ZkBacklinks [{options}]
+vim.api.nvim_set_keymap("n", "<LocalLeader>kb", "<cmd>ZkBacklinks<CR>", { noremap = true })
+
+-- Opens a notes picker for the outbound links of the current buffer
+-- params "   (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zklist
+-- :ZkLinks [{options}]
+vim.api.nvim_set_keymap("n", "<LocalLeader>kl", "<cmd>ZkLinks<CR>", { noremap = true })
+
+-- Opens a notes picker, filters for notes with the selected tags
+-- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zktaglist
+-- :ZkTags [{options}]
+vim.api.nvim_set_keymap("n", "<LocalLeader>kt", "<cmd>ZkTags<CR>", { noremap = true })
+
+-- Custom Commands
+
+local function make_edit_fn(defaults, picker_options)
+  return function(options)
+    options = vim.tbl_extend("force", defaults, options or {})
+    zk.edit(options, picker_options)
+  end
 end
 
-lspconfig.zk.setup({
-  on_attach = function(client, bufnr)
-    -- Key mappings
-    local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-    local opts = { noremap=true, silent=true }
-    buf_set_keymap("n", "<CR>", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-    -- buf_set_keymap("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-    buf_set_keymap("n", "<leader>zi", ":ZkIndex<CR>", opts)
-    buf_set_keymap("v", "<leader>zn", ":'<,'>lua vim.lsp.buf.range_code_action()<CR>", opts)
-    buf_set_keymap("n", "<leader>zn", ":ZkNew {title = vim.fn.input('Title: ')}<CR>", opts)
-    buf_set_keymap("n", "<leader>zl", ":ZkNew {dir = 'log'}<CR>", opts)
-  end
-})
+commands.add("ZkOrphans", make_edit_fn({ orphan = true }, { title = "Zk Orphans" }))
+vim.api.nvim_set_keymap("n", "<LocalLeader>ko", "<cmd>ZkOrphans<CR>", { noremap = true })
+
+commands.add("ZkRecents", make_edit_fn({ createdAfter = "2 weeks ago" }, { title = "Zk Recents" }))
+vim.api.nvim_set_keymap("n", "<LocalLeader>kr", "<cmd>ZkRecents<CR>", { noremap = true })

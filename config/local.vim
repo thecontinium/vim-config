@@ -12,14 +12,14 @@ cunmap <C-n>
 " }}}
 " Fern {{{
 if dein#tap('fern.vim')
-	augroup fern_global
-		autocmd! *
-		autocmd fern_global DirChanged * ++nested execute printf('FernDo Fern\ %s\ -drawer\ -stay -drawer -stay',deepcopy(v:event).cwd)
-	augroup END
-	if dein#tap('auto-session')
-		let g:auto_session_pre_restore_cmds = ["FernDo close -drawer -stay"]
-		let g:auto_session_pre_save_cmds = ["FernDo close -drawer -stay"]
-	endif
+	" augroup fern_global
+	" 	autocmd! *
+	" 	autocmd fern_global DirChanged * ++nested execute printf('FernDo Fern\ %s\ -drawer\ -stay -drawer -stay',deepcopy(v:event).cwd)
+	" augroup END
+	" if dein#tap('auto-session')
+	" 	let g:auto_session_pre_restore_cmds = ["FernDo close -drawer -stay"]
+	" 	let g:auto_session_pre_save_cmds = ["FernDo close -drawer -stay"]
+	" endif
 endif
 " }}}
 " zk {{{

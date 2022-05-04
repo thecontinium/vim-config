@@ -3,29 +3,18 @@
 -- rafi settings
 
 local cb = require('diffview.config').diffview_callback
-local lib = require('diffview.lib')
-
--- View entry without moving focus from explorer.
-local function view_entry()
-	local view = lib.get_current_view()
-	if view and view.panel:is_open() then
-		local file = view.panel:get_file_at_cursor()
-		if file then
-			view:set_file(file, false)
-		end
-	end
-end
 
 local function setup()
-	-- vim.cmd[[ autocmd! Diffview ]]
 	vim.cmd [[
 		augroup user-diffview
 			autocmd!
-			autocmd WinEnter,BufEnter diffview:///panels/* setlocal cursorline winhighlight=CursorLine:UserSelectionBackground
+			autocmd WinEnter,BufEnter diffview://* setlocal cursorline
+			autocmd WinEnter,BufEnter diffview:///panels/* setlocal winhighlight=CursorLine:WildMenu
 		augroup END
 	]]
 
 	require('diffview').setup{
+		enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
 		key_bindings = {
 			view = {
 				['q']         = '<cmd>DiffviewClose<CR>',
@@ -40,22 +29,37 @@ local function setup()
 				['<down>']  = cb('next_entry'),
 				['k']       = cb('prev_entry'),
 				['<up>']    = cb('prev_entry'),
-				['<cr>']    = '<cmd>lua require"plugins.diffview".view_entry()<CR>',
-				['o']       = cb('select_entry'),
+				['h']       = cb('prev_entry'),
+				['l']       = cb('select_entry'),
+				['<cr>']    = cb('select_entry'),
+				['o']       = cb('focus_entry'),
+				['gf']      = cb('goto_file'),
+				['sg']      = cb('goto_file_split'),
+				['st']      = cb('goto_file_tab'),
+				['r']       = cb('refresh_files'),
 				['R']       = cb('refresh_files'),
 				['<c-r>']   = cb('refresh_files'),
 				['<tab>']   = cb('select_next_entry'),
 				['<s-tab>'] = cb('select_prev_entry'),
 				[';a']      = cb('focus_files'),
 				[';e']      = cb('toggle_files'),
-			}
+			},
+			file_history_panel = {
+				['o']    = cb('focus_entry'),
+				['l']    = cb('select_entry'),
+				['<cr>'] = cb('select_entry'),
+				['O']    = cb('options'),
+			},
+			option_panel = {
+				['<tab>'] = cb('select'),
+				['q']     = cb('close'),
+			},
 		}
 	}
 end
 
 return {
 	setup = setup,
-	view_entry = view_entry,
 }
 
 -- vim: set ts=2 sw=2 tw=80 noet :
