@@ -8,7 +8,6 @@
 -- Buffer attached
 local on_attach = function(client, bufnr)
 	local function map_buf(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-	-- local function opt_buf(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
 	-- Keyboard mappings
 	local opts = { noremap = true, silent = true }
@@ -33,11 +32,18 @@ local on_attach = function(client, bufnr)
 	map_buf('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
 	map_buf('n', '<Leader>ce', '<cmd>lua require("user").diagnostic.open_float()<CR>', opts)
 
+	local server_capabilities = nil
+	if vim.fn.has('nvim-0.8') == 0 then
+		server_capabilities = client.resolved_capabilities
+	else
+		server_capabilities = client.server_capabilities
+	end
+
 	-- Set some keybinds conditional on server capabilities
-	if client.resolved_capabilities.document_formatting then
+	if server_capabilities.document_formatting then
 		map_buf('n', ',f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 	end
-	if client.resolved_capabilities.document_range_formatting then
+	if server_capabilities.document_range_formatting then
 		map_buf('x', ',f', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
 	end
 
@@ -67,7 +73,7 @@ local on_attach = function(client, bufnr)
 	end
 
 	-- Set autocommands conditional on server_capabilities
-	if client.resolved_capabilities.document_highlight then
+	if server_capabilities.document_highlight then
 		vim.api.nvim_exec([[
 			augroup lsp_document_highlight
 				autocmd! * <buffer>
@@ -117,10 +123,10 @@ local function setup()
 
 	-- Diagnostics signs and highlights
 	--   Error:   ✘
-	--   Warn:  ⚠ 
+	--   Warn:  ⚠  
 	--   Hint:  
 	--   Info:   ⁱ
-	local signs = { Error = '✘', Warn = '', Hint = '', Info = 'ⁱ'}
+	local signs = { Error = '✘', Warn = '', Hint = '', Info = 'ⁱ'}
 	for type, icon in pairs(signs) do
 		local hl = 'DiagnosticSign' .. type
 		vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
@@ -168,11 +174,14 @@ local function setup()
 	-- Setup language servers using nvim-lsp-installer
 	-- See https://github.com/williamboman/nvim-lsp-installer
 	local lsp_installer = require('nvim-lsp-installer')
+	lsp_installer.setup()
 
-	lsp_installer.on_server_ready(function(server)
-		local opts = make_config(server.name)
-		server:setup(opts)
-	end)
+	-- Setup language servers using nvim-lspconfig
+	local lspconfig = require('lspconfig')
+	for _, ls in pairs(lsp_installer.get_installed_servers()) do
+		local opts = make_config(ls.name)
+		lspconfig[ls.name].setup(opts)
+	end
 
 	-- global custom location-list diagnostics window toggle.
 	local args = { noremap = true, silent = true }
@@ -190,7 +199,7 @@ local function setup()
 			" See https://github.com/kosayoda/nvim-lightbulb
 			autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()
 			" Automatic diagnostic hover
-			" autocmd CursorHold * lua require("user").diagnostic.show_line_diagnostics({ focusable=false })
+			" autocmd CursorHold * lua require("user").diagnostic.open_float({ focusable=false })
 		augroup END
 	]], false)
 end
