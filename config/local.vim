@@ -77,10 +77,10 @@ augroup MyAutoCmd " {{{ markdown, vimwiki, clojure, yaml
 " or you leave the insert mode.
 " markdown filetype file
 au BufRead,BufNewFile *.{mmd} set filetype=markdown
-autocmd FileType markdown
-  \ setlocal nospell path=. suffixesadd=.mmd
-  \ | setlocal updatetime=200
-  \ | au CursorHold <buffer> silent! update
+" autocmd FileType markdown
+"   \ setlocal nospell path=. suffixesadd=.mmd
+"   \ | setlocal updatetime=200
+"   \ | au CursorHold <buffer> silent! update
 
 autocmd FileType vimwiki,markdown
   \ let b:sleuth_automatic = 0

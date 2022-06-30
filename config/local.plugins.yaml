@@ -11,7 +11,7 @@
 
 - repo: mickael-menu/zk-nvim
   if: has('nvim-0.5')
-  depends: [ nvim-lspconfig ]
+  depends: [ nvim-lspconfig, telescope.nvim ]
   on_event: VimEnter
   hook_post_source: lua require('local-plugins.zk')
 
