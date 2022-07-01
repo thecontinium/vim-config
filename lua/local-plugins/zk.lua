@@ -53,7 +53,7 @@ vim.api.nvim_set_keymap("x", "<LocalLeader>kc", ":'<'>ZkNewFromTitleSelection<CR
 -- Opens a notes picker
 -- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zklist
 -- :ZkNotes [{options}]
-vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkNotes {sort = {'modified'}, telescope = {matthew = true} }<CR>", { noremap = true })
+-- vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkNotes {sort = {'modified'}}<CR>", { noremap = true })
 
 -- Opens a notes picker for the backlinks of the current buffer
 -- params (optional) additional options, see https://github.com/mickael-menu/zk/blob/main/docs/editors-integration.md#zklist
@@ -79,31 +79,44 @@ local function make_edit_fn(defaults, picker_options)
   end
 end
 
-commands.add("MyZkNotes", function(options)
-  zk.edit(options, { title = "MyZk Notes",
-    telescope = {_completion_callbacks = { function(_) zk.index({},function(stats) vim.notify(string.format("%s files removed from the index", vim.inspect(stats.removedCount))) end) end}}})
-end)
+local function delete_zk_files(prompt_bufnr)
+  local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+  local entries = {}
+  if #picker:get_multi_selection() > 0 then
+    for _, entry in ipairs(picker:get_multi_selection()) do
+      table.insert(entries, entry)
+    end
+  else
+   table.insert(entries, require("telescope.actions.state").get_selected_entry().path)
+  end
+  local confo = string.format("Are you sure you want to delete these %s files [y/N)] ", #entries)
+  if vim.fn.input(confo, "") == "y" then
+    for _, path in ipairs(entries) do
+      vim.fn.delete(path)
+      vim.pretty_print(path)
+    end
+    zk.index({}, function(stats) vim.notify(string.format("zk index reomved %s files from the index", vim.inspect(stats.removedCount))) end)
+    require("telescope.actions").close(prompt_bufnr)
+  end
+end
+
+local function make_attach_mappings_fn(mappings)
+  return function(_, map)
+    for mode, tbl in pairs(mappings) do
+      for key, action in pairs(tbl) do
+        map(mode, key, action)
+      end
+    end
+    return true
+    end
+end
+
+commands.add("ZkDeletableNotes",
+  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dz"] = delete_zk_files,}})}}))
+vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 
 commands.add("ZkOrphans", make_edit_fn({ orphan = true }, { title = "Zk Orphans" }))
 vim.api.nvim_set_keymap("n", "<LocalLeader>ko", "<cmd>ZkOrphans<CR>", { noremap = true })
 
 commands.add("ZkRecents", make_edit_fn({ createdAfter = "2 weeks ago" }, { title = "Zk Recents" }))
 vim.api.nvim_set_keymap("n", "<LocalLeader>kr", "<cmd>ZkRecents<CR>", { noremap = true })
-
-local function delete(options, picker_options, index_options, index_cb)
-  zk.pick_notes(options, picker_options, function(notes)
-    if picker_options.multi_select == false then
-      notes = { notes }
-    end
-    local confo = string.format("Are you sure you want to delete these %s files [y/N)] ", #notes)
-    if vim.fn.input(confo, "") == "y" then
-      for _, note in ipairs(notes) do
-        vim.fn.delete(note.absPath)
-      end
-      zk.index(index_options, index_cb)
-    end
-  end)
-end
-
-commands.add("ZkDelete", function(options) delete(options, { title = "Zk Delete" }, {}, function(stats) vim.notify(string.format("%s files removed from the index", vim.inspect(stats.removedCount))) end) end)
-vim.api.nvim_set_keymap("n", "<LocalLeader>kd", "<cmd>ZkDelete {sort = {'modified'} }<CR>", { noremap = true })
