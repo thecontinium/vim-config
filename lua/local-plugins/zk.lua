@@ -114,6 +114,7 @@ end
 commands.add("ZkDeletableNotes",
   make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dz"] = delete_zk_files,}})}}))
 vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
+vim.api.nvim_set_keymap("n", "<LocalLeader>w", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 
 commands.add("ZkOrphans", make_edit_fn({ orphan = true }, { title = "Zk Orphans" }))
 vim.api.nvim_set_keymap("n", "<LocalLeader>ko", "<cmd>ZkOrphans<CR>", { noremap = true })
