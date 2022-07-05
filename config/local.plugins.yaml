@@ -63,10 +63,12 @@
 
 - { repo: vijaymarupudi/nvim-fzf, if: has("nvim-0.5"), lazy: true }
 
-# - repo: jvgrootveld/telescope-zoxide
-#   if: has('nvim-0.5')
-#   lazy: true
-#   hook_post_source: lua require('plugins.telescope-zoxide')
+- repo: nvim-telescope/telescope.nvim
+  if: has('nvim-0.7')
+  depends: [ session-lens ]
+  on_cmd: Telescope
+  on_lua: telescope
+  hook_post_source: lua require('local-plugins.telescope').setup()
 
 # - repo: vimwiki/vimwiki
 #   on_map: { n: <Plug> }
