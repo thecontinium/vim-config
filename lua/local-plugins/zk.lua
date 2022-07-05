@@ -93,7 +93,7 @@ local function delete_zk_files(prompt_bufnr)
   if vim.fn.input(confo, "") == "y" then
     for _, path in ipairs(entries) do
       vim.fn.delete(path)
-      vim.pretty_print(path)
+      -- vim.pretty_print(path)
     end
     zk.index({}, function(stats) vim.notify(string.format("zk index reomved %s files from the index", vim.inspect(stats.removedCount))) end)
     require("telescope.actions").close(prompt_bufnr)
@@ -112,7 +112,7 @@ local function make_attach_mappings_fn(mappings)
 end
 
 commands.add("ZkDeletableNotes",
-  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dz"] = delete_zk_files,}})}}))
+  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dd"] = delete_zk_files,}})}}))
 vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<LocalLeader>w", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 
