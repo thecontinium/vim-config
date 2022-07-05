@@ -10,45 +10,6 @@ cnoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 cunmap <C-p>
 cunmap <C-n>
 " }}}
-" Fern {{{
-if dein#tap('fern.vim')
-	" augroup fern_global
-	" 	autocmd! *
-	" 	autocmd fern_global DirChanged * ++nested execute printf('FernDo Fern\ %s\ -drawer\ -stay -drawer -stay',deepcopy(v:event).cwd)
-	" augroup END
-	" if dein#tap('auto-session')
-	" 	let g:auto_session_pre_restore_cmds = ["FernDo close -drawer -stay"]
-	" 	let g:auto_session_pre_save_cmds = ["FernDo close -drawer -stay"]
-	" endif
-endif
-" }}}
-" zk {{{
-command! -nargs=0 ZkIndex :lua require'lspconfig'.zk.index()
-command! -nargs=? ZkNew :lua require'lspconfig'.zk.new(<args>)
-" }}}
-" Vista {{{
-if dein#tap('vista.vim') &&	has('nvim-0.5')
-	let g:vista_executive_for.clojure = 'nvim_lsp'
-endif
-" }}}
-" Telescope {{{
-" if dein#tap('telescope.nvim')
-" 	nnoremap <silent><LocalLeader>l :<C-u>Telescope lsp_code_actions theme=get_dropdown result_height=6 width=40<CR>
-" endif
-" }}}
-" Session Management {{{
-" What to save in sessions:
-
-let g:session_directory = expand('$HOME/Resilio Sync/app/vim/session')
-" set sessionoptions+=winpos
-" set sessionoptions+=buffers
-" nmap <silent> <Leader>su :<C-u>let v:this_session='' && execute 'redrawtabline'<CR>
-" nmap <silent> <Leader>su :<C-u>call g:SessionUnload()<CR>
-" function! g:SessionUnload() abort
-" 	let v:this_session=''
-" 	silent execute 'redrawtabline'
-" endfunction
-" }}}
 " Terminal Mappings {{{
 " use `CTRL+{h,j,k,l}` to navigate windows from any mode: >
 :tnoremap <C-h> <C-\><C-N><C-w>h
@@ -141,7 +102,6 @@ endif
 
 if dein#tap('gina.vim')
   nnoremap <silent> <leader>gL :Gina log :<CR>
-  nnoremap <silent> <leader>gp :Gina push<CR>
   " nnoremap <silent> <leader>ga :Gina add %:p<CR>
   " nnoremap <silent> <leader>gd :Gina compare -R<CR>
   " nnoremap <silent> <leader>gc :Gina commit<CR>
@@ -150,21 +110,10 @@ if dein#tap('gina.vim')
   " nnoremap <silent> <leader>gS :Gina status<CR>
 endif
 " }}}
-" Easymotion Settings {{{
-
-" if dein#tap('vim-easymotion')
-  " nmap ss <Plug>(easymotion-s2)
-  " nmap sd <Plug>(easymotion-s)
-  " nmap sf <Plug>(easymotion-overwin-f)
-  " map  sh <Plug>(easymotion-linebackward)
-  " map  sl <Plug>(easymotion-lineforward)
-  " " map  sj <Plug>(easymotion-j)
-  " " map  sk <Plug>(easymotion-k)
-  " map  s/ <Plug>(easymotion-sn)
-  " omap s/ <Plug>(easymotion-tn)
-  " map  sn <Plug>(easymotion-next)
-  " map  sp <Plug>(easymotion-prev)
-" endif
+" auto-session settings {{{
+if dein#tap('auto-session')
+	set wildignore-=%*
+endif
 " }}}
 " - vim-UnconditionalPaste Settings {{{
 
