@@ -15,27 +15,11 @@ execute 'set runtimepath+='.substitute(
 
 " Add plugins to bundle
 call dein#begin($BUNDLE_DIR, [ expand('<sfile>') ])
-call dein#add('airblade/vim-gitgutter', { 'on_path': '.*' })
-call dein#add('Olical/conjure', { 'rep': 'v1.*.*', 'build': 'bin/compile' })
-call dein#add('Shougo/Defx.nvim')
+call dein#add('windwp/nvim-autopairs', {'merged': 0, 'hook_post_source': "lua require('nvim-autopairs').setup()"} )
 call dein#end()
 
 if dein#check_install()
 	call dein#install()
 endif
 
-filetype plugin indent on
-syntax enable
-call defx#custom#option('_', {
-	\ 'winwidth': 25,
-	\ 'split': 'vertical',
-	\ 'direction': 'topleft',
-	\ 'show_ignored_files': 0,
-	\ 'columns': 'indent:git:icons:filename',
-	\ 'root_marker': ' ',
-	\ 'ignored_files':
-	\     '.mypy_cache,.pytest_cache,.git,.hg,.svn,.stversions'
-	\   . ',__pycache__,.sass-cache,*.egg-info,.DS_Store,*.pyc'
-	\ })
-
-"	\ 'resume': 1,
+lua require('nvim-autopairs').setup()
