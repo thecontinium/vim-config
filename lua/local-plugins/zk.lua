@@ -79,6 +79,12 @@ local function make_edit_fn(defaults, picker_options)
   end
 end
 
+local function new_zk_files(prompt_bufnr)
+  -- vim.cmd("ZkNew " ... {title = require("telescope.actions.state").get_current_line())))
+  require("telescope.actions").close(prompt_bufnr)
+  require("zk.commands").get("ZkNew")({title = require("telescope.actions.state").get_current_line() })
+end
+
 local function delete_zk_files(prompt_bufnr)
   local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
   local entries = {}
@@ -112,7 +118,7 @@ local function make_attach_mappings_fn(mappings)
 end
 
 commands.add("ZkDeletableNotes",
-  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dd"] = delete_zk_files,}})}}))
+  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dn"] = delete_zk_files, ["kn"] = new_zk_files,}})}}))
 vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<LocalLeader>w", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 
