@@ -126,24 +126,24 @@
   on_ft: clojure
   depends: vim-sexp
 
-- repo: gberenfield/cljfold.vim
-  on_ft: clojure
+# - repo: gberenfield/cljfold.vim
+#   on_ft: clojure
 
 - repo: tpope/vim-repeat
   on-source: conjure
 
-- repo: guns/vim-clojure-highlight
-  on_ft: clojure
+# - repo: guns/vim-clojure-highlight
+#   on_ft: clojure
 
 - repo: clojure-vim/clojure.vim
   on_ft: clojure
 
-- repo: clojure-vim/vim-jack-in
-  on_cmd: [Clj, Lein]
-- repo: tpope/vim-dispatch
-  on_source: vim-jack-in
-- repo: radenling/vim-dispatch-neovim
-  on_source: vim-dispatch
+# - repo: clojure-vim/vim-jack-in
+#   on_cmd: [Clj, Lein]
+# - repo: tpope/vim-dispatch
+#   on_source: vim-jack-in
+# - repo: radenling/vim-dispatch-neovim
+#   on_source: vim-dispatch
 
 - repo: Olical/conjure
   on_ft: clojure
