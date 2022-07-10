@@ -90,7 +90,7 @@ local function delete_zk_files(prompt_bufnr)
   local entries = {}
   if #picker:get_multi_selection() > 0 then
     for _, entry in ipairs(picker:get_multi_selection()) do
-      table.insert(entries, entry)
+      table.insert(entries, entry.path)
     end
   else
    table.insert(entries, require("telescope.actions.state").get_selected_entry().path)
