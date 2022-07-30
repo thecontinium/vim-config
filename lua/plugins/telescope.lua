@@ -256,7 +256,7 @@ local setup = function()
 					['u'] = actions.drop_all,
 					['J'] = actions.toggle_selection + actions.move_selection_next,
 					['K'] = actions.toggle_selection + actions.move_selection_previous,
-					['<Space>'] = {
+					[' '] = {
 						actions.toggle_selection + actions.move_selection_next,
 						type = 'action',
 						opts = { nowait = true },
