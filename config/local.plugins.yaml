@@ -25,6 +25,11 @@
   on_cmd: Neotree
   hook_post_source: lua require('local-plugins.neo-tree')
 
+- repo: WhoIsSethDaniel/mason-tool-installer.nvim
+  if: has('nvim-0.7')
+  on_source: nvim-lspconfig
+  hook_post_source: lua require('local-plugins.mason-tool-installer')
+
 # Startup
 # -------
 
