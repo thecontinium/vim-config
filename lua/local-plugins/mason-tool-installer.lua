@@ -11,18 +11,18 @@ require'mason-tool-installer'.setup {
         -- 'bash-language-server', auto_update = true },
 
         'bash-language-server',
-				'clojure-lsp',
-				'json-lsp',
+	'clojure-lsp',
+	'json-lsp',
         'lua-language-server',
         'python-lsp-server',
         'vim-language-server',
         'yaml-language-server',
 
-				'markdownlint',
-				'proselint',
+	'markdownlint',
+	'proselint',
         'shellcheck',
         'vint',
-				'write-good',
+	'write-good',
 
         -- 'stylua',
         -- 'editorconfig-checker',
@@ -46,7 +46,7 @@ require'mason-tool-installer'.setup {
     -- will happen on startup. You can use :MasonToolsInstall or
     -- :MasonToolsUpdate to install tools and check for updates.
     -- Default: true
-    run_on_start = true,
+    run_on_start = false,
 
     -- set a delay (in ms) before the installation starts. This is only
     -- effective if run_on_start is set to true.
