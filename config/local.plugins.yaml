@@ -10,9 +10,17 @@
 # - { repo: thecontinium/nvim-lsp-installer, lazy: true,  overwrite: 1}
 
 - repo: mickael-menu/zk-nvim
-  if: has('nvim-0.5')
-  depends: [ nvim-lspconfig, telescope.nvim ]
-  on_event: VimEnter
+  if: has('nvim-0.6')
+  depends: telescope.nvim
+  on_ft: markdown
+  on_cmd:
+    - ZkIndex
+    - ZkNew
+    - ZkNewFromTitleSelection
+    - ZkNewFromContentSelection
+    - ZkNotes
+    - ZkTags
+    - ZkDeletableNotes
   hook_post_source: lua require('local-plugins.zk')
 
 - repo: prncss-xyz/neo-tree-zk.nvim
