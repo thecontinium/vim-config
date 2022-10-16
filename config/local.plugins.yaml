@@ -159,12 +159,12 @@
 - repo: clojure-vim/clojure.vim
   on_ft: clojure
 
-# - repo: clojure-vim/vim-jack-in
-#   on_cmd: [Clj, Lein]
-# - repo: tpope/vim-dispatch
-#   on_source: vim-jack-in
-# - repo: radenling/vim-dispatch-neovim
-#   on_source: vim-dispatch
+- repo: clojure-vim/vim-jack-in
+  on_cmd: [Clj, Lein]
+- repo: tpope/vim-dispatch
+  on_source: vim-jack-in
+- repo: radenling/vim-dispatch-neovim
+  on_source: vim-dispatch
 
 - repo: Olical/conjure
   on_ft: clojure
