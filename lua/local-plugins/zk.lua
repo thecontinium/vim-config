@@ -96,7 +96,7 @@ local function delete_zk_files(prompt_bufnr)
    table.insert(entries, require("telescope.actions.state").get_selected_entry().path)
   end
   local confo = string.format("Are you sure you want to delete these %s files [y/N)] ", #entries)
-  if vim.fn.input(confo, "") == "y" then
+  if vim.fn.input({prompt = confo}) == "y" then
     for _, path in ipairs(entries) do
       vim.fn.delete(path)
       -- vim.pretty_print(path)
@@ -118,7 +118,7 @@ local function make_attach_mappings_fn(mappings)
 end
 
 commands.add("ZkDeletableNotes",
-  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dn"] = delete_zk_files, ["kn"] = new_zk_files,}})}}))
+  make_edit_fn({},{title = "ZK Deletable Notes", telescope = { attach_mappings = make_attach_mappings_fn({ n = { ["dn"] = delete_zk_files, ["nn"] = new_zk_files,}})}}))
 vim.api.nvim_set_keymap("n", "<LocalLeader>kn", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "<LocalLeader>w", "<cmd>ZkDeletableNotes {sort = {'modified'}}<CR>", { noremap = true })
 
