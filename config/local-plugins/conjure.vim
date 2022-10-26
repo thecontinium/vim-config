@@ -7,6 +7,9 @@ let g:conjure#log#hud#width = 1
 let g:conjure#log#hud#anchor = 'SE'
 let g:conjure#highlight#enabled = v:true
 
+" allow lisp K mapping and delegate this to ,K
+let g:conjure#mapping#doc_word = 'K'
+
 autocmd user_events FileType clojure
   \ if &buftype == 'nofile' && bufname() =~ 'conjure-log'
   \ |   nnoremap <silent><buffer> q <Cmd>lua require('conjure.log')['close-visible']()<CR>
