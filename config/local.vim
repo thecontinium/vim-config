@@ -25,6 +25,10 @@ cunmap <C-n>
 :nnoremap <C-k> <C-w>k
 :nnoremap <C-l> <C-w>l
 " }}}
+" Editor UI {{{
+" Toggle editor's visual effects
+nmap <Leader>tr <cmd>setlocal relativenumber!<CR>
+" }}}
 " Manage specific file type mappings {{{
 augroup user_plugin_filetype " {{{ all
 " set to default so that we get the warnings and options
@@ -63,6 +67,7 @@ autocmd FileType yaml
   \ let b:sleuth_automatic = 0
 
 augroup END " }}}
+" }}}
 " Clojure Settings {{{
 
 if dein#tap('neosnippet.vim')
@@ -116,7 +121,6 @@ if dein#tap('auto-session')
 endif
 " }}}
 " - vim-UnconditionalPaste Settings {{{
-
 if dein#tap('vim-UnconditionalPaste')
   nmap Pc <Plug>UnconditionalPasteCharBefore
   nmap pc <Plug>UnconditionalPasteCharAfter
