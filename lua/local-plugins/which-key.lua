@@ -1,142 +1,52 @@
-require ('plugins.which-key')
-local wk = require("which-key")
-wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="p"})
-wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="P"})
+-- plugin: which-key.nvim
+-- See: https://github.com/folke/which-key.nvim
+-- rafi settings
 
--- wk.setup {
---   plugins = {
---       -- ...
---       presets = {
---         operators = false
---         -- ..
---       },
---     },
---     -- add operators that will trigger motion and text object completion
---     -- to enable all native operators, set the preset / operators plugin above
---     operators = {
---       d = "Delete",
---       c = "Change",
---       y = "Yank (copy)",
---       ["g~"] = "Toggle case",
---       ["gu"] = "Lowercase",
---       ["gU"] = "Uppercase",
---       [">"] = "Indent right",
---       ["<lt>"] = "indent left",
---       ["zf"] = "create fold",
---       ["!"] = "filter though external program",
---       ["v"] = "Visual Character Mode",
---       gc = "Comments"
---   },
--- }
-
-
--- wk.register({
---   [","] = {
---       ["f"]= { "LSP Formatting" },
---       E = { "Conjure Eval Selection" },
---       e = { name = "Conjure Eval",
---             ["!"] = "Replace Form",
---             ["e"] = "Form",
---             ["b"] = "Buffer",
---             ["f"] = "File",
---             ["m"] = "Marked",
---             ["i"] = "Interupt",
---             ["r"] = "Root",
---             ["w"] = "Word",
---             ["c"] = { name= "Comment",
---                       e = "Form",
---                       r = "Root",
---                       w = "Word",
---                     },
---           },
---       t = { name = "Conjure Test",
---             ["a"] = "All",
---             ["c"] = "Current",
---             ["n"] = "Current ns",
---             ["C"] = "Alternate ns",
---           },
---       c = { name = "Conjure Repl",
---             ["f"] = "Connect",
---             ["d"] = "Disconnect",
---           },
---       -- l = { name = "Conjure Log",
---       --       ["g"] = "Vsplit",
---       --       ["v"] = "Split",
---       --       ["t"] = "Tab",
---       --       ["r"] = "Soft Reset",
---       --       ["R"] = "Hard Reset",
---       --     },
---       w = { "Sexp (_element)" },
---       W = { "Sexp (element_)" },
---       i = { "Sexp (_form)" },
---       I = { "Sexp (form_)" },
---       h = { "Sexp _form" },
---       -- l = { "Sexp form_" },
---       ["?"] = { "Sexp Convolute" },
---       ["d"] = { "Sexp Splice" },
---       ["o"] = { "Sexp Raise form" },
---       ["O"] = { "Sexp Raise element" },
---   },
--- })
--- wk.register({
---   ["<LocalLeader>"] = {
---       a = { "Explore File" },
---       c = { "Action Menu" },
---       e = { "Explore Toggle" },
---       f = { "Find File" },
---       g = { "Grep" },
---       b = { "Buffers" },
---       h = { "Highlights" },
---       j = { "Jumps" },
---       m = { "Marks" },
---       s = { "Sessions" },
---       u = { "Spell Suggest" },
---       v = { "Registers" },
---       x = { "Old Files" },
---       z = { "Z Oxide" },
---       [";"] = { "Commands" },
---       ["/"] = { "Search History" },
---   },
--- })
--- wk.register({
---   ["<Leader>"] = {
---       ["b"] = { "Symbols"},
---       ["l"] = { "Side Menu" },
---       ["d"] = { "Duplicate Line" },
---       ["j"] = { "Move Line Down" },
---       ["K"] = { "Thesaurus" },
---       ["k"] = { "Mpve Line Up" },
---       ["S"] = { "Source Line" },
---       ["w"] = { "Save" },
---       ["e"] = { "Lsp Diagnostics" },
---       ["v"] = { "Comment line" },
---       ["W"] = { "Wiki" },
---       ["y"] = { "Yank Relative Path" },
---       ["Y"] = { "Yank Absolute Path" },
---       ["V"] = { "Comment Block" },
---       ["?"] = { "Dictionary" },
---       ["-"] = { "Choose Window" },
---       [";"] = { "Git Grep" },
---       ["t"] = { name = "Toggle",
---                 ["w"] = "Wrap",
---                 ["s"] = "Spell",
---                 ["n"] = "Line Numbers",
---                 ["i"] = "Indent Guides",
---                 ["l"] = "Hidden Characters",
---                 ["h"] = "Highlight Search",
---       },
---       ["g"] = { name = "Git",
---                 ["a"] = "Add Current File",
---                 ["s"] = "Status",
---                 ["l"] = "Log",
---                 ["L"] = "Log Current File",
---                 ["F"] = "FETCH",
---                 ["B"] = "BLAME",
---                 ["C"] = "COMMIT",
---                 ["D"] = "DIFF",
---                 ["P"] = "PUSH",
---                 ["R"] = "UNDO HUNK",
---                 ["V"] = "DIFF VIEW",
---       },
---   },
--- })
+require('which-key').load()
+require('which-key').setup({
+	triggers = 'auto', -- automatically setup triggers
+	-- triggers = { '<localleader>' },
+	plugins = {
+		marks = true, -- shows a list of your marks on ' and `
+		registers = false, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+		-- the presets plugin, adds help for a bunch of default keybindings in Neovim
+		-- No actual key bindings are created
+		spelling = {
+			enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+			suggestions = 20, -- how many suggestions should be shown in the list?
+		},
+		presets = {
+			operators = true, -- adds help for operators like d, y, ... and registers them for motion / text object completion
+			motions = true, -- adds help for motions
+			text_objects = true, -- help for text objects triggered after entering an operator
+			windows = true, -- default bindings on <c-w>
+			nav = true, -- misc bindings to work with windows
+			z = true, -- bindings for folds, spelling and others prefixed with z
+			g = true, -- bindings for prefixed with g
+		},
+	},
+	-- -- add operators that will trigger motion and text object completion
+	-- -- to enable all native operators, set the preset / operators plugin above
+	-- operators = { gc = 'Comments' },
+	icons = {
+		breadcrumb = '»', -- symbol used in the command line area that shows your active key combo
+		separator = ' ', -- symbol used between a key and it's label
+		group = '+', -- symbol prepended to a group
+	},
+	-- ➜  
+	window = {
+		border = 'none', -- none, single, double, shadow
+		position = 'bottom', -- bottom, top
+		margin = { 1, 0, 1, 0 }, -- extra window margin [top, right, bottom, left]
+		padding = { 2, 2, 2, 2 }, -- extra window padding [top, right, bottom, left]
+	},
+	layout = {
+		height = { min = 4, max = 25 }, -- min and max height of the columns
+		width = { min = 20, max = 50 }, -- min and max width of the columns
+		spacing = 3, -- spacing between columns
+		align = 'left', -- align columns left, center or right
+	},
+	ignore_missing = false, -- enable this to hide mappings for which you didn't specify a label
+	hidden = { '<silent>', '<cmd>', '<Cmd>', '<CR>', 'call', 'lua', '^:', '^ ' }, -- hide mapping boilerplate
+	show_help = true, -- show help message on the command line when the popup is visible
+})
