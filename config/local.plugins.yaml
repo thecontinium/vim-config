@@ -190,6 +190,7 @@
       \ })
 
 - repo: chrisbra/csv.vim
+  on_ft: csv
   hook_add: let g:csv_default_delim=','
 
 # fennel.fnl syntax
