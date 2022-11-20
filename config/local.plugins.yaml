@@ -39,11 +39,6 @@
   hook_post_source: lua require('local-plugins.mason-tool-installer')
 
 # temp fixes until rafi updates
-- repo: tversteeg/registers.nvim
-  if: has('nvim-0.5')
-  on_cmd: Registers
-  on_map: { i: '<C-r>', nx: '"' }
-  hook_post_source: lua require('local-plugins.registers')
 
 # Startup
 # -------
