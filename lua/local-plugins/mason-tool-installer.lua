@@ -19,6 +19,9 @@ require'mason-tool-installer'.setup {
         'yaml-language-server',
         'typescript-language-server',
 
+
+	'yamlfmt',
+
 	'eslint_d',
 
 	'gofumpt',

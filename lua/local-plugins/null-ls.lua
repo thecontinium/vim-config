@@ -6,8 +6,8 @@
 -- hadolint, markdownlint, mypy, shellcheck, shellharden, shfmt, sql-formatter,
 -- stylua, vint, yamllint, proselint
 
-local builtins = require('null-ls').builtins
-local on_attach = require('plugins.lspconfig').on_attach
+local builtins = require("null-ls").builtins
+local on_attach = require("plugins.lspconfig").on_attach
 
 local function has_exec(filename)
 	return function(_)
@@ -16,7 +16,7 @@ local function has_exec(filename)
 end
 
 -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-require('null-ls').setup({
+require("null-ls").setup({
 	-- Ensure key maps are setup
 	on_attach = on_attach,
 
@@ -27,13 +27,16 @@ require('null-ls').setup({
 	sources = {
 		-- Whitespace
 		builtins.diagnostics.trail_space.with({
-			disabled_filetypes = { 'gitcommit' },
+			disabled_filetypes = { "gitcommit" },
 		}),
 
 		-- Ansible
 		builtins.diagnostics.ansiblelint.with({
-			runtime_condition = has_exec('ansible-lint'),
-			extra_filetypes = { 'yaml', 'yaml.ansible' },
+			runtime_condition = has_exec("ansible-lint"),
+			extra_filetypes = { "yaml", "yaml.ansible" },
+		}),
+		builtins.formatting.yamlfmt.with({
+			runtime_condition = has_exec("yamlfmt"),
 		}),
 
 		-- Javascript
@@ -42,13 +45,13 @@ require('null-ls').setup({
 
 		-- Go
 		builtins.formatting.gofmt.with({
-			runtime_condition = has_exec('gofmt'),
+			runtime_condition = has_exec("gofmt"),
 		}),
 		builtins.formatting.gofumpt.with({
-			runtime_condition = has_exec('gofumpt'),
+			runtime_condition = has_exec("gofumpt"),
 		}),
 		builtins.formatting.golines.with({
-			runtime_condition = has_exec('golines'),
+			runtime_condition = has_exec("golines"),
 		}),
 
 		-- Lua
@@ -60,36 +63,36 @@ require('null-ls').setup({
 		-- Shell
 		-- builtins.code_actions.shellcheck,
 		builtins.diagnostics.shellcheck.with({
-			runtime_condition = has_exec('shellcheck'),
-			extra_filetypes = { 'bash' },
+			runtime_condition = has_exec("shellcheck"),
+			extra_filetypes = { "bash" },
 		}),
 		builtins.formatting.shfmt.with({
-			runtime_condition = has_exec('shfmt'),
-			extra_filetypes = { 'bash' },
+			runtime_condition = has_exec("shfmt"),
+			extra_filetypes = { "bash" },
 		}),
 		builtins.formatting.shellharden.with({
-			runtime_condition = has_exec('shellharden'),
-			extra_filetypes = { 'bash' },
+			runtime_condition = has_exec("shellharden"),
+			extra_filetypes = { "bash" },
 		}),
 
 		-- Docker
 		builtins.diagnostics.hadolint.with({
-			runtime_condition = has_exec('hadolint'),
+			runtime_condition = has_exec("hadolint"),
 		}),
 
 		-- Vim
 		builtins.diagnostics.vint.with({
-			runtime_condition = has_exec('vint'),
+			runtime_condition = has_exec("vint"),
 		}),
 
 		-- Markdown
 		builtins.diagnostics.markdownlint.with({
-			runtime_condition = has_exec('markdownlint'),
-			extra_filetypes = { 'vimwiki' },
+			runtime_condition = has_exec("markdownlint"),
+			extra_filetypes = { "vimwiki" },
 		}),
 		builtins.diagnostics.proselint.with({
-			runtime_condition = has_exec('proselint'),
-			extra_filetypes = { 'vimwiki' },
+			runtime_condition = has_exec("proselint"),
+			extra_filetypes = { "vimwiki" },
 		}),
 		-- builtins.code_actions.proselint.with({
 		-- 	runtime_condition = has_exec('proselint'),
