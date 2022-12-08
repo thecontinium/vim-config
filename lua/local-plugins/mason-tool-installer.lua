@@ -17,13 +17,26 @@ require'mason-tool-installer'.setup {
         'python-lsp-server',
         'vim-language-server',
         'yaml-language-server',
+        'typescript-language-server',
+
+	'eslint_d',
+
+	'gofumpt',
+
+	'stylua',
+
+	'sql-formatter',
+
+        'shellcheck',
+	'shfmt',
+
+	'hadolint',
+
+        'vint',
 
 	'markdownlint',
-	'proselint',
-        'shellcheck',
-        'vint',
-	'write-good',
 
+	'proselint',
         -- 'stylua',
         -- 'editorconfig-checker',
         -- 'impl',
@@ -35,7 +48,6 @@ require'mason-tool-installer'.setup {
         -- 'shfmt',
         -- 'staticcheck',
     },
-
     -- if set to true this will check each tool for updates. If updates
     -- are available the tool will be updated. This setting does not
     -- affect :MasonToolsUpdate or :MasonToolsInstall.

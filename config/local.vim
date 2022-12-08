@@ -125,7 +125,14 @@ if dein#tap('vim-UnconditionalPaste')
   nmap Pc <Plug>UnconditionalPasteCharBefore
   nmap pc <Plug>UnconditionalPasteCharAfter
 	nmap Pl <Plug>UnconditionalPasteLineBefore
-	nmap pl <Plug>UnconditionalPasteLineAfter
+  nmap pl <Plug>UnconditionalPasteLineAfter
+	if dein#tap('which-key')
+lua << EOF
+local wk = require("which-key")
+wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="p"})
+wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="P"})
+EOF
+	endif
 endif
 " }}}
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
