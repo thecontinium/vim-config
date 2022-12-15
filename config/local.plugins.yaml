@@ -7,15 +7,23 @@
 
 # clojure
 
-- repo: eraserhd/parinfer-rust
-  lazy: true
-  rtp: target/release
-  build: cargo build --release
+# - repo: eraserhd/parinfer-rust
+#   build: cargo build --release
+#   on_ft: clojure
 
-- repo: harrygallagher4/nvim-parinfer-rust
-  depends: parinfer-rust
-  hook_postr_soure: lua require'parinfer'.setup()
-  on_event: VimEnter
+# - repo: eraserhd/parinfer-rust
+#   build: cargo build --release
+#   rtp: target/release
+#   lazy: true
+
+# - repo: harrygallagher4/nvim-parinfer-rust
+#   depends: [parinfer-rust, nvim-treesitter]
+#   hook_source: lua vim.api.nvim_create_autocmd('VimEnter', { callback = function() require'parinfer'.setup() end})
+#   on_event: VimEnter
+
+- repo: windwp/nvim-autopairs
+  if: has('nvim-0.5')
+  hook_post_source: lua require('local-plugins.autopairs')
 
 - repo: guns/vim-sexp
   on_event: InsertCharPre
@@ -104,21 +112,17 @@
 
 # yanking and pasting
 
-- repo: inkarkat/vim-ingo-library
-  on_source: vim-UnconditionalPaste
-
-- repo: inkarkat/vim-UnconditionalPaste
-  on_event: [ BufReadPre, VimEnter ]
-  hook_source: |
-    let g:UnconditionalPaste_no_mappings = 1
+- repo: kkharji/sqlite.lua
 
 - repo: gbprod/yanky.nvim
   on_event: VimEnter
   if: has('nvim-0.7')
-  depends: telescope.nvim
+  depends: [telescope.nvim, sqlite.lua]
   hook_post_source: lua require('local-plugins.yanky')
 
-- { repo: folke/twilight.nvim, on_source: zen, hook_source lua require('twighlight').setup() }
+- repo: folke/twilight.nvim
+  on_source: zen-mode.nvim
+  hook_post_source: lua require('twilight').setup()
 
 - repo: chrisbra/csv.vim
   on_ft: csv

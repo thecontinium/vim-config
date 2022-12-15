@@ -50,3 +50,6 @@ require('which-key').setup({
 	hidden = { '<silent>', '<cmd>', '<Cmd>', '<CR>', 'call', 'lua', '^:', '^ ' }, -- hide mapping boilerplate
 	show_help = true, -- show help message on the command line when the popup is visible
 })
+local wk = require("which-key")
+wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="p"})
+wk.register({c="which_key_ignore", l="which_key_ignore"},{prefix ="P"})
