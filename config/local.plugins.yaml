@@ -21,6 +21,12 @@
 #   hook_source: lua vim.api.nvim_create_autocmd('VimEnter', { callback = function() require'parinfer'.setup() end})
 #   on_event: VimEnter
 
+# - repo: thecontinium/nvim-autopairs
+#   rev: expose-basic-bracket
+#   overwrite: 1
+#   if: has('nvim-0.5')
+#   hook_post_source: lua require('local-plugins.autopairs')
+
 - repo: windwp/nvim-autopairs
   if: has('nvim-0.5')
   hook_post_source: lua require('local-plugins.autopairs')
