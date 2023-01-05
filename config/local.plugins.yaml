@@ -201,6 +201,12 @@
   depends: nvim-lspconfig
   hook_post_source: lua require('local-plugins.null-ls')
 
+- repo: debugloop/telescope-undo.nvim
+  if: has('nvim-0.7')
+  depends: telescope.nvim
+  on_lua: telescope
+  hook_post_source: lua require('telescope').load_extension('undo')
+
 # ==========================================
 # temp fixes until rafi updates
 # ==========================================

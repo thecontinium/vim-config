@@ -93,7 +93,6 @@ if dein#tap('vim-sexp')
 end
 " }}}
 " Gina Settings {{{
-
 if dein#tap('gina.vim')
   nnoremap <silent> <leader>gL :Gina log :<CR>
   " nnoremap <silent> <leader>ga :Gina add %:p<CR>
@@ -102,6 +101,15 @@ if dein#tap('gina.vim')
   " nnoremap <silent> <leader>gb :Gina blame<CR>
   " nnoremap <silent> <leader>gF :Gina fetch<CR>
   " nnoremap <silent> <leader>gS :Gina status<CR>
+endif
+" }}}
+" Telescope mapping {{{
+if dein#tap('telescope.nvim')
+	nnoremap <leader>gcc <cmd>Telescope git_commits<CR>
+	nnoremap <leader>gss <cmd>Telescope git_status<CR>
+  if dein#tap('telescope-undo.nvim')
+		nnoremap <localleader>p <cmd>Telescope undo<CR>
+endif
 endif
 " }}}
 " vim: set foldmethod=marker ts=2 sw=2 tw=80 noet :
