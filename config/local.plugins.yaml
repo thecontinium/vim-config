@@ -142,6 +142,21 @@
   on_source: nvim-lspconfig
   hook_post_source: lua require('local-plugins.mason-tool-installer')
 
+# python
+
+# seutup edditing of jupyter notebooks with jupytext
+# pip install jupytext
+- repo: goerz/jupytext.vim
+
+# ues conjure and lsp in code blocks
+- repo: AckslD/nvim-FeMaco.lua
+  depends: nvim-treesitter
+  on_cmd: FeMaco
+  on_lua: femaco
+  hook_post_source: lua require("femaco").setup()
+  # hook_post_source: lua require('local-plugins.femaco')
+
+
 # ==========================================
 # replace from rafi
 # ==========================================
