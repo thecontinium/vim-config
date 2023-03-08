@@ -5,6 +5,5 @@
 /.stignore
 /.stfolder
 /.stversions
-/lua/plugins/
 /lua/plugins.lua
 /lua/lsp/
