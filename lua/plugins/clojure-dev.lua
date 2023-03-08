@@ -3,16 +3,42 @@ return {
 	--   if: has('nvim-0.5')
 	--   hook_post_source: lua require('local-plugins.autopairs')
 	--
-	-- - repo: guns/vim-sexp
-	--   on_event: InsertCharPre
-	--   on_ft: clojure
-	--   hook_add: |
-	--     let g:sexp_enable_insert_mode_mappings = 0
-	-- - repo: tpope/vim-sexp-mappings-for-regular-people
-	--   on_event: InsertCharPre
-	--   on_ft: clojure
-	--   depends: vim-sexp
-	--
+	{
+		"guns/vim-sexp",
+		ft = "clojure",
+		config = function()
+			vim.g.sexp_enable_insert_mode_mappings = 0
+		end,
+	},
+
+	{
+		"tpope/vim-sexp-mappings-for-regular-people",
+		dependencies = { "guns/vim-sexp" },
+		ft = "clojure",
+		config = function()
+			vim.g.sexp_enable_insert_mode_mappings = 0
+			vim.g.sexp_mappings = {
+				sexp_round_head_wrap_list = ",i",
+				sexp_round_tail_wrap_list = ",I",
+				sexp_square_head_wrap_list = "",
+				sexp_square_tail_wrap_list = "",
+				sexp_curly_head_wrap_list = "",
+				sexp_curly_tail_wrap_list = "",
+				sexp_round_head_wrap_element = ",w",
+				sexp_round_tail_wrap_element = ",W",
+				sexp_square_head_wrap_element = "",
+				sexp_square_tail_wrap_element = "",
+				sexp_curly_head_wrap_element = "",
+				sexp_curly_tail_wrap_element = "",
+				sexp_insert_at_list_head = ",h",
+				sexp_insert_at_list_tail = ",l",
+				sexp_splice_list = ",d",
+				sexp_raise_list = ",o",
+				sexp_raise_element = ",O",
+			}
+		end,
+	},
+
 	-- - repo: thecontinium/marked-streaming-nvim
 	--   on_ft: markdown
 	--   hook_post_update : |-
@@ -94,14 +120,5 @@ return {
 	--       \     'type': 'test'
 	--       \   },
 	--       \ })
-	--
-	-- - repo: hrsh7th/nvim-cmp
-	--   if: has('nvim-0.5')
-	--   on_event: VimEnter
-	--   depends: [ nvim-autopairs, vim-vsnip ]
-	--   hook_post_source: lua require('local-plugins.cmp')
-	--
-	-- - { repo: PaterJason/cmp-conjure, on_source: nvim-cmp, depends: conjure }
-	--
 	--
 }
