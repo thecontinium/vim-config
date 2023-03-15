@@ -44,6 +44,11 @@ return {
 				"markdownlint",
 
 				"proselint",
+
+				"fixjson",
+				"golines",
+				"ansible-lint",
+				"mypy",
 				-- 'stylua',
 				-- 'editorconfig-checker',
 				-- 'impl',
