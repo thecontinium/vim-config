@@ -35,6 +35,7 @@ return {
 				"sql-formatter",
 
 				"shellcheck",
+				"shellharden",
 				"shfmt",
 
 				"hadolint",
