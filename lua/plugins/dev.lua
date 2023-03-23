@@ -6,17 +6,8 @@ return {
 	{
 		"guns/vim-sexp",
 		ft = "clojure",
-		config = function()
-			vim.g.sexp_enable_insert_mode_mappings = 0
-		end,
-	},
-
-	{
-		"tpope/vim-sexp-mappings-for-regular-people",
-		dependencies = { "guns/vim-sexp" },
-		ft = "clojure",
-		config = function()
-			vim.g.sexp_enable_insert_mode_mappings = 0
+		config = function(_, _)
+			vim.g.sexp_enable_insert_mode_mappings = 1
 			vim.g.sexp_mappings = {
 				sexp_round_head_wrap_list = ",i",
 				sexp_round_tail_wrap_list = ",I",
@@ -39,6 +30,58 @@ return {
 		end,
 	},
 
+
+-- # Movement
+-- ()      move cursor to matching paren (same as % but easier) _[SEXP]_
+-- [[ ]]   move cursor to top-level element _[SEXP]_
+-- W B E   move cursor element/form-wise
+	--
+-- # Indent
+-- ==      indent form  _[SEXP]_
+-- =-      indent top level _[SEXP]_
+-- =<movement>  indent whatever
+	--
+-- # Move elements/forms around
+-- >e <e     move element right/left
+-- >f <f     move form right/left
+	--
+-- # Slurpage and barfage
+-- <( >)       slurp (push paren out wider)
+-- >( <)       barf  (pull paren in narrower)
+	--
+-- # Insertion, some with new parens
+-- cse)     add surround form — easier than ysie)
+-- <I >I    insert front/end — don’t use, too diff from ,i/,I
+-- ,h ,l    insert front/end _[SEXP]_
+-- ,i ,I    insert front/end, add surround form _[SEXP]_
+-- ,w ,W    insert front/end, add surround element _[SEXP]_
+	--
+-- # Deletion
+-- dsf      delete form (splice ,@)
+-- daf dif  delete around/in form
+-- ,o       delete outer form _[SEXP]_
+	{
+		"tpope/vim-sexp-mappings-for-regular-people",
+		dependencies = { "guns/vim-sexp" },
+		ft = "clojure",
+	},
+
+	{
+		"echasnovski/mini.pairs",
+		event = "VeryLazy",
+		config = function(_, opts)
+			require("mini.pairs").setup(opts)
+			vim.api.nvim_create_autocmd("FileType", {
+				group = vim.api.nvim_create_augroup("clojure_mini_pair", {}),
+				pattern = { "clojure" },
+				callback = function()
+					vim.b.minipairs_disable = true
+				end,
+			})
+		end,
+	},
+
+
 	-- - repo: thecontinium/marked-streaming-nvim
 	--   on_ft: markdown
 	--   hook_post_update : |-
@@ -60,7 +103,7 @@ return {
 	--
 	{
 		"Olical/conjure",
-		ft = {"clojure", "python"},
+		ft = { "clojure", "python" },
 		config = function()
 			vim.g["conjure#mapping#prefix"] = ","
 			vim.g["conjure#mapping#log_split"] = "lv"
@@ -107,7 +150,7 @@ return {
 
 	{
 		"goerz/jupytext.vim",
-		event = 'VimEnter',
+		event = "VimEnter",
 	},
 
 	{
