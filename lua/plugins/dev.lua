@@ -1,3 +1,5 @@
+vim.cmd.runtime('plugin/zipPlugin.vim')
+
 return {
 	-- - repo: windwp/nvim-autopairs
 	--   if: has('nvim-0.5')
