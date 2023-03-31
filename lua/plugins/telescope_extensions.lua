@@ -5,7 +5,7 @@ return {
 			"nvim-telescope/telescope.nvim",
 		},
 		keys = {
-			{ "<localLeader>y", "<cmd>Telescope undo<cr>", desc = "Telescope undo", },
+			{ "<localLeader>p", "<cmd>Telescope undo<cr>", desc = "Telescope undo", },
 		},
 		config = function()
 			require("telescope").load_extension("undo")

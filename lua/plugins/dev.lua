@@ -1,4 +1,4 @@
-vim.cmd.runtime('plugin/zipPlugin.vim')
+vim.cmd.runtime("plugin/zipPlugin.vim")
 
 return {
 	-- - repo: windwp/nvim-autopairs
@@ -32,36 +32,35 @@ return {
 		end,
 	},
 
-
--- # Movement
--- ()      move cursor to matching paren (same as % but easier) _[SEXP]_
--- [[ ]]   move cursor to top-level element _[SEXP]_
--- W B E   move cursor element/form-wise
+	-- # Movement
+	-- ()      move cursor to matching paren (same as % but easier) _[SEXP]_
+	-- [[ ]]   move cursor to top-level element _[SEXP]_
+	-- W B E   move cursor element/form-wise
 	--
--- # Indent
--- ==      indent form  _[SEXP]_
--- =-      indent top level _[SEXP]_
--- =<movement>  indent whatever
+	-- # Indent
+	-- ==      indent form  _[SEXP]_
+	-- =-      indent top level _[SEXP]_
+	-- =<movement>  indent whatever
 	--
--- # Move elements/forms around
--- >e <e     move element right/left
--- >f <f     move form right/left
+	-- # Move elements/forms around
+	-- >e <e     move element right/left
+	-- >f <f     move form right/left
 	--
--- # Slurpage and barfage
--- <( >)       slurp (push paren out wider)
--- >( <)       barf  (pull paren in narrower)
+	-- # Slurpage and barfage
+	-- <( >)       slurp (push paren out wider)
+	-- >( <)       barf  (pull paren in narrower)
 	--
--- # Insertion, some with new parens
--- cse)     add surround form — easier than ysie)
--- <I >I    insert front/end — don’t use, too diff from ,i/,I
--- ,h ,l    insert front/end _[SEXP]_
--- ,i ,I    insert front/end, add surround form _[SEXP]_
--- ,w ,W    insert front/end, add surround element _[SEXP]_
+	-- # Insertion, some with new parens
+	-- cse)     add surround form — easier than ysie)
+	-- <I >I    insert front/end — don’t use, too diff from ,i/,I
+	-- ,h ,l    insert front/end _[SEXP]_
+	-- ,i ,I    insert front/end, add surround form _[SEXP]_
+	-- ,w ,W    insert front/end, add surround element _[SEXP]_
 	--
--- # Deletion
--- dsf      delete form (splice ,@)
--- daf dif  delete around/in form
--- ,o       delete outer form _[SEXP]_
+	-- # Deletion
+	-- dsf      delete form (splice ,@)
+	-- daf dif  delete around/in form
+	-- ,o       delete outer form _[SEXP]_
 	{
 		"tpope/vim-sexp-mappings-for-regular-people",
 		dependencies = { "guns/vim-sexp" },
@@ -82,7 +81,6 @@ return {
 			})
 		end,
 	},
-
 
 	-- - repo: thecontinium/marked-streaming-nvim
 	--   on_ft: markdown
