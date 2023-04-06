@@ -12,9 +12,14 @@ return {
 			{ 'folke/neodev.nvim', config = true },
 			'williamboman/mason.nvim',
 			'williamboman/mason-lspconfig.nvim',
-			'hrsh7th/cmp-nvim-lsp',
-			'kevinhwang91/nvim-ufo',
-			{ 'b0o/SchemaStore.nvim', version = false },
+			{
+				'hrsh7th/cmp-nvim-lsp',
+				cond = function()
+					return require('rafi.config').has('nvim-cmp')
+				end,
+			},
+			'b0o/SchemaStore.nvim',
+			'rafi/neoconf-venom.nvim',
 		},
 		---@class PluginLspOpts
 		opts = {
@@ -82,6 +87,15 @@ return {
 				require('rafi.plugins.lsp.format').on_attach(client, buffer)
 				require('rafi.plugins.lsp.keymaps').on_attach(client, buffer)
 				require('rafi.plugins.lsp.highlight').on_attach(client, buffer)
+
+				if
+					vim.b[buffer].diagnostics_disabled or vim.g['diagnostics_disabled']
+					or vim.bo[buffer].buftype ~= '' or vim.bo[buffer].filetype == 'helm'
+				then
+					-- Disable diagnostics if user toggled, or for Helm files.
+					vim.diagnostic.disable(buffer)
+					return
+				end
 			end)
 
 			-- Diagnostics signs and highlights
@@ -90,6 +104,9 @@ return {
 				vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = '' })
 			end
 			vim.diagnostic.config(opts.diagnostics)
+
+			-- See https://github.com/rafi/neoconf-venom.nvim
+			require('venom').setup()
 
 			-- Initialize LSP servers and ensure Mason packages
 
@@ -119,18 +136,20 @@ return {
 				require('lspconfig')[server_name].setup(server_opts)
 			end
 
-			-- Setup language servers using mason and mason-lspconfig
-			local mason_lspconfig = require('mason-lspconfig')
-			mason_lspconfig.setup()
-			mason_lspconfig.setup_handlers({ make_config })
+			-- Get all the servers that are available thourgh mason-lspconfig
+			local have_mason, mason_lspconfig = pcall(require, 'mason-lspconfig')
+			if have_mason then
+				mason_lspconfig.setup()
+				mason_lspconfig.setup_handlers({ make_config })
+			end
 		end,
 	},
 
 	-----------------------------------------------------------------------------
 	{
-
 		'williamboman/mason.nvim',
 		cmd = 'Mason',
+		build = ':MasonUpdate',
 		keys = { { '<leader>mm', '<cmd>Mason<cr>', desc = 'Mason' } },
 		opts = {
 			ensure_installed = {},
@@ -142,20 +161,20 @@ return {
 		config = function(_, opts)
 			require('mason').setup(opts)
 			local mr = require('mason-registry')
-			for _, tool in ipairs(opts.ensure_installed) do
-				local p = mr.get_package(tool)
-				if not p:is_installed() then
-					p:install()
+			local function ensure_installed()
+				for _, tool in ipairs(opts.ensure_installed) do
+					local p = mr.get_package(tool)
+					if not p:is_installed() then
+						p:install()
+					end
 				end
 			end
+			if mr.refresh then
+				mr.refresh(ensure_installed)
+			else
+				ensure_installed()
+			end
 		end,
-	},
-
-	-----------------------------------------------------------------------------
-	{
-		'kevinhwang91/nvim-ufo',
-		dependencies = 'kevinhwang91/promise-async',
-		config = true,
 	},
 
 	-----------------------------------------------------------------------------
@@ -165,91 +184,57 @@ return {
 		dependencies = { 'williamboman/mason.nvim' },
 		opts = function()
 			local builtins = require('null-ls').builtins
-			local function has_exec(filename)
-				return function()
-					return vim.fn.executable(filename) == 1
-				end
-			end
-
 			-- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
 			return {
-				-- Ensure key maps are setup
-				debounce = 150,
-				save_after_format = false,
 				fallback_severity = vim.diagnostic.severity.INFO,
-
 				should_attach = function(bufnr)
 					return not vim.api.nvim_buf_get_name(bufnr):match('^[a-z]+://')
 				end,
-
+				root_dir = require('null-ls.utils').root_pattern(
+					'.git', '_darcs', '.hg', '.bzr', '.svn',
+					'.null-ls-root', '.neoconf.json', 'Makefile'
+				),
 				sources = {
-					-- Lua
 					builtins.formatting.stylua,
+					builtins.formatting.shfmt,
+				},
+			}
+		end,
+	},
 
-					-- JSON
-					builtins.formatting.fixjson.with({
-						runtime_condition = has_exec('fixjson'),
-						filetypes = { 'jsonc' },
-					}),
-
-					-- -- Ansible
-					builtins.diagnostics.ansiblelint.with({
-						runtime_condition = has_exec('ansible-lint'),
-						extra_filetypes = { 'yaml.ansible' },
-					}),
-
-					-- Javascript
-					builtins.diagnostics.eslint.with({
-						runtime_condition = has_exec('eslint'),
-					}),
-
-					-- Go
-					builtins.formatting.gofmt,
-					builtins.formatting.gofumpt,
-					builtins.formatting.golines,
-
-					-- SQL
-					builtins.formatting.sqlformat,
-
-					-- Shell
-					builtins.formatting.shfmt.with({
-						runtime_condition = has_exec('shfmt'),
-					}),
-					builtins.formatting.shellharden.with({
-						runtime_condition = has_exec('shellharden'),
-					}),
-
-					-- Python
-					builtins.diagnostics.mypy,
-
-					-- Docker
-					builtins.diagnostics.hadolint.with({
-						runtime_condition = has_exec('hadolint'),
-					}),
-
-					-- Vim
-					builtins.diagnostics.vint.with({
-						runtime_condition = has_exec('vint'),
-					}),
-
-					-- Markdown
-					builtins.diagnostics.markdownlint.with({
-						runtime_condition = has_exec('markdownlint'),
-					}),
-
-					-- builtins.diagnostics.proselint.with({
-					-- 	runtime_condition = has_exec('proselint'),
-					-- 	diagnostics_postprocess = function(diagnostic)
-					-- 		diagnostic.severity = vim.diagnostic.severity.HINT
-					-- 	end,
-					-- }),
-
-					-- builtins.diagnostics.write_good.with({
-					-- 	runtime_condition = has_exec('write-good'),
-					-- 	diagnostics_postprocess = function(diagnostic)
-					-- 		diagnostic.severity = vim.diagnostic.severity.HINT
-					-- 	end,
-					-- }),
+	-----------------------------------------------------------------------------
+	{
+		'dnlhc/glance.nvim',
+		cmd = 'Glance',
+		keys = {
+			{ 'gpd', '<cmd>Glance definitions<CR>' },
+			{ 'gpr', '<cmd>Glance references<CR>' },
+			{ 'gpy', '<cmd>Glance type_definitions<CR>' },
+			{ 'gpi', '<cmd>Glance implementations<CR>' },
+		},
+		opts = function()
+			local actions = require('glance').actions
+			return {
+				folds = {
+					fold_closed = '', --  
+					fold_open = '', --  
+					folded = true,
+				},
+				mappings = {
+					list = {
+						['<C-u>'] = actions.preview_scroll_win(5),
+						['<C-d>'] = actions.preview_scroll_win(-5),
+						['sg'] = actions.jump_vsplit,
+						['sv'] = actions.jump_split,
+						['st'] = actions.jump_tab,
+						['h'] = actions.close_fold,
+						['l'] = actions.open_fold,
+						['p'] = actions.enter_win('preview'),
+					},
+					preview = {
+						['q'] = actions.close,
+						['p'] = actions.enter_win('list'),
+					},
 				},
 			}
 		end,

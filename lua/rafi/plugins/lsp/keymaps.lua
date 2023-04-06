@@ -3,6 +3,8 @@
 
 local M = {}
 
+---@param client lsp.Client
+---@param buffer integer
 function M.get(client, buffer)
 	local format = require('rafi.plugins.lsp.format').format
 	local function map(mode, lhs, rhs, user_opts)
@@ -15,17 +17,13 @@ function M.get(client, buffer)
 	end
 
 	-- Keyboard mappings
-	map('n', 'K', vim.lsp.buf.hover)
 	map('n', '<leader>cl', '<cmd>LspInfo<cr>')
 
-	map('n', 'gD', vim.lsp.buf.declaration)
-	map('n', 'gd', vim.lsp.buf.definition)
-	map('n', 'gr', vim.lsp.buf.references)
-	map('n', 'gy', vim.lsp.buf.type_definition)
-	map('n', 'gi', vim.lsp.buf.implementation)
-
-	map({'n', 'x'}, '<Leader>ca', vim.lsp.buf.code_action, { has='codeAction' })
-	map('n', '<Leader>ce', vim.diagnostic.open_float)
+	map('n', 'gD', vim.lsp.buf.declaration, { has = 'declaration' })
+	map('n', 'gd', vim.lsp.buf.definition, { has = 'definition' })
+	map('n', 'gr', vim.lsp.buf.references, { has = 'references' })
+	map('n', 'gy', vim.lsp.buf.type_definition, { has = 'typeDefinition' })
+	map('n', 'gi', vim.lsp.buf.implementation, { has = 'implementation' })
 
 	map('n', ',rn', vim.lsp.buf.rename, { has = 'rename' })
 	map('n', ',s', vim.lsp.buf.signature_help, { has = 'signatureHelp' })
@@ -36,6 +34,26 @@ function M.get(client, buffer)
 	map('n', ',f', format, { has = 'documentFormatting' })
 	map('x', ',f', format, { has = 'documentRangeFormatting' })
 
+	map('n', 'K', function()
+		local winid = require('rafi.config').has('nvim-ufo')
+			and require('ufo').peekFoldedLinesUnderCursor() or nil
+		if not winid then
+			vim.lsp.buf.hover()
+		end
+	end, { has = 'hover' })
+
+	map(
+		{'n', 'x'},
+		'<Leader>ca',
+		vim.lsp.buf.code_action,
+		{ has = 'codeAction', desc = 'Code Action' }
+	)
+	map('n', '<Leader>ce', vim.diagnostic.open_float)
+
+	if not require('rafi.config').has('mini.bracketed') then
+		map('n', ']d', M.diagnostic_goto(true))
+		map('n', '[d', M.diagnostic_goto(false))
+	end
 	map('n', ']e', M.diagnostic_goto(true, 'ERROR'))
 	map('n', '[e', M.diagnostic_goto(false, 'ERROR'))
 
@@ -70,29 +88,24 @@ function M.diagnostic_toggle(global)
 		msg = msg .. ' globally'
 	end
 	vim.notify(msg)
-	vim.schedule(function() vim.diagnostic[cmd](bufnr) end)
+	vim.schedule(function()
+		vim.diagnostic[cmd](bufnr)
+	end)
 end
 
+---@param next boolean
+---@param severity string|nil
 function M.diagnostic_goto(next, severity)
 	local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
-	severity = severity and vim.diagnostic.severity[severity] or nil
+	local severity_int = severity and vim.diagnostic.severity[severity] or nil
 	return function()
-		go({ severity = severity })
+		go({ severity = severity_int })
 	end
 end
 
+---@param client lsp.Client
+---@param buffer integer
 function M.on_attach(client, buffer)
-	-- Disable diagnostics if buffer/global indicator is on, or for Helm files.
-	if
-		vim.b[buffer].diagnostics_disabled
-		or vim.g['diagnostics_disabled']
-		or vim.bo[buffer].buftype ~= ''
-		or vim.bo[buffer].filetype == 'helm'
-	then
-		vim.diagnostic.disable(buffer)
-		return
-	end
-
 	M.get(client, buffer)
 end
 

@@ -15,11 +15,14 @@ if config.has_user_plugins() then
 	table.insert(spec, { import = 'plugins' })
 end
 
+-- Start lazy.nvim plugin manager.
 require('lazy').setup({
 	spec = spec,
-	defaults = { lazy = true },
+	defaults = { lazy = true, version = false },
 	dev = { path = config.path_join(vim.fn.stdpath('config'), 'dev') },
 	install = { missing = true, colorscheme = {} },
+	checker = { enabled = true, notify = false },
+	change_detection = { notify = false },
 	ui = { border = 'rounded' },
 	diff = { cmd = 'terminal_git' },
 	performance = {
@@ -38,6 +41,8 @@ require('lazy').setup({
 		},
 	},
 })
-config.init_colorscheme()
+
+-- Restore last used colorscheme, or set initial.
+require('theme-loader').start()
 
 -- Enjoy!

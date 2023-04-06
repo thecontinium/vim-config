@@ -44,32 +44,36 @@ Please read "[Extending](#extending)" to learn how to customize and modify.
   * [Colorscheme Plugins](#colorscheme-plugins)
   * [Git Plugins](#git-plugins)
   * [Misc Plugins](#misc-plugins)
-  * [Operators & Text Objects](#operators--text-objects)
-    * [Treesitter & Syntax](#treesitter--syntax)
-    * [UI Plugins](#ui-plugins)
+  * [Treesitter & Syntax](#treesitter--syntax)
+  * [UI Plugins](#ui-plugins)
 * [Extra Plugins](#extra-plugins)
-  * [Extra Coding Plugins](#extra-coding-plugins)
-  * [Extra Editor Plugins](#extra-editor-plugins)
-  * [Extra LSP Plugins](#extra-lsp-plugins)
-  * [Extra Org Plugins](#extra-org-plugins)
-  * [Extra Treesitter Plugins](#extra-treesitter-plugins)
-  * [Extra UI Plugins](#extra-ui-plugins)
+  * [Extra Plugins: Coding](#extra-plugins-coding)
+  * [Extra Plugins: Diagnostics](#extra-plugins-diagnostics)
+  * [Extra Plugins: Editor](#extra-plugins-editor)
+  * [Extra Plugins: Formatting](#extra-plugins-formatting)
+  * [Extra Plugins: LSP](#extra-plugins-lsp)
+  * [Extra Plugins: Org](#extra-plugins-org)
+  * [Extra Plugins: Treesitter](#extra-plugins-treesitter)
+  * [Extra Plugins: UI](#extra-plugins-ui)
 * [Custom Key-mappings](#custom-key-mappings)
   * [Navigation](#navigation)
   * [File Operations](#file-operations)
+  * [Auto-Completion](#auto-completion)
+  * [LSP](#lsp)
   * [Edit](#edit)
   * [Search & Replace](#search--replace)
   * [Clipboard](#clipboard)
   * [Command & History](#command--history)
+  * [Diagnostics](#diagnostics)
   * [Editor UI](#editor-ui)
   * [Custom Tools & Plugins](#custom-tools--plugins)
   * [Window Management](#window-management)
-  * [Plugin: Sandwich](#plugin-sandwich)
+  * [Plugin: Mini.Bracketed](#plugin-minibracketed)
+  * [Plugin: Mini.Surround](#plugin-minisurround)
   * [Plugin: Gitsigns](#plugin-gitsigns)
   * [Plugin: Fugitive](#plugin-fugitive)
   * [Plugin: Telescope](#plugin-telescope)
   * [Plugin: Neo-Tree](#plugin-neo-tree)
-  * [Plugin: LSP](#plugin-lsp)
   * [Plugin: Spectre](#plugin-spectre)
   * [Plugin: Marks](#plugin-marks)
 
@@ -78,21 +82,21 @@ Please read "[Extending](#extending)" to learn how to customize and modify.
 
 ## Features
 
-* Fast startup time
+* Fast startup time — plugins are almost entirely lazy-loaded!
 * Robust, yet light-weight
 * Plugin management with [folke/lazy.nvim]. Use with `:Lazy` or <kbd>Space</kbd>+<kbd>l</kbd>
-* Install LSP, DAP, linters, and formatters. Use with `:Mason`
-* LSP configuration with [folke/neoconf.nvim] (see [neoconf.json])
+* Install LSP, DAP, linters, and formatters. Use with `:Mason` or <kbd>Space</kbd>+<kbd>mm</kbd>
+* LSP configuration with [nvim-lspconfig] and [folke/neoconf.nvim] (see [neoconf.json])
 * [telescope.nvim] centric work-flow with lists (try <kbd>;</kbd>+<kbd>f</kbd>…)
 * Custom context-menu (try it! <kbd>;</kbd>+<kbd>c</kbd>)
-* Auto-complete extensive setup with [nvim-lspconfig] and [nvim-cmp]
-  (try <kbd>Tab</kbd> in insert-mode)
+* Auto-complete extensive setup with [nvim-cmp]
+  (try <kbd>Tab</kbd> or <kbd>Ctrl</kbd>+<kbd>Space</kbd> in insert-mode)
 * Structure view with [simrat39/symbols-outline.nvim]
 * Git features using [tpope/vim-fugitive] and [lewis6991/gitsigns.nvim]
 * Auto-save and restore sessions with [olimorris/persisted.nvim]
-* Light-weight but informative status & tab lines
+* Unobtrusive, yet informative status & tab lines
 * Premium color-schemes
-* Restores last used colorscheme
+* Remembers last-used colorscheme
 
 ## Screenshot
 
@@ -236,7 +240,21 @@ git pull --ff --ff-only
 
 There are 2 distinct ways to extend configuration:
 
-1. Create your own clean `~/.config/nvim`, and leverage [lazy.nvim] to import
+1. The second option is to fork this repository and create a directory
+   `lua/config` with one or more of these files:
+
+   * `lua/config/autocmds.lua` — Custom auto-commands
+   * `lua/config/options.lua` — Custom options
+   * `lua/config/keymaps.lua` — Custom key-mappings
+
+   Adding plugins or override existing options:
+   * `lua/plugins/*.lua` or `lua/plugins.lua` — Plugins (See [lazy.nvim] for
+     syntax)
+
+   This option is recommended if you're not planning on customizing a lot, or
+   you'd like to keep a close look of source-code.
+
+2. Create your own clean `~/.config/nvim`, and leverage [lazy.nvim] to import
    my configuration specs. You can use [LazyVim/starter] and just change
    `lua/plugins/example.lua` to:
 
@@ -272,20 +290,6 @@ There are 2 distinct ways to extend configuration:
 
    This option has the advantage of partially importing different "plugin
    specs" from various sources.
-
-2. The second option is to fork this repository and create a directory
-   `lua/config` with one or more of these files:
-
-   * `lua/config/autocmds.lua` — Custom auto-commands
-   * `lua/config/options.lua` — Custom options
-   * `lua/config/keymaps.lua` — Custom key-mappings
-
-   Adding plugins or override existing options:
-   * `lua/plugins/*.lua` or `lua/plugins.lua` — Plugins (See [lazy.nvim] for
-     syntax)
-
-   This option is recommended if you're not planning on customizing a lot, or
-   you'd like to keep a close look of source-code.
 
 ### Extend: Plugins
 
@@ -335,10 +339,8 @@ You can set & toggle **global specific features** by defining in your local
 
 ```vim
 let g:elite_mode = 1                     " Set arrow-keys to window resize
-let g:global_symbol_padding = '  '       " Padding after nerd symbols
-let g:tabline_plugin_enable = 0          " Disable built-in tabline
-let g:enable_universal_quit_mapping = 0  " Disable normal 'q' mapping
 let g:disable_mappings = 0               " Disable lua/rafi/config/keymaps.lua
+let g:enable_universal_quit_mapping = 0  " Disable normal 'q' mapping
 ```
 
 ### Extend: LSP Settings
@@ -413,7 +415,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [williamboman/mason.nvim] | Portable package manager for Neovim
 | [williamboman/mason-lspconfig.nvim] | Mason extension for easier lspconfig integration
 | [hrsh7th/cmp-nvim-lsp] | nvim-cmp source for neovim builtin LSP client
-| [kevinhwang91/nvim-ufo] | Make folds look modern and keep a high performance
 | [b0o/SchemaStore.nvim] | JSON schemas for Neovim
 | [jose-elias-alvarez/null-ls.nvim] | Inject LSP diagnostics, code actions, and more
 
@@ -467,6 +468,10 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [echasnovski/mini.comment] | Fast and familiar per-line commenting
 | [echasnovski/mini.trailspace] | Trailing whitespace highlight and remove
 | [echasnovski/mini.bracketed] | Go forward/backward with square brackets
+| [echasnovski/mini.ai] | Extend and create `a`/`i` textobjects
+| [echasnovski/mini.splitjoin] | Split and join arguments
+| [AndrewRadev/linediff.vim] | Perform diffs on blocks of code
+| [AndrewRadev/dsf.vim] | Delete surrounding function call
 
 ### Colorscheme Plugins
 
@@ -502,18 +507,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [jvgrootveld/telescope-zoxide] | Telescope extension for Zoxide
 | [nvim-lua/plenary.nvim] | Lua functions library
 
-### Operators & Text Objects
-
-| Name           | Description
-| -------------- | ----------------------
-| [echasnovski/mini.ai] | Extend and create `a`/`i` textobjects
-| [mfussenegger/nvim-treehopper] | Region selection with hints on the AST nodes
-| [AndrewRadev/sideways.vim] | Match function arguments
-| [AndrewRadev/linediff.vim] | Perform diffs on blocks of code
-| [AndrewRadev/splitjoin.vim] | Transition code between multi-line and single-line
-| [AndrewRadev/dsf.vim] | Delete surrounding function call
-
-#### Treesitter & Syntax
+### Treesitter & Syntax
 
 | Name           | Description
 | -------------- | ----------------------
@@ -522,7 +516,8 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [nvim-treesitter/nvim-treesitter-context] | Show code context
 | [RRethy/nvim-treesitter-endwise] | Wisely add "end" in various filetypes
 | [windwp/nvim-ts-autotag] | Use treesitter to auto close and auto rename html tag
-| [monkoose/matchparen.nvim] | Alternative to matchparen built-in plugin
+| [andymass/vim-matchup] | Modern matchit and matchparen
+| [kevinhwang91/nvim-ufo] | Make folds look modern and keep a high performance
 | [iloginow/vim-stylus] | Better vim plugin for stylus
 | [chrisbra/csv.vim] | Handling column separated data
 | [towolf/vim-helm] | Syntax for Helm templates (yaml + gotmpl + sprig)
@@ -534,7 +529,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [vmchale/just-vim] | Syntax highlighting for Justfiles
 | [pearofducks/ansible-vim] | Improved YAML support for Ansible
 
-#### UI Plugins
+### UI Plugins
 
 | Name           | Description
 | -------------- | ----------------------
@@ -547,8 +542,8 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [lukas-reineke/indent-blankline.nvim] | Visually display indent levels
 | [t9md/vim-quickhl] | Highlight words quickly
 | [kevinhwang91/nvim-bqf] | Better quickfix window in Neovim
-| [NvChad/nvim-colorizer.lua] | The fastest Neovim colorizer
-| [rmagatti/goto-preview] | Preview definitions using floating windows
+| [uga-rosa/ccc.nvim] | Super powerful color picker/colorizer plugin
+| [dnlhc/glance.nvim] | Pretty window for navigating LSP locations
 | [itchyny/calendar.vim] | Calendar application
 
 [neovim/nvim-lspconfig]: https://github.com/neovim/nvim-lspconfig
@@ -557,7 +552,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [williamboman/mason.nvim]: https://github.com/williamboman/
 [williamboman/mason-lspconfig.nvim]: https://github.com/williamboman/mason-lspconfig.nvim
 [hrsh7th/cmp-nvim-lsp]: https://github.com/hrsh7th/cmp-nvim-lsp
-[kevinhwang91/nvim-ufo]: https://github.com/kevinhwang91/nvim-ufo
 [b0o/SchemaStore.nvim]: https://github.com/b0o/SchemaStore.nvim
 [jose-elias-alvarez/null-ls.nvim]: https://github.com/jose-elias-alvarez/null-ls.nvim
 
@@ -603,6 +597,10 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [echasnovski/mini.comment]: https://github.com/echasnovski/mini.comment
 [echasnovski/mini.trailspace]: https://github.com/echasnovski/mini.trailspace
 [echasnovski/mini.bracketed]: https://github.com/echasnovski/mini.bracketed
+[echasnovski/mini.ai]: https://github.com/echasnovski/mini.ai
+[echasnovski/mini.splitjoin]: https://github.com/echasnovski/mini.splitjoin
+[AndrewRadev/linediff.vim]: https://github.com/AndrewRadev/linediff.vim
+[AndrewRadev/dsf.vim]: https://github.com/AndrewRadev/dsf.vim
 
 [rafi/awesome-colorschemes]: https://github.com/rafi/awesome-vim-colorschemes
 [AlexvZyl/nordic.nvim]: https://github.com/AlexvZyl/nordic.nvim
@@ -626,19 +624,13 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [jvgrootveld/telescope-zoxide]: https://github.com/jvgrootveld/telescope-zoxide
 [nvim-lua/plenary.nvim]: https://github.com/nvim-lua/plenary.nvim
 
-[echasnovski/mini.ai]: https://github.com/echasnovski/mini.ai
-[mfussenegger/nvim-treehopper]: https://github.com/mfussenegger/nvim-treehopper
-[AndrewRadev/sideways.vim]: https://github.com/AndrewRadev/sideways.vim
-[AndrewRadev/linediff.vim]: https://github.com/AndrewRadev/linediff.vim
-[AndrewRadev/splitjoin.vim]: https://github.com/AndrewRadev/splitjoin.vim
-[AndrewRadev/dsf.vim]: https://github.com/AndrewRadev/dsf.vim
-
 [nvim-treesitter/nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [nvim-treesitter/nvim-treesitter-textobjects]: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 [nvim-treesitter/nvim-treesitter-context]: https://github.com/nvim-treesitter/nvim-treesitter-context
 [RRethy/nvim-treesitter-endwise]: https://github.com/RRethy/nvim-treesitter-endwise
 [windwp/nvim-ts-autotag]: https://github.com/windwp/nvim-ts-autotag
-[monkoose/matchparen.nvim]: https://github.com/monkoose/matchparen.nvim
+[andymass/vim-matchup]: https://github.com/andymass/vim-matchup
+[kevinhwang91/nvim-ufo]: https://github.com/kevinhwang91/nvim-ufo
 [iloginow/vim-stylus]: https://github.com/iloginow/vim-stylus
 [chrisbra/csv.vim]: https://github.com/chrisbra/csv.vim
 [towolf/vim-helm]: https://github.com/towolf/vim-helm
@@ -659,13 +651,15 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [lukas-reineke/indent-blankline.nvim]: https://github.com/lukas-reineke/indent-blankline.nvim
 [t9md/vim-quickhl]: https://github.com/t9md/vim-quickhl
 [kevinhwang91/nvim-bqf]: https://github.com/kevinhwang91/nvim-bqf
-[NvChad/nvim-colorizer.lua]: https://github.com/NvChad/nvim-colorizer.lua
-[rmagatti/goto-preview]: https://github.com/rmagatti/goto-preview
+[uga-rosa/ccc.nvim]: https://github.com/uga-rosa/ccc.nvim
+[dnlhc/glance.nvim]: https://github.com/dnlhc/glance.nvim
 [itchyny/calendar.vim]: https://github.com/itchyny/calendar.vim
 
 ## Extra Plugins
 
-These plugins aren't enabled by default. You'll have to import them, e.g.:
+These plugins aren't enabled by default. You'll have to import them using specs.
+
+For example:
 
 ```lua
 return {
@@ -674,67 +668,102 @@ return {
 }
 ```
 
-### Extra Coding Plugins
+### Extra Plugins: Coding
+
+Spec: `rafi.plugins.extras.coding.<name>`
+
+| Name           | Repository     | Description
+| -------------- | -------------- | ----------------------
+| `autopairs`    | [windwp/nvim-autopairs] | Autopairs for neovim written by lua
+| `copilot`      | [zbirenbaum/copilot.lua] | Fully featured & enhanced copilot
+| `editorconfig` | [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
+| `emmet`        | [mattn/emmet-vim] | Provides support for expanding abbreviations alá emmet
+| `kommentary`   | [b3nj5m1n/kommentary] | Commenting plugin, written in Lua
+| `sandwich`     | [machakann/vim-sandwich] | Search, select, and edit sandwich text objects
+
+### Extra Plugins: Diagnostics
+
+Spec: `rafi.plugins.extras.diagnostics.<name>`
 
 | Name           | Description
 | -------------- | ----------------------
-| [windwp/nvim-autopairs] | autopairs for neovim written by lua
-| [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
-| [mattn/emmet-vim] | Provides support for expanding abbreviations alá emmet
-| [b3nj5m1n/kommentary] | Commenting plugin, written in Lua
-| [machakann/vim-sandwich] | Search, select, and edit sandwich text objects
+| `proselint`    | proselint: null-ls source and mason package
+| `write-good`   | write-good: null-ls source and mason package
 
-### Extra Editor Plugins
+### Extra Plugins: Editor
 
-| Name           | Description
-| -------------- | ----------------------
-| [pechorin/any-jump.vim] | Jump to any definition and references without overhead
-| [ziontee113/color-picker.nvim] | Choose and modify RGB/HSL/HEX colors
+Spec: `rafi.plugins.extras.editor.<name>`
 
-### Extra LSP Plugins
+| Key       | Name           | Description
+| ----------| -------------- | ----------------------
+| `anyjump` | [pechorin/any-jump.vim] | Jump to any definition and references without overhead
 
-| Name           | Description
-| -------------- | ----------------------
-| [ray-x/lsp_signature.nvim] | LSP signature hint when you type
-| [glepnir/lspsaga.nvim] | Lightweight LSP plugin with a highly performant UI
-| [kosayoda/nvim-lightbulb] | VSCode 💡 for neovim's built-in LSP
+### Extra Plugins: Formatting
 
-### Extra Org Plugins
+Spec: `rafi.plugins.extras.formatting.<name>`
 
 | Name           | Description
 | -------------- | ----------------------
-| [vimwiki/vimwiki] | Personal Wiki for Vim
+| `prettier`     | prettier: null-ls source and mason package
 
-### Extra Treesitter Plugins
+### Extra Plugins: LSP
 
-| Name           | Description
-| -------------- | ----------------------
-| [Wansmer/treesj] | Splitting and joining blocks of code
+Spec: `rafi.plugins.extras.lsp.<name>`
 
-### Extra UI Plugins
+| Key            | Name           | Description
+| -------------- | -------------- | ----------------------
+| `lightbulb`    | [kosayoda/nvim-lightbulb] | VSCode 💡 for neovim's built-in LSP
 
-| Name           | Description
-| -------------- | ----------------------
-| [itchyny/cursorword] | Underlines word under cursor
-| [romainl/vim-cool] | Simple plugin that makes hlsearch more useful
-| [b0o/incline.nvim] | Floating statuslines
-| [luukvbaal/statuscol.nvim] | Configurable 'statuscolumn' and click handlers
+### Extra Plugins: Org
+
+Spec: `rafi.plugins.extras.org.<name>`
+
+| Key            | Name           | Description
+| -------------- | -------------- | ----------------------
+| `vimwiki`      | [vimwiki/vimwiki] | Personal Wiki for Vim
+
+### Extra Plugins: Treesitter
+
+Spec: `rafi.plugins.extras.treesitter.<name>`
+
+| Key            | Name           | Description
+| -------------- | -------------- | ----------------------
+| `treesj`       | [Wansmer/treesj] | Splitting and joining blocks of code
+
+### Extra Plugins: UI
+
+Spec: `rafi.plugins.extras.ui.<name>`
+
+| Key            | Name           | Description
+| -------------- | -------------- | ----------------------
+| `bufferline`   | [akinsho/bufferline.nvim] | Snazzy tab/bufferline
+| `cursorword`   | [itchyny/cursorword] | Underlines word under cursor
+| `cybu`         | [ghillb/cybu.nvim] | Cycle buffers with a customizable notification window
+| `deadcolumn`   | [Bekaboo/deadcolumn.nvim] | Show colorcolumn dynamically
+| `cool`         | [romainl/vim-cool] | Simple plugin that makes hlsearch more useful
+| `goto-preview` | [rmagatti/goto-preview] | Preview definitions using floating windows
+| `incline`      | [b0o/incline.nvim] | Floating statuslines
+| `minimap`      | [echasnovski/mini.map] | Window with buffer text overview, scrollbar and highlights
+| `statuscol`    | [luukvbaal/statuscol.nvim] | Configurable 'statuscolumn' and click handlers
 
 [windwp/nvim-autopairs]: https://github.com/windwp/nvim-autopairs
+[zbirenbaum/copilot.lua]: https://github.com/zbirenbaum/copilot.lua
 [sgur/vim-editorconfig]: https://github.com/sgur/vim-editorconfig
 [mattn/emmet-vim]: https://github.com/mattn/emmet-vim
 [b3nj5m1n/kommentary]: https://github.com/b3nj5m1n/kommentary
 [machakann/vim-sandwich]: https://github.com/machakann/vim-sandwich
 [pechorin/any-jump.vim]: https://github.com/pechorin/any-jump.vim
-[ziontee113/color-picker.nvim]: https://github.com/ziontee113/color-picker.nvim
-[ray-x/lsp_signature.nvim]: https://github.com/ray-x/lsp_signature.nvim
-[glepnir/lspsaga.nvim]: https://github.com/glepnir/lspsaga.nvim
 [kosayoda/nvim-lightbulb]: https://github.com/kosayoda/nvim-lightbulb
 [vimwiki/vimwiki]: https://github.com/vimwiki/vimwiki
 [Wansmer/treesj]: https://github.com/Wansmer/treesj
+[akinsho/bufferline.nvim]: https://github.com/akinsho/bufferline.nvim
 [itchyny/cursorword]: https://github.com/itchyny/vim-cursorword
+[ghillb/cybu.nvim]: https://github.com/ghillb/cybu.nvim
+[Bekaboo/deadcolumn.nvim]: https://github.com/Bekaboo/deadcolumn.nvim
 [romainl/vim-cool]: https://github.com/romainl/vim-cool
+[rmagatti/goto-preview]: https://github.com/rmagatti/goto-preview
 [b0o/incline.nvim]: https://github.com/b0o/incline.nvim
+[echasnovski/mini.map]: https://github.com/echasnovski/mini.map
 [luukvbaal/statuscol.nvim]: https://github.com/luukvbaal/statuscol.nvim
 
 </details>
@@ -745,7 +774,7 @@ Note that,
 
 * **Leader** key set as <kbd>Space</kbd>
 * **Local-Leader** key set as <kbd>;</kbd> and used for navigation and search
-  (Telescope and Tree)
+  (Telescope and Neo-tree)
 * Disable <kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd> in normal mode by enabling `g:elite_mode` in `.vault.vim`
 
 <details open>
@@ -754,26 +783,26 @@ Note that,
     <small><i>(🔎 Click to expand/collapse)</i></small>
   </summary>
 
-<center>Modes: 𝐍=normal 𝐕=visual 𝐒=select 𝐈=insert 𝐂=command</center>
+<center>Modes: 𝐍=normal 𝐕=visual 𝐒=select 𝐈=insert 𝐎=operator 𝐂=command</center>
 
 ### Navigation
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>j</kbd> / <kbd>k</kbd> | 𝐍 𝐕 | Cursor moves through display-lines | `g` `j/k`
+| <kbd>j</kbd> / <kbd>k</kbd> | 𝐍 𝐕 | Cursor moves through display-lines | <small>`g` `j/k`</small>
 | <kbd>g</kbd>+<kbd>j</kbd> / <kbd>k</kbd> | 𝐍 𝐕 𝐒 | Jump to edge upward/downward | <small>[haya14busa/vim-edgemotion]</small>
-| <kbd>gh</kbd> / <kbd>gl</kbd> | 𝐍 𝐕 | Easier line-wise movement | `g` `^/$`
-| <kbd>Space</kbd>+<kbd>Space</kbd> | 𝐍 𝐕 | Toggle visual-line mode | `V` / <kbd>Escape</kbd>
-| <kbd>zl</kbd> / <kbd>zh</kbd> | 𝐍 | Scroll horizontally and vertically wider | `z4` `l/h`
+| <kbd>gh</kbd> / <kbd>gl</kbd> | 𝐍 𝐕 | Easier line-wise movement | <small>`g` `^/$`</small>
+| <kbd>Space</kbd>+<kbd>Space</kbd> | 𝐍 𝐕 | Toggle visual-line mode | <small>`V` / <kbd>Escape</kbd>
+| <kbd>zl</kbd> / <kbd>zh</kbd> | 𝐍 | Scroll horizontally and vertically wider | <small>`z4` `l/h`</small>
 | <kbd>Ctrl</kbd>+<kbd>j</kbd> | 𝐍 | Move to split below | <small>[christoomey/tmux-navigator]</small>
 | <kbd>Ctrl</kbd>+<kbd>k</kbd> | 𝐍 | Move to upper split | <small>[christoomey/tmux-navigator]</small>
 | <kbd>Ctrl</kbd>+<kbd>h</kbd> | 𝐍 | Move to left split | <small>[christoomey/tmux-navigator]</small>
 | <kbd>Ctrl</kbd>+<kbd>l</kbd> | 𝐍 | Move to right split | <small>[christoomey/tmux-navigator]</small>
-| <kbd>Return</kbd> | 𝐍 | Toggle fold | `za`
-| <kbd>Shift</kbd>+<kbd>Return</kbd> | 𝐍 | Focus the current fold by closing all others | `zMzvzt`
-| <kbd>]a</kbd> or <kbd>[a</kbd> | 𝐍 | Next/previous on location-list | `:lnext` / `:lprev`
-| <kbd>]m</kbd> or <kbd>[m</kbd> | 𝐍 | Next/previous function | <small>[nvim-treesitter/nvim-treesitter-textobjects]</small>
-| <kbd>]s</kbd> or <kbd>[s</kbd> | 𝐍 | Next/previous whitespace error | <small>[lua/rafi/config/keymaps.lua]</small>
+| <kbd>Return</kbd> | 𝐍 | Toggle fold | <small>`za`</small>
+| <kbd>Shift</kbd>+<kbd>Return</kbd> | 𝐍 | Focus the current fold by closing all others | <small>`zMzvzt`</small>
+| <kbd>]a</kbd> or <kbd>[a</kbd> | 𝐍 | Next/previous on location-list | <small>`:lnext` / `:lprev`</small>
+| <kbd>]m</kbd> or <kbd>[m</kbd> | 𝐍 | Next/previous function | <small>[nvim-treesitter-textobjects]</small>
+| <kbd>]s</kbd> or <kbd>[s</kbd> | 𝐍 | Next/previous whitespace error | <small>[config/keymaps.lua]</small>
 | <kbd>]g</kbd> or <kbd>[g</kbd> | 𝐍 | Next/previous Git hunk | <small>[lewis6991/gitsigns.nvim]</small>
 | <kbd>]]</kbd> or <kbd>[[</kbd> | 𝐍 | Next/previous reference | <small>[RRethy/vim-illuminate]</small>
 | <kbd>Ctrl</kbd>+<kbd>f</kbd> | 𝐂 | Move cursor forwards in command | <kbd>Right</kbd>
@@ -785,28 +814,69 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>Space</kbd>+<kbd>cd</kbd> | 𝐍 | Switch to the directory of opened buffer | `:lcd %:p:h`
-| <kbd>gf</kbd> | 𝐍 | Open file under the cursor in a vsplit | `:rightbelow wincmd f`
-| <kbd>Space</kbd>+<kbd>w</kbd> | 𝐍 | Write buffer to file | `:write`
-| <kbd>Ctrl</kbd>+<kbd>s</kbd> | 𝐍 𝐕 𝐂 | Write buffer to file | `:write`
+| <kbd>Space</kbd>+<kbd>cd</kbd> | 𝐍 | Switch to the directory of opened buffer | <small>`:lcd %:p:h`</small>
+| <kbd>gf</kbd> | 𝐍 | Open file under the cursor in a vsplit | <small>`:rightbelow wincmd f`</small>
+| <kbd>Space</kbd>+<kbd>w</kbd> | 𝐍 | Write buffer to file | <small>`:write`</small>
+| <kbd>Ctrl</kbd>+<kbd>s</kbd> | 𝐍 𝐕 𝐂 | Write buffer to file | <small>`:write`</small>
+
+### Auto-Completion
+
+| Key   | Mode | Action             | Plugin or Mapping
+| ----- |:----:| ------------------ | ------
+| <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 | Navigate/open completion-menu | <small>[nvim-cmp]</small>
+| <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 𝐒 | Navigate snippet placeholders | <small>[nvim-cmp]</small>
+| <kbd>Ctrl</kbd>+<kbd>Space</kbd> | 𝐈 | Open completion menu | <small>[nvim-cmp]</small>
+| <kbd>Enter</kbd> | 𝐈 | Select completion item or expand snippet | <small>[nvim-cmp]</small>
+| <kbd>Ctrl</kbd>+<kbd>p</kbd>/<kbd>n</kbd> | 𝐈 | Movement in completion pop-up | <small>[nvim-cmp]</small>
+| <kbd>Ctrl</kbd>+<kbd>b</kbd>/<kbd>f</kbd> | 𝐈 | Scroll documentation | <small>[nvim-cmp]</small>
+| <kbd>Ctrl</kbd>+<kbd>e</kbd> | 𝐈 | Abort selection and close pop-up | <small>[nvim-cmp]</small>
+| <kbd>Ctrl</kbd>+<kbd>l</kbd> | 𝐈 | Expand snippet at cursor | <small>[L3MON4D3/LuaSnip]</small>
+| <kbd>Space</kbd> <kbd>cc</kbd> | 𝐍 | Generate annotations | <small>[danymat/neogen]</small>
+
+### LSP
+
+| Key   | Mode | Action             | Plugin or Mapping
+| ----- |:----:| ------------------ | ------
+| <kbd>K</kbd> | 𝐍 | Show hover help or collapsed fold | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>gD</kbd> | 𝐍 | Go to declaration | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>gd</kbd> | 𝐍 | Go to definition | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>gr</kbd> | 𝐍 | Go to references | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>gy</kbd> | 𝐍 | Go to type definition | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>gi</kbd> | 𝐍 | Go to implementation | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>gpd</kbd> | 𝐍 | Glance definitions | <small>[dnlhc/glance.nvim]</small>
+| <kbd>gpr</kbd> | 𝐍 | Glance references | <small>[dnlhc/glance.nvim]</small>
+| <kbd>gpy</kbd> | 𝐍 | Glance type definitions | <small>[dnlhc/glance.nvim]</small>
+| <kbd>gpi</kbd> | 𝐍 | Glance implementations | <small>[dnlhc/glance.nvim]</small>
+| <kbd>,rn</kbd> | 𝐍 | Rename | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>,s</kbd> | 𝐍 | Show signature help | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>,wa</kbd> | 𝐍 | Add workspace folder | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>,wr</kbd> | 𝐍 | Remove workspace folder | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>,wl</kbd> | 𝐍 | List workspace folders | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>,f</kbd> | 𝐍 𝐕 | Format | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>ca</kbd> | 𝐍 𝐕 | Code action | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>ce</kbd> | 𝐍 | Open diagnostics window | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>cl</kbd> | 𝐍 | Open LSP info window | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>]e</kbd> or <kbd>[e</kbd> | 𝐍 | Jump to next/previous error | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>tp</kbd> | 𝐍 | Toggle buffer diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>tP</kbd> | 𝐍 | Toggle global diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
 
 ### Edit
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>Shift</kbd>+<kbd>Return</kbd> | 𝐈 | Start new line from any cursor position | `<C-o>o`
-| <kbd><</kbd> | 𝐕 | Indent to left and re-select | `<gv`
-| <kbd>></kbd> | 𝐕 | Indent to right and re-select | `>gv|`
-| <kbd>Tab</kbd> | 𝐕 | Indent to right and re-select | `>gv|`
-| <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent to left and re-select | `<gv`
+| <kbd>Shift</kbd>+<kbd>Return</kbd> | 𝐈 | Start new line from any cursor position | <small>`<C-o>o`</small>
+| <kbd><</kbd> | 𝐕 | Indent to left and re-select | <small>`<gv`</small>
+| <kbd>></kbd> | 𝐕 | Indent to right and re-select | <small>`>gv|`</small>
+| <kbd>Tab</kbd> | 𝐕 | Indent to right and re-select | <small>`>gv|`</small>
+| <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent to left and re-select | <small>`<gv`</small>
 | <kbd>gc</kbd> | 𝐍 𝐕 | Comment prefix | <small>[echasnovski/mini.comment]</small>
 | <kbd>gcc</kbd> | 𝐍 𝐕 | Toggle comments | <small>[echasnovski/mini.comment]</small>
 | <kbd>Space</kbd>+<kbd>v</kbd> | 𝐍 𝐕 | Toggle single-line comments | <small>[echasnovski/mini.comment]</small>
-| <kbd>Space</kbd>+<kbd>j</kbd> or <kbd>k</kbd> | 𝐍 𝐕 | Move lines down/up | `:m` …
-| <kbd>Space</kbd>+<kbd>d</kbd> | 𝐍 𝐕 | Duplicate line or selection |
-| <kbd>Space</kbd>+<kbd>cp</kbd> | 𝐍 | Duplicate paragraph | `yap<S-}>p`
+| <kbd>Space</kbd>+<kbd>j</kbd> or <kbd>k</kbd> | 𝐍 𝐕 | Move lines down/up | <small>`:m` …
+| <kbd>Space</kbd>+<kbd>d</kbd> | 𝐍 𝐕 | Duplicate line or selection | <small>[config/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>cp</kbd> | 𝐍 | Duplicate paragraph | <small>`yap<S-}>p`</small>
 | <kbd>Space</kbd>+<kbd>cw</kbd> | 𝐍 | Remove all spaces at EOL | <small>[echasnovski/mini.trailspace]</small>
-| <kbd>sj</kbd> / <kbd>sk</kbd> | 𝐍 | Join/split arguments | <small>[AndrewRadev/splitjoin.vim]</small>
+| <kbd>sj</kbd> / <kbd>sk</kbd> | 𝐍 | Join/split arguments | <small>[echasnovski/mini.splitjoin]</small>
 | <kbd>dsf</kbd> / <kbd>csf</kbd> | 𝐍 | Delete/change surrounding function call | <small>[AndrewRadev/dsf.vim]</small>
 | <kbd>I</kbd> / <kbd>gI</kbd> | 𝐕 | Blockwise insert | <small>[kana/vim-niceblock]</small>
 | <kbd>A</kbd> | 𝐕 | Blockwise append | <small>[kana/vim-niceblock]</small>
@@ -815,12 +885,12 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>\*</kbd> / <kbd>#</kbd> | 𝐍 𝐕 | Search partial words | `g*` / `g#`
-| <kbd>g\*</kbd> / <kbd>g#</kbd> | 𝐍 𝐕 | Search whole-word forward/backward | `*` / `#`
-| <kbd>Backspace</kbd> | 𝐍 | Match bracket | `%`
-| <kbd>gpp</kbd> | 𝐍 | Select last paste |
-| <kbd>sg</kbd> | 𝐕 | Replace within selected area | `:s/⌴/gc`
-| <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐕 | Replace selection with step-by-step confirmation | `:%s/\V/⌴/gc`
+| <kbd>\*</kbd> / <kbd>#</kbd> | 𝐍 𝐕 | Search partial words | <small>`g*` / `g#`</small>
+| <kbd>g\*</kbd> / <kbd>g#</kbd> | 𝐍 𝐕 | Search whole-word forward/backward | <small>`*` / `#`</small>
+| <kbd>Backspace</kbd> | 𝐍 | Match bracket | <small>`%`</small>
+| <kbd>gpp</kbd> | 𝐍 | Select last paste | <small>[config/keymaps.lua]</small>
+| <kbd>sg</kbd> | 𝐕 | Replace within selected area | <small>`:s/⌴/gc`</small>
+| <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐕 | Replace selection with step-by-step confirmation | <small>`:%s/\V/⌴/gc`</small>
 | <kbd>ss</kbd> / <kbd>SS</kbd> | 𝐍 𝐕 | Leap forward/backward | <small>[ggandor/leap.nvim]</small>
 | <kbd>f</kbd> / <kbd>F</kbd> / <kbd>t</kbd> / <kbd>T</kbd> | 𝐍 𝐕 | Enhanced motions | <small>[ggandor/flit.nvim]</small>
 
@@ -828,18 +898,18 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>p</kbd> or <kbd>P</kbd> | 𝐕 | Paste without yank | `:let @+=@0`
-| <kbd>Space</kbd>+<kbd>y</kbd> | 𝐍 | Copy relative file-path to clipboard |
-| <kbd>Space</kbd>+<kbd>Y</kbd> | 𝐍 | Copy absolute file-path to clipboard |
+| <kbd>p</kbd> or <kbd>P</kbd> | 𝐕 | Paste without yank | <small>`:let @+=@0`</small>
+| <kbd>Space</kbd>+<kbd>y</kbd> | 𝐍 | Copy relative file-path to clipboard | <small>[config/keymaps.lua]</small>
+| <kbd>Space</kbd>+<kbd>Y</kbd> | 𝐍 | Copy absolute file-path to clipboard | <small>[config/keymaps.lua]</small>
 
 ### Command & History
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>!</kbd> | 𝐍 | Shortcut for shell command | `:!`
-| <kbd>g!</kbd> | 𝐍 | Read vim command into buffer | `:put=execute('⌴')`
+| <kbd>!</kbd> | 𝐍 | Shortcut for shell command | <small>`:!`</small>
+| <kbd>g!</kbd> | 𝐍 | Read vim command into buffer | <small>`:put=execute('⌴')`</small>
 | <kbd>Ctrl</kbd>+<kbd>n</kbd> / <kbd>p</kbd> | 𝐂 | Switch history search pairs | <kbd>↓</kbd> / <kbd>↑</kbd>
-| <kbd>↓</kbd> / <kbd>↑</kbd> | 𝐂 | Switch history search pairs | `Ctrl` `n`/`p`
+| <kbd>↓</kbd> / <kbd>↑</kbd> | 𝐂 | Switch history search pairs | <small>`Ctrl` `n`/`p`</small>
 
 ### Diagnostics
 
@@ -863,31 +933,32 @@ Note that,
 | <kbd>Space</kbd>+<kbd>th</kbd> | 𝐍 | Toggle highlighted search | <small>`:set hlsearch!`</small>
 | <kbd>Space</kbd>+<kbd>tw</kbd> | 𝐍 | Toggle wrap | <small>`:setlocal wrap!`</small> …
 | <kbd>Space</kbd>+<kbd>ti</kbd> | 𝐍 | Toggle indentation lines | <small>[lukas-reineke/indent-blankline.nvim]</small>
-| <kbd>Space</kbd>+<kbd>tt</kbd> | 𝐍 | Show highlight groups for word |
-| <kbd>g1</kbd> | 𝐍 | Go to first tab | `:tabfirst`
-| <kbd>g9</kbd> | 𝐍 | Go to last tab | `:tablast`
-| <kbd>g5</kbd> | 𝐍 | Go to previous tab | `:tabprevious`
-| <kbd>Ctrl</kbd>+<kbd>Tab</kbd> | 𝐍 | Go to next tab | `:tabnext`
-| <kbd>Ctrl</kbd>+<kbd>Shift</kbd><kbd>Tab</kbd> | 𝐍 | Go to previous tab | `:tabprevious`
-| <kbd>Alt</kbd>+<kbd>j</kbd> | 𝐍 | Go to next tab | `:tabnext`
-| <kbd>Alt</kbd>+<kbd>k</kbd> | 𝐍 | Go to previous tab | `:tabprevious`
-| <kbd>Alt</kbd>+<kbd>{</kbd> | 𝐍 | Move tab backward | `:-tabmove`
-| <kbd>Alt</kbd>+<kbd>}</kbd> | 𝐍 | Move tab forward | `:+tabmove`
+| <kbd>Space</kbd>+<kbd>tt</kbd> | 𝐍 | Show highlight groups for word | <small>`vim.show_pos`</small>
+| <kbd>g1</kbd> | 𝐍 | Go to first tab | <small>`:tabfirst`</small>
+| <kbd>g9</kbd> | 𝐍 | Go to last tab | <small>`:tablast`</small>
+| <kbd>g5</kbd> | 𝐍 | Go to previous tab | <small>`:tabprevious`</small>
+| <kbd>Ctrl</kbd>+<kbd>Tab</kbd> | 𝐍 | Go to next tab | <small>`:tabnext`</small>
+| <kbd>Ctrl</kbd>+<kbd>Shift</kbd><kbd>Tab</kbd> | 𝐍 | Go to previous tab | <small>`:tabprevious`</small>
+| <kbd>Alt</kbd>+<kbd>j</kbd> | 𝐍 | Go to next tab | <small>`:tabnext`</small>
+| <kbd>Alt</kbd>+<kbd>k</kbd> | 𝐍 | Go to previous tab | <small>`:tabprevious`</small>
+| <kbd>Alt</kbd>+<kbd>{</kbd> | 𝐍 | Move tab backward | <small>`:-tabmove`</small>
+| <kbd>Alt</kbd>+<kbd>}</kbd> | 𝐍 | Move tab forward | <small>`:+tabmove`</small>
 
 ### Custom Tools & Plugins
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
 | <kbd>;</kbd>+<kbd>c</kbd> | 𝐍 | Open context-menu | <small>[lua/rafi/lib/contextmenu.lua]</small>
-| <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>o</kbd> | 𝐍 | Navigate to previous file on jumplist | <small>[lua/rafi/lib/edit.lua]</small>
-| <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>i</kbd> | 𝐍 | Navigate to next file on jumplist | <small>[lua/rafi/lib/edit.lua]</small>
+| <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>o</kbd> | 𝐍 | Navigate to previous file on jumplist | <small>[lib/edit.lua]</small>
+| <kbd>g</kbd><kbd>Ctrl</kbd>+<kbd>i</kbd> | 𝐍 | Navigate to next file on jumplist | <small>[lib/edit.lua]</small>
 | <kbd>s</kbd>+<kbd>p</kbd> | 𝐍 | Choose a window to edit | <small>[s1n7ax/nvim-window-picker]</small>
 | <kbd>s</kbd>+<kbd>w</kbd> | 𝐍 | Switch editing window with selected | <small>[s1n7ax/nvim-window-picker]</small>
 | <kbd>Space</kbd>+<kbd>l</kbd> | 𝐍 | Open Lazy | <small>[folke/lazy.nvim]</small>
 | <kbd>Space</kbd>+<kbd>o</kbd> | 𝐍 | Open structure window | <small>[simrat39/symbols-outline.nvim]</small>
 | <kbd>Space</kbd>+<kbd>f</kbd> | 𝐍 | Show current structure scope in winbar | <small>[SmiteshP/nvim-navic]</small>
-| <kbd>Space</kbd>+<kbd>?</kbd> | 𝐍 | Open the macOS dictionary on current word | `:!open dict://`
+| <kbd>Space</kbd>+<kbd>?</kbd> | 𝐍 | Open the macOS dictionary on current word | <small>`:!open dict://`</small>
 | <kbd>Space</kbd>+<kbd>P</kbd> | 𝐍 | Use Marked 2 for real-time Markdown preview | <small>[Marked 2]</small>
+| <kbd>Space</kbd>+<kbd>cp</kbd> | 𝐍 | Open color-picker | <small>[uga-rosa/ccc.nvim]</small>
 | <kbd>Space</kbd>+<kbd>ml</kbd> | 𝐍 | Append modeline to end of buffer | <small>[lua/rafi/config/keymaps.lua]</small>
 | <kbd>Space</kbd>+<kbd>mda</kbd> | 𝐕 | Sequentially mark region for diff | <small>[AndrewRadev/linediff.vim]</small>
 | <kbd>Space</kbd>+<kbd>mdf</kbd> | 𝐕 | Mark region for diff and compare if more than one | <small>[AndrewRadev/linediff.vim]</small>
@@ -901,23 +972,24 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>q</kbd> | 𝐍 | Quit window (and Vim, if last window) | `:quit`
-| <kbd>Ctrl</kbd>+<kbd>x</kbd> | 𝐍 | Rotate window placement | `C-w` `x`
-| <kbd>sv</kbd> | 𝐍 | Horizontal split | `:split`
-| <kbd>sg</kbd> | 𝐍 | Vertical split | `:vsplit`
-| <kbd>st</kbd> | 𝐍 | Open new tab | `:tabnew`
-| <kbd>so</kbd> | 𝐍 | Close other windows | `:only`
-| <kbd>sb</kbd> | 𝐍 | Previous buffer | `:b#`
-| <kbd>sc</kbd> | 𝐍 | Close current buffer | `:close`
-| <kbd>sd</kbd> | 𝐍 | Delete buffer | `:bdelete`
-| <kbd>sq</kbd> | 𝐍 | Quit window | `:quit`
-| <kbd>sx</kbd> | 𝐍 | Delete buffer, leave blank window | `:enew │ bdelete`
-| <kbd>sz</kbd> | 𝐍 | Toggle window zoom | `:vertical resize │ resize`
-| <kbd>sh</kbd> | 𝐍 | Toggle colorscheme background=dark/light | `:set background` …
+| <kbd>q</kbd> | 𝐍 | Quit window (if last window, quit nvim) | <small>`:quit`</small>
+| <kbd>Ctrl</kbd>+<kbd>x</kbd> | 𝐍 | Rotate window placement | <small>`C-w` `x`</small>
+| <kbd>sv</kbd> | 𝐍 | Horizontal split | <small>`:split`</small>
+| <kbd>sg</kbd> | 𝐍 | Vertical split | <small>`:vsplit`</small>
+| <kbd>st</kbd> | 𝐍 | Open new tab | <small>`:tabnew`</small>
+| <kbd>so</kbd> | 𝐍 | Close other windows | <small>`:only`</small>
+| <kbd>sb</kbd> | 𝐍 | Previous buffer | <small>`:b#`</small>
+| <kbd>sc</kbd> | 𝐍 | Close current buffer | <small>`:close`</small>
+| <kbd>sd</kbd> | 𝐍 | Delete buffer | <small>`:bdelete`</small>
+| <kbd>sq</kbd> | 𝐍 | Quit window | <small>`:quit`</small>
+| <kbd>sx</kbd> | 𝐍 | Delete buffer, leave blank window | <small>`:enew │ bdelete`</small>
+| <kbd>sz</kbd> | 𝐍 | Toggle window zoom | <small>`:vertical resize │ resize`</small>
+| <kbd>sh</kbd> | 𝐍 | Toggle colorscheme background=dark/light | <small>`:set background` …
 
-### Plugin: Mini Bracket
+### Plugin: Mini.Bracketed
 
-Go forward/backward with square brackets:
+Go forward/backward with square brackets. See [echasnovski/mini.bracketed] for
+more mappings and usage information.
 
 | Key                 | Target                                            | Mapping                      |
 |---------------------|-------------------------------------------------- | ---------------------------- |
@@ -936,7 +1008,9 @@ Go forward/backward with square brackets:
 | `[W` `[w` `]w` `]W` | Window in current tab                             | `MiniBracketed.window()`     |
 | `[Y` `[y` `]y` `]Y` | Yank selection replacing the latest put region    | `MiniBracketed.yank()`       |
 
-### Plugin: Sandwich
+### Plugin: Mini.Surround
+
+See [echasnovski/mini.surround] for more mappings and usage information.
 
 | Key            | Mode  | Action                       |
 | -------------- |:-----:| ---------------------------- |
@@ -954,35 +1028,41 @@ Go forward/backward with square brackets:
 
 ### Plugin: Gitsigns
 
+See [lewis6991/gitsigns.nvim] for more mappings and usage information.
+
 | Key   | Mode | Action             |
 | ----- |:----:| ------------------ |
 | <kbd>]g</kbd> or <kbd>]g</kbd> | 𝐍 | Next/previous Git hunk |
 | <kbd>gs</kbd>                  | 𝐍 | Preview hunk |
-| <kbd>Space</kbd>+<kbd>hp</kbd> | 𝐍 | Preview hunk inline |
-| <kbd>Space</kbd>+<kbd>hb</kbd> | 𝐍 | Blame line |
-| <kbd>Space</kbd>+<kbd>hs</kbd> | 𝐍 𝐕 | Stage hunk |
-| <kbd>Space</kbd>+<kbd>hu</kbd> | 𝐍 | Undo stage hunk |
-| <kbd>Space</kbd>+<kbd>hr</kbd> | 𝐍 𝐕 | Reset hunk |
-| <kbd>Space</kbd>+<kbd>hR</kbd> | 𝐍 | Reset buffer |
-| <kbd>Space</kbd>+<kbd>hd</kbd> | 𝐍 | Toggle deleted |
-| <kbd>Space</kbd>+<kbd>hw</kbd> | 𝐍 | Toggle word diff |
-| <kbd>Space</kbd>+<kbd>hl</kbd> | 𝐍 | Publish hunks to location-list |
+| <kbd>Space</kbd> <kbd>hp</kbd> | 𝐍 | Preview hunk inline |
+| <kbd>Space</kbd> <kbd>hb</kbd> | 𝐍 | Blame line |
+| <kbd>Space</kbd> <kbd>hs</kbd> | 𝐍 𝐕 | Stage hunk |
+| <kbd>Space</kbd> <kbd>hu</kbd> | 𝐍 | Undo stage hunk |
+| <kbd>Space</kbd> <kbd>hr</kbd> | 𝐍 𝐕 | Reset hunk |
+| <kbd>Space</kbd> <kbd>hR</kbd> | 𝐍 | Reset buffer |
+| <kbd>Space</kbd> <kbd>hd</kbd> | 𝐍 | Toggle deleted |
+| <kbd>Space</kbd> <kbd>hw</kbd> | 𝐍 | Toggle word diff |
+| <kbd>Space</kbd> <kbd>hl</kbd> | 𝐍 | Publish hunks to location-list |
 
 ### Plugin: Fugitive
 
+See [tpope/vim-fugitive] for more mappings and usage information.
+
 | Key   | Mode | Action             |
 | ----- |:----:| ------------------ |
-| <kbd>Space</kbd>+<kbd>ga</kbd> | 𝐍 | Git add current file |
-| <kbd>Space</kbd>+<kbd>gd</kbd> | 𝐍 | Git diff |
-| <kbd>Space</kbd>+<kbd>gc</kbd> | 𝐍 | Git commit |
-| <kbd>Space</kbd>+<kbd>gb</kbd> | 𝐍 | Git blame |
-| <kbd>Space</kbd>+<kbd>gs</kbd> | 𝐍 | Git status -s |
-| <kbd>Space</kbd>+<kbd>gl</kbd> | 𝐍 | Git log --graph --all |
-| <kbd>Space</kbd>+<kbd>gF</kbd> | 𝐍 | Git fetch |
-| <kbd>Space</kbd>+<kbd>gp</kbd> | 𝐍 | Git push |
-| <kbd>Space</kbd>+<kbd>go</kbd> | 𝐍 𝐕 | Open SCM detailed URL in browser |
+| <kbd>Space</kbd> <kbd>ga</kbd> | 𝐍 | Git add current file |
+| <kbd>Space</kbd> <kbd>gd</kbd> | 𝐍 | Git diff |
+| <kbd>Space</kbd> <kbd>gc</kbd> | 𝐍 | Git commit |
+| <kbd>Space</kbd> <kbd>gb</kbd> | 𝐍 | Git blame |
+| <kbd>Space</kbd> <kbd>gs</kbd> | 𝐍 | Git status -s |
+| <kbd>Space</kbd> <kbd>gl</kbd> | 𝐍 | Git log --graph --all |
+| <kbd>Space</kbd> <kbd>gF</kbd> | 𝐍 | Git fetch |
+| <kbd>Space</kbd> <kbd>gp</kbd> | 𝐍 | Git push |
+| <kbd>Space</kbd> <kbd>go</kbd> | 𝐍 𝐕 | Open SCM detailed URL in browser |
 
 ### Plugin: Telescope
+
+See [telescope.nvim] for more mappings and usage information.
 
 | Key   | Mode | Action
 | ----- |:----:| ------------------
@@ -996,6 +1076,7 @@ Go forward/backward with square brackets:
 | <kbd>;m</kbd> | 𝐍 | Marks
 | <kbd>;n</kbd> | 𝐍 | Dein plugin list
 | <kbd>;j</kbd> | 𝐍 | Jump points
+| <kbd>;k</kbd> | 𝐍 | Thesaurus
 | <kbd>;u</kbd> | 𝐍 | Spelling suggestions
 | <kbd>;o</kbd> | 𝐍 | Vim options
 | <kbd>;s</kbd> | 𝐍 | Sessions
@@ -1010,12 +1091,13 @@ Go forward/backward with square brackets:
 | <kbd>Space</kbd>+<kbd>gg</kbd> | 𝐍 𝐕 | Grep word under cursor
 | **Within _Telescope_ window** ||
 | <kbd>?</kbd> | 𝐍 | Keymaps help screen
+| <kbd>Ctrl</kbd>+<kbd>Space</kbd> | 𝐍 | Move from none fuzzy search to fuzzy
 | <kbd>jj</kbd> or <kbd>Escape</kbd> | 𝐈 | Leave Insert mode
 | <kbd>i</kbd> | 𝐍 | Enter Insert mode (filter input)
 | <kbd>q</kbd> or <kbd>Escape</kbd> | 𝐍 | Exit denite window
 | <kbd>Tab</kbd> or <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐍 𝐈 | Next/previous candidate
-| <kbd>Ctrl</kbd> <kbd>d</kbd>/<kbd>u</kbd> | 𝐍 𝐈 | Scroll down/upwards
-| <kbd>Ctrl</kbd> <kbd>f</kbd>/<kbd>b</kbd> | 𝐍 𝐈 | Scroll preview down/upwards
+| <kbd>Ctrl</kbd>+<kbd>d</kbd>/<kbd>u</kbd> | 𝐍 𝐈 | Scroll down/upwards
+| <kbd>Ctrl</kbd>+<kbd>f</kbd>/<kbd>b</kbd> | 𝐍 𝐈 | Scroll preview down/upwards
 | <kbd>J</kbd> or <kbd>K</kbd> | 𝐍 | Select candidates up/downwards
 | <kbd>st</kbd> | 𝐍 | Open in a new tab
 | <kbd>sg</kbd> | 𝐍 | Open in a vertical split
@@ -1026,57 +1108,58 @@ Go forward/backward with square brackets:
 
 ### Plugin: Neo-Tree
 
+See [nvim-neo-tree/neo-tree.nvim] for more mappings and usage information.
+
 | Key   | Mode | Action
 | ----- |:----:| ------------------
 | <kbd>;e</kbd> | 𝐍 | Open file-explorer (toggle)
 | <kbd>;a</kbd> | 𝐍 | Focus current file in file-explorer
 | **Within _Neo-Tree_ window** ||
+| <kbd>g?</kbd> | 𝐍 | Show help
+| <kbd>q</kbd> | 𝐍 | Close window
 | <kbd>j</kbd> or <kbd>k</kbd> | 𝐍 | Move up and down the tree
-| <kbd>J</kbd> or <kbd>K</kbd> or <kbd>Space</kbd> | 𝐍 | Select entries up/downwards
-| <kbd>l</kbd> or <kbd>Return</kbd> | 𝐍 | Toggle collapse/expand directory or open file
+| <kbd>\></kbd> or <kbd>\<</kbd> | 𝐍 | Next or previous source
+| <kbd>]g</kbd> or <kbd>[g</kbd> | 𝐍 | Jump to next/previous git modified node
+| <kbd>l</kbd> | 𝐍 | Toggle collapse/expand directory or open file
 | <kbd>h</kbd> | 𝐍 | Collapse directory tree
+| <kbd>Return</kbd> | 𝐍 | Select window to open file
 | <kbd>gr</kbd> | 𝐍 | Grep in current position
 | <kbd>gf</kbd> | 𝐍 | Find files in current position
-| <kbd>!</kbd> | 𝐍 | Toggle hidden files
-| <kbd>^</kbd> | 𝐍 | Change into project root directory
+| <kbd>.</kbd> | 𝐍 | Set as root directory
 | <kbd>Backspace</kbd> | 𝐍 | Change into parent directory
-| <kbd>o</kbd> | 𝐍 | Open bookmarks
-| <kbd>B</kbd> | 𝐍 | Save location as bookmark
-| <kbd>st</kbd> | 𝐍 | Open file in new tab
-| <kbd>sv</kbd> | 𝐍 | Open file in a horizontal split
-| <kbd>sg</kbd> | 𝐍 | Open file in a vertical split
-| <kbd>N</kbd> | 𝐍 | Create new directories and/or files
-| <kbd>Ctrl</kbd>+<kbd>n</kbd> | 𝐍 | Create new directory
+| <kbd>sv</kbd> or <kbd>S</kbd> | 𝐍 | Open file in a horizontal split
+| <kbd>sg</kbd> or <kbd>s</kbd> | 𝐍 | Open file in a vertical split
+| <kbd>st</kbd> or <kbd>t</kbd> | 𝐍 | Open file in new tab
+| <kbd>p</kbd> | 𝐍 | Preview node
+| <kbd>a</kbd> | 𝐍 | Create new directories and/or files
+| <kbd>N</kbd> | 𝐍 | Create new directory
+| <kbd>r</kbd> | 𝐍 | Rename file or directory
+| <kbd>dd</kbd> | 𝐍 | Delete
 | <kbd>c</kbd> / <kbd>m</kbd> | 𝐍 | Copy/move
-| <kbd>C</kbd> / <kbd>M</kbd> / <kbd>P</kbd> | 𝐍 | Clipboard copy/move/paste
-| <kbd>R</kbd> | 𝐍 | Rename file or directory
-| <kbd>D</kbd> | 𝐍 | Trash selected files and directories
+| <kbd>y</kbd> / <kbd>x</kbd> / <kbd>P</kbd> | 𝐍 | Clipboard copy/cut/paste
+| <kbd>!</kbd> | 𝐍 | Filter
+| <kbd>D</kbd> | 𝐍 | Filter directories
+| <kbd>#</kbd> | 𝐍 | Fuzzy sorter
+| <kbd>/</kbd> | 𝐍 | Filter on submit
+| <kbd>Ctrl</kbd>+<kbd>c</kbd> | 𝐍 | Clear filter
+| <kbd>Ctrl</kbd>+<kbd>r</kbd> or <kbd>R</kbd> | 𝐍 | Refresh
 | <kbd>fi</kbd> / <kbd>fe</kbd> | 𝐍 | Include/exclude
-| <kbd>yy</kbd> | 𝐍 | Yank path to clipboard
-| <kbd>w</kbd> | 𝐍 | Toggle window size
-| <kbd>x</kbd> | 𝐍 | Execute associated system application
-
-### Plugin: LSP
-
-| Key   | Mode | Action
-| ----- |:----:| ------------------
-| <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 | Navigate completion-menu
-| <kbd>Tab</kbd> / <kbd>Shift-Tab</kbd> | 𝐈 𝐒 | Navigate snippet placeholders
-| <kbd>Ctrl</kbd>+<kbd>Space</kbd> | 𝐈 | Open completion menu
-| <kbd>Enter</kbd> | 𝐈 | Select completion or expand snippet
-| <kbd>Ctrl</kbd>+<kbd>p</kbd>/<kbd>n</kbd> | 𝐈 | Movement in completion pop-up
-| <kbd>Ctrl</kbd>+<kbd>b</kbd>/<kbd>f</kbd> | 𝐈 | Scroll documentation
-| <kbd>Ctrl</kbd>+<kbd>y</kbd> | 𝐈 | Expand Emmet sequence
-| <kbd>Ctrl</kbd>+<kbd>e</kbd> | 𝐈 | Abort selection and close pop-up
-| <kbd>Ctrl</kbd>+<kbd>l</kbd> | 𝐈 | Expand snippet at cursor
+| <kbd>H</kbd> | 𝐍 | Toggle hidden files
+| <kbd>e</kbd> | 𝐍 | Toggle auto-expand window width
+| <kbd>w</kbd> | 𝐍 | Toggle window width
+| <kbd>z</kbd> | 𝐍 | Collapse all nodes
 
 ### Plugin: Spectre
 
+See [windwp/nvim-spectre] for more mappings and usage information.
+
 | Key   | Mode | Action
 | ----- |:----:| ------------------
-| <kbd>Space</kbd>+<kbd>so</kbd> | 𝐍 | Open spectre window
+| <kbd>Space</kbd>+<kbd>so</kbd> | 𝐍 | Open spectre window (search & replace)
 
 ### Plugin: Marks
+
+See [chentau/marks.nvim] for more mappings and usage information.
 
 | Key   | Mode | Action
 | ----- |:----:| ------------------
@@ -1085,10 +1168,11 @@ Go forward/backward with square brackets:
 | <kbd>m</kbd> <kbd>a-z</kbd> | 𝐍 | Set mark
 | <kbd>dm</kbd> <kbd>a-z</kbd> | 𝐍 | Remove mark
 | <kbd>dm-</kbd> | 𝐍 | Delete all marks on the current line
-| <kbd>dm\<Space></kbd>  | 𝐍 | Delete all marks in the current buffer
-| <kbd>m]</kbd>  | 𝐍 | Move to next mark
-| <kbd>m[</kbd>  | 𝐍 | Move to previous mark
-| <kbd>m:</kbd> <kbd>a-z</kbd>  | 𝐍 | Preview mark
+| <kbd>dm\<Space></kbd> | 𝐍 | Delete all marks in the current buffer
+| <kbd>m]</kbd> | 𝐍 | Move to next mark
+| <kbd>m[</kbd> | 𝐍 | Move to previous mark
+| <kbd>m:</kbd> <kbd>a-z</kbd> | 𝐍 | Preview mark
+| <kbd>m/</kbd> | 𝐍 | List marks from all opened buffers
 
 </details>
 
@@ -1100,7 +1184,11 @@ Go forward/backward with square brackets:
 [nvim-lspconfig]: https://github.com/neovim/nvim-lspconfig
 [nvim-cmp]: https://github.com/hrsh7th/nvim-cmp
 [telescope.nvim]: https://github.com/nvim-telescope/telescope.nvim
+[nvim-treesitter-textobjects]: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 [lua/rafi/config/keymaps.lua]: ./lua/rafi/config/keymaps.lua
+[config/keymaps.lua]: ./lua/rafi/config/keymaps.lua
+[lib/edit.lua]: ./lua/rafi/lib/edit.lua
+[plugins/lsp/keymaps.lua]: ./lua/rafi/plugins/lsp/keymaps.lua
 [lua/rafi/lib/contextmenu.lua]: ./lua/rafi/lib/contextmenu.lua
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [Marked 2]: https://marked2app.com

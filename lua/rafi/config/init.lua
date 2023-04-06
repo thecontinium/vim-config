@@ -7,51 +7,82 @@
 ---@type RafiConfig
 local M = {}
 
+M.lazy_version = '>=9.1.0'
+
 ---@class RafiConfig
 local defaults = {
-	colorscheme = function()
-		require('rafi.config').restore_colorscheme()
-	end,
-	-- load the default settings
+	-- Load the default settings
 	defaults = {
-		autocmds = true, -- config.autocmds
-		keymaps = true, -- config.keymaps
-		options = true, -- config.options
+		autocmds = true, -- rafi.config.autocmds
+		keymaps = true,  -- rafi.config.keymaps
+		options = true,  -- rafi.config.options
 	},
+	-- String like `habamax` or a function that will load the colorscheme.
+	---@type string|fun()
+	colorscheme = '',
+
 	icons = {
 		diagnostics = {
-			Error = '✘', --   ✘
-			Warn = '', --   ⚠ 
-			Hint = '', --  
-			Info = 'ⁱ', --   ⁱ
+			Error = '✘', --   ✘
+			Warn = '',  --    ⚠ 
+			Info = 'ⁱ',  --    ⁱ
+			Hint = '',  --   
+		},
+		status = {
+			git = {
+				added = '₊',    --  ₊
+				modified = '∗', --  ∗
+				removed = '₋',  --  ₋
+			},
+			diagnostics = {
+				error = ' ',
+				warn = ' ',
+				info = ' ',
+				hint = ' '
+			},
+			filename = {
+				modified = '+',
+				readonly = '🔒',
+				zoomed = '🔎',
+			},
 		},
 		-- Default completion kind symbols.
 		kinds = {
-			Text = '', --   𝓐
-			Method = '', --  ƒ
-			Function = '', -- 
-			Constructor = '', --   
-			Field = '', --  ﴲ ﰠ   
-			Variable = '', --   
-			Class = '', --  ﴯ 𝓒
-			Interface = '', -- ﰮ    
-			Module = '', --   
-			Property = '襁', -- ﰠ 襁
-			Unit = '', --  塞
-			Value = '',
-			Enum = '練', -- 練 ℰ 
-			Keyword = '', --   🔐
-			Snippet = '⮡', -- ﬌  ⮡ 
-			Color = '',
-			File = '', --  
-			Reference = '', --  
-			Folder = '', --  
-			EnumMember = '',
-			Constant = '', --  
-			Struct = '', --   𝓢 פּ
-			Event = '', --  🗲
-			Operator = '', --   +
-			TypeParameter = '', --  𝙏
+			Array = ' ',  --   󰅨 󱃶 
+			Boolean = '◩ ',  --  ◩ 󰔡 󱃙 󰟡 󰨙
+			Class = ' ', --   ﴯ 𝓒
+			Color = ' ', --  
+			Constant = ' ', --   
+			Constructor = ' ', --     
+			Copilot = ' ',  -- 
+			Enum = '練 ', --  練 ℰ 
+			EnumMember = ' ', --  
+			Event = ' ', --  
+			Field = ' ', --    ﴲ   
+			File = ' ', --     
+			Folder = ' ', --   
+			Function = ' ', --   
+			Interface = ' ', --  ﰮ    
+			Key = ' ',  -- 
+			Keyword = ' ', --    
+			Method = ' ', --   ƒ
+			Module = ' ', --     
+			Namespace = ' ',  --   
+			Null = ' ',  --  󰟢 ﳠ
+			Number = ' ',  --   
+			Object = ' ',  --   
+			Operator = ' ', --    +
+			Package = ' ',  --    
+			Property = '襁 ', --  ﰠ  
+			Reference = ' ', --   
+			Snippet = ' ', --  ﬌  ⮡  
+			String = '󰅳 ',  --  󰅳
+			Struct = ' ', --   𝓢 פּ
+			Text = ' ', --    𝓐
+			TypeParameter = ' ', --   𝙏
+			Unit = ' ', --   塞
+			Value = ' ', --    
+			Variable = ' ', --    
 		},
 	},
 }
@@ -60,6 +91,9 @@ M.did_init = false
 function M.init()
 	if not M.did_init then
 		M.did_init = true
+		-- delay notifications till vim.notify was replaced or after 500ms
+		require('rafi.config').lazy_notify()
+
 		-- load options here, before lazy init while sourcing plugin modules
 		-- this is needed to make sure options will be correctly applied
 		-- after installing missing plugins
@@ -70,23 +104,57 @@ end
 ---@type RafiConfig
 local options
 
-function M.setup(opts)
-	options = vim.tbl_deep_extend('force', defaults, opts or {})
+---@param user_opts table|nil
+function M.setup(user_opts)
+	options = vim.tbl_deep_extend('force', defaults, user_opts or {})
+	if not M.has_version() then
+		require('lazy.core.util').error(
+			string.format(
+				'**lazy.nvim** version %s is required.\n Please upgrade **lazy.nvim**',
+				M.lazy_version
+			)
+		)
+		error('Exiting')
+	end
 
 	M.vim_require('.vault.vim')
 	M.load('keymaps')
 	M.load('autocmds')
+
+	require('lazy.core.util').try(function()
+		if type(M.colorscheme) == 'function' then
+			M.colorscheme()
+		elseif #M.colorscheme > 0 then
+			vim.cmd.colorscheme(M.colorscheme)
+		end
+	end, {
+		msg = 'Could not load your colorscheme',
+		on_error = function(msg)
+			require('lazy.core.util').error(msg)
+			vim.cmd.colorscheme('habamax')
+		end,
+	})
 end
 
----@param on_attach fun(client, buffer)
+local augroup_lsp_attach = vim.api.nvim_create_augroup('rafi_lsp_attach', {})
+
+---@param on_attach fun(client:lsp.Client, buffer:integer)
 function M.on_attach(on_attach)
 	vim.api.nvim_create_autocmd('LspAttach', {
+		group = augroup_lsp_attach,
 		callback = function(args)
 			local buffer = args.buf
 			local client = vim.lsp.get_client_by_id(args.data.client_id)
 			on_attach(client, buffer)
 		end,
 	})
+end
+
+---@param range? string
+function M.has_version(range)
+	local Semver = require('lazy.manage.semver')
+	return Semver.range(range or M.lazy_version)
+		:matches(require('lazy.core.config').version or '0.0.0')
 end
 
 ---@param plugin string
@@ -117,7 +185,7 @@ end
 -- Source vim script file, if exists.
 ---@param relpath string
 function M.vim_require(relpath)
-	local abspath = vim.fn.stdpath('config') .. '/' .. relpath
+	local abspath = M.path_join(vim.fn.stdpath('config'), relpath)
 	if vim.loop.fs_stat(abspath) then
 		vim.fn.execute('source ' .. abspath)
 	end
@@ -132,10 +200,11 @@ function M.load(name)
 		end, {
 			msg = 'Failed loading ' .. mod,
 			on_error = function(msg)
-				local modpath = require('lazy.core.cache').find(mod)
-				if modpath then
-					Util.error(msg)
+				local info = require('lazy.core.cache').find(mod)
+				if info == nil or (type(info) == 'table' and #info == 0) then
+					return
 				end
+				Util.error(msg)
 			end,
 		})
 	end
@@ -145,41 +214,8 @@ function M.load(name)
 	end
 	_load('config.' .. name)
 	if vim.bo.filetype == 'lazy' then
-		-- HACK: LazyVim may have overwritten options of the Lazy ui, so reset this here
 		vim.cmd([[do VimResized]])
 	end
-end
-
--- Load colorscheme from options.
-function M.init_colorscheme()
-	require('lazy.core.util').try(function()
-		if type(M.colorscheme) == 'function' then
-			M.colorscheme()
-		else
-			vim.cmd.colorscheme(M.colorscheme)
-		end
-	end, {
-		msg = 'Could not load your colorscheme',
-		on_error = function(msg)
-			require('lazy.core.util').error(msg)
-			vim.cmd.colorscheme('habamax')
-		end,
-	})
-end
-
--- Load cached or default theme.
-function M.restore_colorscheme()
-	local Path = require('plenary.path')
-	local cache_file = Path:new({ vim.fn.stdpath('data'), 'theme.txt' })
-	local want = ''
-	if cache_file:exists() then
-		want = cache_file:head(1) or ''
-	end
-	cache_file:close()
-	if #want == 0 then
-		want = 'hybrid'
-	end
-	pcall(vim.cmd.colorscheme, want)
 end
 
 -- Ensure package manager (lazy.nvim) exists.
@@ -202,8 +238,41 @@ end
 -- Validate if lua/plugins/ or lua/plugins.lua exist.
 function M.has_user_plugins()
 	local user_path = M.path_join(vim.fn.stdpath('config'), 'lua')
-	return vim.loop.fs_stat(M.path_join(user_path, 'plugins'))
-		or vim.loop.fs_stat(M.path_join(user_path, 'plugins.lua'))
+	return vim.loop.fs_stat(M.path_join(user_path, 'plugins')) ~= nil
+		or vim.loop.fs_stat(M.path_join(user_path, 'plugins.lua')) ~= nil
+end
+
+-- Delay notifications till vim.notify was replaced or after 500ms.
+function M.lazy_notify()
+	local notifs = {}
+	local function temp(...) table.insert(notifs, vim.F.pack_len(...)) end
+
+	local orig = vim.notify
+	vim.notify = temp
+
+	local timer = vim.loop.new_timer()
+	local check = vim.loop.new_check()
+
+	local replay = function()
+		timer:stop()
+		check:stop()
+		if vim.notify == temp then
+			vim.notify = orig -- put back the original notify if needed
+		end
+		vim.schedule(function()
+			---@diagnostic disable-next-line: no-unknown
+			for _, notif in ipairs(notifs) do
+				vim.notify(vim.F.unpack_len(notif))
+			end
+		end)
+	end
+
+	-- wait till vim.notify has been replaced
+	check:start(function()
+		if vim.notify ~= temp then replay() end
+	end)
+	-- or if it took more than 500ms, then something went wrong
+	timer:start(500, 0, replay)
 end
 
 -- Join paths.

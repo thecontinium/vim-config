@@ -70,8 +70,17 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 	end,
 })
 
+-- Disable conceallevel for specific file-types.
+vim.api.nvim_create_autocmd('FileType', {
+	group = augroup('fix_conceallevel'),
+	pattern = { 'markdown' },
+	callback = function()
+		vim.wo.conceallevel = 0
+	end,
+})
+
 -- Resize splits if window got resized
-vim.api.nvim_create_autocmd({ 'VimResized' }, {
+vim.api.nvim_create_autocmd('VimResized', {
 	group = augroup('resize_splits'),
 	callback = function()
 		vim.cmd('wincmd =')
@@ -83,7 +92,30 @@ vim.api.nvim_create_autocmd('FileType', {
 	group = augroup('wrap_spell'),
 	pattern = { 'gitcommit', 'markdown' },
 	callback = function()
+		vim.opt_local.wrap = true
 		vim.opt_local.spell = true
+	end,
+})
+
+-- Close some filetypes with <q>
+vim.api.nvim_create_autocmd('FileType', {
+	group = augroup('close_with_q'),
+	pattern = {
+		'PlenaryTestPopup',
+		'fugitiveblame',
+		'help',
+		'httpResult',
+		'lspinfo',
+		'notify',
+		'qf',
+		'spectre_panel',
+		'startuptime',
+		'tsplayground',
+	},
+	callback = function(event)
+		vim.bo[event.buf].buflisted = false
+		vim.keymap.set('n', 'q', '<cmd>close<CR>',
+			{ buffer = event.buf, silent = true })
 	end,
 })
 
@@ -115,28 +147,5 @@ vim.api.nvim_create_autocmd({'BufNewFile', 'BufReadPre'}, {
 		vim.opt_local.swapfile = false
 		vim.opt_global.backup = false
 		vim.opt_global.writebackup = false
-	end,
-})
-
--- Load custom theme overrides once colorscheme changes
-vim.api.nvim_create_autocmd('ColorScheme', {
-	group = augroup('theme'),
-	callback = function()
-		local Path = require('plenary.path')
-		local current = vim.g['colors_name']
-		if current and current ~= 'habamax' then
-			local user_theme = Path:new({
-				vim.fn.stdpath('config'),
-				'themes',
-				current .. '.vim',
-			})
-			if user_theme:exists() then
-				vim.fn.execute('source ' .. user_theme:expand())
-			end
-			-- Save colorscheme
-			local cache_file = Path:new({ vim.fn.stdpath('data'), 'theme.txt' })
-			cache_file:write(current, 'w', 432)
-			cache_file:close()
-		end
 	end,
 })

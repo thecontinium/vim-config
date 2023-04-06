@@ -54,6 +54,10 @@ end, { expr = true, noremap = true, desc = 'Toggle Fold' })
 map('n', '<S-Return>', 'zMzv', { noremap = true, desc = 'Focus Fold' })
 
 -- Location/quickfix list movement
+if not require('rafi.config').has('mini.bracketed') then
+	map('n', ']q', '<cmd>cnext<CR>', { desc = 'Next Quickfix Item' })
+	map('n', '[q', '<cmd>cprev<CR>', { desc = 'Previous Quickfix Item' })
+end
 map('n', ']a', '<cmd>lnext<CR>', { desc = 'Next Loclist Item' })
 map('n', '[a', '<cmd>lprev<CR>', { desc = 'Previous Loclist Item' })
 
@@ -78,16 +82,29 @@ map('n', 'zh', 'z4h', { noremap = true })
 -- Clipboard
 -- ===
 
--- Yank buffer's relative/absolute path to clipboard
-map('n', '<Leader>y', ':let @+=expand("%:~:.")<CR>:echo "Yanked relative path"<CR>', { desc = 'Yank relative path' })
-map('n', '<Leader>Y', ':let @+=expand("%:p")<CR>:echo "Yanked absolute path"<CR>', { desc = 'Yank absolute path' })
+-- Yank buffer's relative path to clipboard
+map('n', '<Leader>y', function()
+	local path = vim.fn.expand('%:~:.')
+	vim.fn.setreg('+', path)
+	vim.notify(path, vim.log.levels.INFO, { title = 'Yanked relative path' })
+end, { silent = true, desc = 'Yank relative path' })
+
+-- Yank absolute path
+map('n', '<Leader>Y', function()
+	local path = vim.fn.expand('%:p')
+	vim.fn.setreg('+', path)
+	vim.notify(path, vim.log.levels.INFO, { title = 'Yanked absolute path' })
+end, { silent = true, desc = 'Yank absolute path' })
 
 -- Paste in visual-mode without pushing to register
-map('x', 'p', 'p:let @+=@0<CR>', { desc = 'Paste' })
-map('x', 'P', 'P:let @+=@0<CR>', { desc = 'Paste In-place' })
+map('x', 'p', 'p:let @+=@0<CR>:let @"=@0<CR>', { silent = true, desc = 'Paste' })
+map('x', 'P', 'P:let @+=@0<CR>:let @"=@0<CR>', { silent = true, desc = 'Paste In-place' })
 
 -- Edit
 -- ===
+
+-- Macros
+map('n', '<C-q>', 'q', { noremap = true, desc = 'Macro Prefix' })
 
 -- Start new line from any cursor position in insert-mode
 map('i', '<S-Return>', '<C-o>o', { noremap = true, desc = 'Start Newline' })
@@ -125,8 +142,8 @@ map('n', 'g*', '*', { noremap = true })
 map('n', '#', 'g#', { noremap = true })
 map('n', 'g#', '#', { noremap = true })
 
--- Clear search with <esc>
-map({ 'i', 'n' }, '<esc>', '<cmd>noh<cr><esc>', { desc = 'Clear Search Highlight' })
+-- Clear search with <Esc>
+map('n', '<Esc>', '<cmd>noh<CR>', { noremap = true, desc = 'Clear Search Highlight' })
 
 -- Use backspace key for matching parens
 map('n', '<BS>', '%', { noremap = true, desc = 'Jump to Paren' })
@@ -219,18 +236,12 @@ map('n', '<Leader>tw', function()
 end, { desc = 'Toggle Wrap' })
 
 -- Tabs: Many ways to navigate them
-map('n', 'g1', '<cmd>tabfirst<CR>', { desc = 'First Tab' })
-map('n', 'g5', '<cmd>tabprevious<CR>', { desc = 'Previous Tab' })
-map('n', 'g9', '<cmd>tablast<CR>', { desc = 'Last Tab' })
-
 map('n', '<A-j>', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
 map('n', '<A-k>', '<cmd>tabprevious<CR>', { desc = 'Previous Tab' })
 map('n', '<A-[>', '<cmd>tabprevious<CR>', { desc = 'Previous Tab' })
 map('n', '<A-]>', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
 map('n', '<C-Tab>', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
 map('n', '<C-S-Tab>', '<cmd>tabprevious<CR>', { desc = 'Previous Tab' })
-map('n', '<C-S-j>', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
-map('n', '<C-S-k>', '<cmd>tabprevious<CR>', { desc = 'Previous Tab' })
 
 -- Moving tabs
 map('n', '<A-{>', '<cmd>-tabmove<CR>', { desc = 'Tab Move Backwards' })
@@ -297,12 +308,17 @@ if vim.F.if_nil(vim.g.enable_universal_quit_mapping, true) then
 	})
 end
 
+-- Toggle quickfix window
+map('n', '<Leader>q', function()
+	require('rafi.lib.edit').toggle_list('quickfix')
+end, { desc = 'Open Quickfix' })
+
 -- Set locations with diagnostics and open the list.
 map('n', '<Leader>a', function()
 	if vim.api.nvim_buf_get_option(0, 'filetype') ~= 'qf' then
 		vim.diagnostic.setloclist({ open = false })
 	end
-	require('rafi.lib.list').toggle_loclist()
+	require('rafi.lib.edit').toggle_list('loclist')
 end, { desc = 'Open Location List' })
 
 -- Switch with adjacent window

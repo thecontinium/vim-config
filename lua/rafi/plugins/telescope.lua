@@ -9,12 +9,35 @@ local myactions = {}
 
 function myactions.send_to_qflist(prompt_bufnr)
 	require('telescope.actions').send_to_qflist(prompt_bufnr)
-	require('rafi.lib.list').open_qflist()
+	vim.api.nvim_command([[ botright copen ]])
 end
 
 function myactions.smart_send_to_qflist(prompt_bufnr)
 	require('telescope.actions').smart_send_to_qflist(prompt_bufnr)
-	require('rafi.lib.list').open_qflist()
+	vim.api.nvim_command([[ botright copen ]])
+end
+
+--- Scroll the results window up
+---@param prompt_bufnr number: The prompt bufnr
+function myactions.results_scrolling_up(prompt_bufnr)
+	myactions.scroll_results(prompt_bufnr, -1)
+end
+
+--- Scroll the results window down
+---@param prompt_bufnr number: The prompt bufnr
+function myactions.results_scrolling_down(prompt_bufnr)
+	myactions.scroll_results(prompt_bufnr, 1)
+end
+
+---@param prompt_bufnr number: The prompt bufnr
+---@param direction number: 1|-1
+function myactions.scroll_results(prompt_bufnr, direction)
+	local status = require('telescope.state').get_status(prompt_bufnr)
+	local default_speed = vim.api.nvim_win_get_height(status.results_win) / 2
+	local speed = status.picker.layout_config.scroll_speed or default_speed
+
+	require('telescope.actions.set')
+		.shift_selection(prompt_bufnr, math.floor(speed) * direction)
 end
 
 -- Custom pickers
@@ -65,15 +88,15 @@ end
 
 -- Custom window-sizes
 
-local horizontal_preview_width = function(_, cols, _)
+local width_small = function(_, cols, _)
 	if cols > 200 then
-		return math.floor(cols * 0.7)
-	else
 		return math.floor(cols * 0.6)
+	else
+		return math.floor(cols * 0.5)
 	end
 end
 
-local width_for_nopreview = function(_, cols, _)
+local width_medium = function(_, cols, _)
 	if cols > 200 then
 		return math.floor(cols * 0.5)
 	elseif cols > 110 then
@@ -83,19 +106,37 @@ local width_for_nopreview = function(_, cols, _)
 	end
 end
 
-local height_dropdown_nopreview = function(_, _, rows)
+local height_medium = function(_, _, rows)
 	return math.floor(rows * 0.7)
 end
 
--- Enable indent-guides in telescope preview
-vim.cmd [[
-	augroup telescope_events
-		autocmd!
-		autocmd User TelescopePreviewerLoaded setlocal wrap list number
-	augroup END
-]]
+-- Automatically hide statusline when using Telescope, if using globalstatus.
+if vim.go.laststatus < 3 then
+	vim.api.nvim_create_autocmd('FileType', {
+		pattern = 'TelescopePrompt',
+		group = vim.api.nvim_create_augroup('rafi_telescope', {}),
+		callback = function(event)
+			vim.go.laststatus = 0
+			vim.api.nvim_create_autocmd('BufWinLeave', {
+				buffer = event.buf,
+				group = 'rafi_telescope',
+				once = true,
+				callback = function() vim.go.laststatus = 3 end
+			})
+		end
+	})
+end
 
-local Util = require('rafi.lib.telescope')
+-- Enable indent-guides in telescope preview
+vim.api.nvim_create_autocmd('User', {
+	pattern = 'TelescopePreviewerLoaded',
+	group = 'rafi_telescope',
+	callback = function()
+		vim.wo.wrap = true
+		vim.wo.list = true
+		vim.wo.number = true
+	end
+})
 
 -- Setup Telescope
 -- See telescope.nvim/lua/telescope/config.lua for defaults.
@@ -104,13 +145,13 @@ return {
 	-----------------------------------------------------------------------------
 	{
 		'nvim-telescope/telescope.nvim',
-		version = false, -- telescope did only one release, so use HEAD for now
 		cmd = 'Telescope',
 		dependencies = {
 			'nvim-lua/plenary.nvim',
 			'nvim-telescope/telescope-ui-select.nvim',
 			'jvgrootveld/telescope-zoxide',
 			'folke/todo-comments.nvim',
+			'rafi/telescope-thesaurus.nvim',
 		},
 		config = function(_, opts)
 			require('telescope').setup(opts)
@@ -121,8 +162,8 @@ return {
 			-- General pickers
 			{ '<localleader>r', '<cmd>Telescope resume initial_mode=normal<CR>' },
 			{ '<localleader>R', '<cmd>Telescope pickers<CR>' },
-			{ '<localleader>f', Util.telescope('files') },
-			{ '<localleader>g', Util.telescope('live_grep') },
+			{ '<localleader>f', '<cmd>Telescope find_files<CR>' },
+			{ '<localleader>g', '<cmd>Telescope live_grep<CR>' },
 			{ '<localleader>b', '<cmd>Telescope buffers show_all_buffers=true<CR>' },
 			{ '<localleader>h', '<cmd>Telescope highlights<CR>' },
 			{ '<localleader>j', '<cmd>Telescope jumplist<CR>' },
@@ -138,13 +179,12 @@ return {
 			{ '<localleader>/', '<cmd>Telescope search_history<CR>' },
 			{ '<leader>/', '<cmd>Telescope current_buffer_fuzzy_find<CR>' },
 
-			{ '<leader>sd', '<cmd>Telescope diagnostics<cr>', desc = 'Diagnostics' },
-			{ '<leader>sh', '<cmd>Telescope help_tags<cr>', desc = 'Help Pages' },
-			{ '<leader>sk', '<cmd>Telescope keymaps<cr>', desc = 'Key Maps' },
-			{ '<leader>sm', '<cmd>Telescope man_pages<cr>', desc = 'Man Pages' },
-			{ '<leader>sw', Util.telescope('grep_string'), desc = 'Word (root dir)' },
-			{ '<leader>sW', Util.telescope('grep_string', { cwd = false }), desc = 'Word (cwd)' },
-			{ '<leader>sc', Util.telescope('colorscheme', { enable_preview = true }), desc = 'Colorscheme with preview' },
+			{ '<leader>sd', '<cmd>Telescope diagnostics<CR>', desc = 'Diagnostics' },
+			{ '<leader>sh', '<cmd>Telescope help_tags<CR>', desc = 'Help Pages' },
+			{ '<leader>sk', '<cmd>Telescope keymaps<CR>', desc = 'Key Maps' },
+			{ '<leader>sm', '<cmd>Telescope man_pages<CR>', desc = 'Man Pages' },
+			{ '<leader>sw', '<cmd>Telescope grep_string<CR>', desc = 'Word' },
+			{ '<leader>sc', '<cmd>Telescope colorscheme<CR>', desc = 'Colorscheme' },
 
 			-- LSP related
 			{ '<localleader>dd', '<cmd>Telescope lsp_definitions<CR>' },
@@ -154,38 +194,42 @@ return {
 			{ '<localleader>da', ':Telescope lsp_range_code_actions<CR>', mode = 'x' },
 			{
 				'<leader>ss',
-				Util.telescope('lsp_document_symbols', {
-					symbols = {
-						'Class',
-						'Function',
-						'Method',
-						'Constructor',
-						'Interface',
-						'Module',
-						'Struct',
-						'Trait',
-						'Field',
-						'Property',
-					},
-				}),
+				function()
+					require('telescope.builtin').lsp_document_symbols({
+						symbols = {
+							'Class',
+							'Function',
+							'Method',
+							'Constructor',
+							'Interface',
+							'Module',
+							'Struct',
+							'Trait',
+							'Field',
+							'Property',
+						},
+					})
+				end,
 				desc = 'Goto Symbol',
 			},
 			{
 				'<leader>sS',
-				Util.telescope('lsp_workspace_symbols', {
-					symbols = {
-						'Class',
-						'Function',
-						'Method',
-						'Constructor',
-						'Interface',
-						'Module',
-						'Struct',
-						'Trait',
-						'Field',
-						'Property',
-					},
-				}),
+				function()
+					require('telescope.builtin').lsp_workspace_symbols({
+						symbols = {
+							'Class',
+							'Function',
+							'Method',
+							'Constructor',
+							'Interface',
+							'Module',
+							'Struct',
+							'Trait',
+							'Field',
+							'Property',
+						},
+					})
+				end,
 				desc = 'Goto Symbol (Workspace)',
 			},
 
@@ -198,6 +242,7 @@ return {
 
 			-- Plugins
 			{ '<localleader>n', plugin_directories },
+			{ '<localleader>k', '<cmd>Telescope thesaurus lookup<CR>' },
 			{ '<localleader>w', '<cmd>ZkNotes<CR>' },
 
 			{
@@ -213,32 +258,32 @@ return {
 			{
 				'<leader>gt',
 				function()
-					require'telescope.builtin'.lsp_workspace_symbols({
+					require('telescope.builtin').lsp_workspace_symbols({
 						default_text = vim.fn.expand('<cword>'),
-					})()
+					})
 				end,
 			},
 			{
 				'<leader>gf',
 				function()
-					Util.telescope('find_files', {
+					require('telescope.builtin').find_files({
 						default_text = vim.fn.expand('<cword>'),
-					})()
+					})
 				end,
 			},
 			{
 				'<leader>gg', function()
-					Util.telescope('live_grep', {
+					require('telescope.builtin').live_grep({
 						default_text = vim.fn.expand('<cword>'),
-					})()
+					})
 				end
 			},
 			{
 				'<leader>gg',
 				function()
-					Util.telescope('live_grep', {
+					require('telescope.builtin').live_grep({
 						default_text = require('rafi.lib.edit').get_visual_selection(),
-					})()
+					})
 				end,
 				mode = 'x',
 			},
@@ -250,6 +295,26 @@ return {
 
 			-- Transform to Telescope proper actions.
 			myactions = transform_mod(myactions)
+
+			-- Clone the default Telescope configuration and enable hidden files.
+			local has_ripgrep = vim.fn.executable('rg') == 1
+			local vimgrep_args = {
+				unpack(require('telescope.config').values.vimgrep_arguments)
+			}
+			table.insert(vimgrep_args, '--hidden')
+			table.insert(vimgrep_args, '--no-ignore-vcs')
+			table.insert(vimgrep_args, '--glob')
+			table.insert(vimgrep_args, '!**/.git/*')
+
+			local find_args = {
+				'rg',
+				'--files',
+				'--smart-case',
+				'--hidden',
+				'--no-ignore-vcs',
+				'--glob',
+				'!**/.git/*',
+			}
 
 			return {
 			defaults = {
@@ -263,6 +328,7 @@ return {
 				path_display = { 'truncate' },
 				file_ignore_patterns = { 'node_modules' },
 				set_env = { COLORTERM = 'truecolor' },
+				vimgrep_arguments = has_ripgrep and vimgrep_args or nil,
 
 				-- Flex layout swaps between horizontal and vertical strategies
 				-- based on the window width. See :h telescope.layout
@@ -272,7 +338,7 @@ return {
 					height = 0.85,
 					prompt_position = 'top',
 					horizontal = {
-						preview_width = horizontal_preview_width,
+						preview_width = width_small,
 					},
 					vertical = {
 						width = 0.75,
@@ -281,7 +347,7 @@ return {
 						mirror = true,
 					},
 					flex = {
-						-- change to horizontal after 120 cols
+						-- Change to horizontal after 120 cols
 						flip_columns = 120,
 					},
 				},
@@ -311,8 +377,8 @@ return {
 
 						['<Tab>'] = actions.move_selection_worse,
 						['<S-Tab>'] = actions.move_selection_better,
-						['<C-u>'] = actions.results_scrolling_up,
-						['<C-d>'] = actions.results_scrolling_down,
+						['<C-u>'] = myactions.results_scrolling_up,
+						['<C-d>'] = myactions.results_scrolling_down,
 
 						['<C-b>'] = actions.preview_scrolling_up,
 						['<C-f>'] = actions.preview_scrolling_down,
@@ -359,10 +425,7 @@ return {
 					sort_mru = true,
 					show_all_buffers = true,
 					ignore_current_buffer = true,
-					layout_config = {
-						width = width_for_nopreview,
-						height = height_dropdown_nopreview,
-					},
+					layout_config = { width = width_medium, height = height_medium },
 					mappings = {
 						n = {
 							['dd'] = actions.delete_buffer,
@@ -372,19 +435,8 @@ return {
 				find_files = {
 					theme = 'dropdown',
 					previewer = false,
-					layout_config = {
-						width = width_for_nopreview,
-						height = height_dropdown_nopreview,
-					},
-					find_command = {
-						'rg',
-						'--smart-case',
-						'--hidden',
-						'--no-ignore-vcs',
-						'--glob',
-						'!.git',
-						'--files',
-					}
+					layout_config = { width = width_medium, height = height_medium },
+					find_command = has_ripgrep and find_args or nil,
 				},
 				live_grep = {
 					dynamic_preview_title = true,
@@ -395,17 +447,19 @@ return {
 				},
 				highlights = {
 					layout_strategy = 'horizontal',
-					layout_config = { preview_width = 0.80 },
+					layout_config = { preview_width = 0.8 },
+				},
+				jumplist = {
+					layout_strategy = 'horizontal',
 				},
 				vim_options = {
 					theme = 'dropdown',
-					previewer = false,
-					layout_config = { width = 0.6, height = 0.7 },
+					layout_config = { width = width_medium, height = height_medium },
 				},
 				command_history = {
 					theme = 'dropdown',
 					previewer = false,
-					layout_config = { width = 0.5, height = 0.7 },
+					layout_config = { width = 0.5, height = height_medium },
 				},
 				search_history = {
 					theme = 'dropdown',
@@ -418,15 +472,12 @@ return {
 				registers = {
 					theme = 'cursor',
 					previewer = false,
-					layout_config = { width = 0.45, height = 0.6 },
+					layout_config = { width = 0.35, height = 0.4 },
 				},
 				oldfiles = {
 					theme = 'dropdown',
 					previewer = false,
-					layout_config = {
-						width = width_for_nopreview,
-						height = height_dropdown_nopreview,
-					},
+					layout_config = { width = width_medium, height = height_medium },
 				},
 				lsp_definitions = {
 					layout_strategy = 'horizontal',

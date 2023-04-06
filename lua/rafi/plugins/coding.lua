@@ -9,7 +9,6 @@ return {
 	-----------------------------------------------------------------------------
 	{
 		'hrsh7th/nvim-cmp',
-		version = false, -- last release is too old
 		event = 'InsertEnter',
 		dependencies = {
 			'hrsh7th/cmp-nvim-lsp',
@@ -43,25 +42,43 @@ return {
 						require('luasnip').lsp_expand(args.body)
 					end,
 				},
-				sources = {
-					{ name = 'buffer', keyword_length = 3 },
-					{ name = 'nvim_lsp' },
-					{ name = 'path' },
-					-- { name = 'emoji' },
-					{ name = 'luasnip' },
-					{ name = 'tmux', option = { all_panes = true }},
-				},
+				sources = cmp.config.sources({
+					{ name = 'nvim_lsp', priority = 100 },
+					{ name = 'path', priority = 90 },
+					{ name = 'luasnip', priority = 80 },
+					{ name = 'emoji', insert = true, priority = 70 },
+				}, {
+					{ name = 'buffer', priority = 50, keyword_length = 1 },
+					{ name = 'tmux', priority = 10, option = { all_panes = true }},
+				}),
 				mapping = cmp.mapping.preset.insert({
-					['<CR>'] = cmp.mapping.confirm({ select = false }),
+					-- <CR> accepts currently selected item.
+					-- Set `select` to `false` to only confirm explicitly selected items.
+					['<CR>'] = cmp.mapping({
+						i = function(fallback)
+							if cmp.visible() and cmp.get_active_entry() then
+								cmp.confirm({ select = false })
+							else
+								fallback()
+							end
+						end,
+						s = cmp.mapping.confirm({
+							select = true,
+							behavior = cmp.ConfirmBehavior.Replace,
+						}),
+						c = cmp.mapping.confirm({ select = true }),
+					}),
 					['<S-CR>'] = cmp.mapping.confirm({
 						behavior = cmp.ConfirmBehavior.Replace,
-						select = false,
+						select = true,
 					}),
+					['<C-Space>'] = cmp.mapping.complete(),
 					['<C-n>'] = cmp.mapping.select_next_item(),
 					['<C-p>'] = cmp.mapping.select_prev_item(),
+					['<C-d>'] = cmp.mapping.select_next_item({ count = 5 }),
+					['<C-u>'] = cmp.mapping.select_prev_item({ count = 5 }),
 					['<C-f>'] = cmp.mapping.scroll_docs(4),
 					['<C-b>'] = cmp.mapping.scroll_docs(-4),
-					['<C-Space>'] = cmp.mapping.complete({}),
 					['<C-c>'] = function(fallback)
 						cmp.close()
 						fallback()
@@ -69,8 +86,8 @@ return {
 					['<Tab>'] = cmp.mapping(function(fallback)
 						if cmp.visible() then
 							cmp.select_next_item()
-						elseif luasnip.expand_or_jumpable() then
-							luasnip.expand_or_jump()
+						elseif luasnip.jumpable(1) then
+							luasnip.jump(1)
 						elseif has_words_before() then
 							cmp.complete()
 						else
@@ -87,24 +104,12 @@ return {
 						end
 					end, { 'i', 's' }),
 				}),
-				window = {
-					completion = cmp.config.window.bordered({
-						border = 'none',
-						winhighlight = 'FloatBorder:NormalFloat',
-					}),
-					documentation = cmp.config.window.bordered({
-						border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-						winhighlight = 'FloatBorder:NormalFloat',
-					}),
-				},
 				formatting = {
 					format = function(_, vim_item)
-						-- Prepend with a fancy icon
-						-- See lua/rafi/config/init.lua
+						-- Prepend with a fancy icon from config lua/rafi/config/init.lua
 						local symbol = require('rafi.config').icons.kinds[vim_item.kind]
 						if symbol ~= nil then
-							vim_item.kind = symbol
-								.. (vim.g['global_symbol_padding'] or ' ') .. vim_item.kind
+							vim_item.kind = symbol .. ' ' .. vim_item.kind
 						end
 						return vim_item
 					end,
@@ -119,20 +124,30 @@ return {
 		event = 'InsertEnter',
 		dependencies = { 'rafamadriz/friendly-snippets' },
 		build = (not jit.os:find('Windows')) and 'make install_jsregexp' or nil,
-		opts = {
-			history = true,
-			delete_check_events = 'TextChanged',
-		},
 		keys = {
 			{
 				'<C-l>',
 				function() require('luasnip').expand_or_jump() end,
-				expr = true,
 				mode = { 'i', 's' }
 			}
 		},
-		config = function()
+		opts = {
+			-- Don't store snippet history for less overhead
+			history = false,
+			-- Event on which to check for exiting a snippet's region
+			region_check_events = 'InsertEnter',
+			delete_check_events = 'InsertLeave',
+			ft_func = function()
+				return vim.split(vim.bo.filetype, '.', { plain = true })
+			end,
+		},
+		config = function(_, opts)
+			require('luasnip').setup(opts)
 			require('luasnip.loaders.from_vscode').lazy_load()
+			require('luasnip.loaders.from_lua').load({ paths = './snippets' })
+			vim.api.nvim_create_user_command('LuaSnipEdit', function()
+				require('luasnip.loaders.from_lua').edit_snippet_files()
+			end, {})
 		end
 	},
 
@@ -150,14 +165,14 @@ return {
 	{
 		'echasnovski/mini.pairs',
 		event = 'VeryLazy',
-		config = function(_, opts)
-			require('mini.pairs').setup(opts)
-		end,
+		main = 'mini.pairs',
+		config = true,
 	},
 
 	-----------------------------------------------------------------------------
 	{
 		'echasnovski/mini.surround',
+		main = 'mini.surround',
 		keys = function(_, keys)
 			-- Populate the keys based on the user's options
 			local plugin = require('lazy.core.config').spec.plugins['mini.surround']
@@ -187,9 +202,6 @@ return {
 				update_n_lines = 'gzn', -- Update `n_lines`
 			},
 		},
-		config = function(_, opts)
-			require('mini.surround').setup(opts)
-		end,
 	},
 
 	-----------------------------------------------------------------------------
@@ -197,6 +209,7 @@ return {
 	{
 		'echasnovski/mini.comment',
 		event = 'VeryLazy',
+		main = 'mini.comment',
 		keys = {
 			{ '<Leader>v', 'gcc', remap = true, silent = true, mode = 'n' },
 			{ '<Leader>v', 'gc', remap = true, silent = true, mode = 'x' },
@@ -208,30 +221,93 @@ return {
 				end,
 			},
 		},
-		config = function(_, opts)
-			require('mini.comment').setup(opts)
-		end,
 	},
 
 	-----------------------------------------------------------------------------
 	{
 		'echasnovski/mini.trailspace',
 		event = { 'BufReadPost', 'BufNewFile' },
-		opts = {},
-		config = function(_, opts)
-			require('mini.trailspace').setup(opts)
-		end
+		main = 'mini.trailspace',
+		config = true,
 	},
 
 	-----------------------------------------------------------------------------
 	{
 		'echasnovski/mini.bracketed',
+		event = 'BufReadPost',
+		main = 'mini.bracketed',
+		opts = {
+			treesitter = { suffix = '' },
+		},
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'echasnovski/mini.ai',
 		event = 'VeryLazy',
-		version = false,
-		opts = {},
-		config = function(_, opts)
-			require('mini.bracketed').setup(opts)
+		main = 'mini.ai',
+		dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
+		opts = function()
+			local ai = require('mini.ai')
+			return {
+				n_lines = 500,
+				custom_textobjects = {
+					o = ai.gen_spec.treesitter({
+						a = { '@block.outer', '@conditional.outer', '@loop.outer' },
+						i = { '@block.inner', '@conditional.inner', '@loop.inner' },
+					}, {}),
+					f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }, {}),
+					c = ai.gen_spec.treesitter({ a = '@class.outer', i = '@class.inner' }, {}),
+				},
+			}
+		end,
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'echasnovski/mini.splitjoin',
+		main = 'mini.splitjoin',
+		keys = {
+			{
+				'sj',
+				'<cmd>lua MiniSplitjoin.join()<CR>',
+				mode = { 'n', 'x' },
+				desc = 'Join arguments'
+			},
+			{
+				'sk',
+				'<cmd>lua MiniSplitjoin.split()<CR>',
+				mode = { 'n', 'x' },
+				desc = 'Split arguments'
+			},
+		},
+		opts = {
+			mappings = { toggle = '' },
+		},
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'AndrewRadev/linediff.vim',
+		cmd = { 'Linediff', 'LinediffAdd' },
+		keys = {
+			{ '<Leader>mdf', ':Linediff<CR>', mode = 'x', desc = 'Line diff' },
+			{ '<Leader>mda', ':LinediffAdd<CR>', mode = 'x', desc = 'Line diff add' },
+			{ '<Leader>mds', '<cmd>LinediffShow<CR>', desc = 'Line diff show' },
+			{ '<Leader>mdr', '<cmd>LinediffReset<CR>', desc = 'Line diff reset' },
+		}
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'AndrewRadev/dsf.vim',
+		keys = {
+			{ 'dsf', '<Plug>DsfDelete', noremap = true, desc = 'Delete Surrounding Function' },
+			{ 'csf', '<Plug>DsfChange', noremap = true, desc = 'Change Surrounding Function' },
+		},
+		init = function()
+			vim.g.dsf_no_mappings = 1
 		end
-	}
+	},
 
 }

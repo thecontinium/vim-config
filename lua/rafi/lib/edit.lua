@@ -4,17 +4,39 @@
 local M = {}
 
 -- Get visually selected lines.
+-- Source: https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/utils.lua
 function M.get_visual_selection()
-	local s_start = vim.fn.getpos("'<")
-	local s_end = vim.fn.getpos("'>")
-	local n_lines = math.abs(s_end[2] - s_start[2]) + 1
-	local lines = vim.api.nvim_buf_get_lines(0, s_start[2] - 1, s_end[2], false)
-	lines[1] = string.sub(lines[1], s_start[3], -1)
-	if n_lines == 1 then
-		lines[n_lines] = string.sub(lines[n_lines], 1, s_end[3] - s_start[3] + 1)
+	-- this will exit visual mode
+	-- use 'gv' to reselect the text
+	local _, csrow, cscol, cerow, cecol
+	local mode = vim.fn.mode()
+	if mode == 'v' or mode == 'V' or mode == '' then
+		-- if we are in visual mode use the live position
+		_, csrow, cscol, _ = unpack(vim.fn.getpos('.'))
+		_, cerow, cecol, _ = unpack(vim.fn.getpos('v'))
+		if mode == 'V' then
+			-- visual line doesn't provide columns
+			cscol, cecol = 0, 999
+		end
+		-- exit visual mode
+		vim.api.nvim_feedkeys(
+			vim.api.nvim_replace_termcodes('<Esc>', true, false, true),
+			'n',
+			true)
 	else
-		lines[n_lines] = string.sub(lines[n_lines], 1, s_end[3])
+		-- otherwise, use the last known visual position
+		_, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
+		_, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
 	end
+	-- swap vars if needed
+	if cerow < csrow then csrow, cerow = cerow, csrow end
+	if cecol < cscol then cscol, cecol = cecol, cscol end
+	local lines = vim.fn.getline(csrow, cerow)
+	-- local n = cerow-csrow+1
+	local n = #lines
+	if n <= 0 then return '' end
+	lines[n] = string.sub(lines[n], 1, cecol)
+	lines[1] = string.sub(lines[1], cscol)
 	return table.concat(lines, '\n')
 end
 
@@ -71,6 +93,42 @@ function M.whitespace_jump(direction)
 	-- Whitespace pattern: Trailing whitespace or mixed tabs/spaces.
 	local pat = '\\s\\+$\\| \\+\\ze\\t'
 	vim.fn.search(pat, opts)
+end
+
+-- Toggle list window
+---@param name "quickfix" | "loclist"
+M.toggle_list = function(name)
+	local win_bufs = M.get_tabpage_win_bufs(0)
+	for win, buf in pairs(win_bufs) do
+		if vim.api.nvim_buf_get_option(buf, 'filetype') == 'qf'
+			and vim.fn.win_gettype(win) == name
+		then
+			vim.api.nvim_win_close(win, false)
+			return
+		end
+	end
+
+	if name == 'loclist' then
+		vim.cmd([[ botright lopen ]])
+	else
+		vim.cmd([[ botright copen ]])
+	end
+end
+
+-- Return a table with all window buffers from a tabpage.
+---@private
+---@param tabpage integer
+M.get_tabpage_win_bufs = function(tabpage)
+	local bufs = {}
+	for _, win in pairs(vim.api.nvim_tabpage_list_wins(tabpage)) do
+		if win ~= nil and vim.api.nvim_win_is_valid(win) then
+			local buf = vim.api.nvim_win_get_buf(win)
+			if buf ~= nil and vim.api.nvim_buf_is_valid(buf) then
+				bufs[win] = buf
+			end
+		end
+	end
+	return bufs
 end
 
 return M

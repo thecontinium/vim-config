@@ -7,6 +7,7 @@ return {
 	{
 		'lewis6991/gitsigns.nvim',
 		event = { 'BufReadPre', 'BufNewFile' },
+		-- See: https://github.com/lewis6991/gitsigns.nvim#usage
 		opts = {
 			signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
 			numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
@@ -80,6 +81,7 @@ return {
 		keys = {
 			{ '<Leader>mg', '<cmd>Neogit<CR>' }
 		},
+		-- See: https://github.com/TimUntersberger/neogit#configuration
 		opts = {
 			disable_signs = false,
 			disable_context_highlighting = false,
@@ -131,6 +133,7 @@ return {
 		'rhysd/committia.vim',
 		event = 'BufReadPre COMMIT_EDITMSG',
 		init = function()
+			-- See: https://github.com/rhysd/committia.vim#variables
 			vim.g.committia_min_window_width = 30
 			vim.g.committia_edit_window_width = 75
 		end,
@@ -138,14 +141,19 @@ return {
 			vim.g.committia_hooks = {
 				edit_open = function()
 					vim.cmd.resize(10)
-					vim.cmd([[
-						imap <buffer><C-d> <Plug>(committia-scroll-diff-down-half)
-						imap <buffer><C-u> <Plug>(committia-scroll-diff-up-half)
-						imap <buffer><C-f> <Plug>(committia-scroll-diff-down-page)
-						imap <buffer><C-b> <Plug>(committia-scroll-diff-up-page)
-						imap <buffer><C-j> <Plug>(committia-scroll-diff-down)
-						imap <buffer><C-k> <Plug>(committia-scroll-diff-up)
-					]])
+					local opts = {
+						buffer = vim.api.nvim_get_current_buf(),
+						silent = true,
+					}
+					local function imap(lhs, rhs)
+						vim.keymap.set('i', lhs, rhs, opts)
+					end
+					imap('<C-d>', '<Plug>(committia-scroll-diff-down-half)')
+					imap('<C-u>', '<Plug>(committia-scroll-diff-up-half)')
+					imap('<C-f>', '<Plug>(committia-scroll-diff-down-page)')
+					imap('<C-b>', '<Plug>(committia-scroll-diff-up-page)')
+					imap('<C-j>', '<Plug>(committia-scroll-diff-down)')
+					imap('<C-k>', '<Plug>(committia-scroll-diff-up)')
 				end,
 			}
 		end,

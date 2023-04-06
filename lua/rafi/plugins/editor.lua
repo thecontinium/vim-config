@@ -14,7 +14,7 @@ return {
 	{
 		'tpope/vim-sleuth',
 		lazy = false,
-		priority = 500,
+		priority = 50,
 		init = function ()
 			vim.g.sleuth_no_filetype_indent_on = 1
 			vim.g.sleuth_gitcommit_heuristics = 0
@@ -25,8 +25,25 @@ return {
 	{
 		'olimorris/persisted.nvim',
 		event = 'VimEnter',
-		priority = 10000,
+		priority = 1000,
+		opts = {
+			autoload = true,
+			follow_cwd = false,
+			ignored_dirs = { '/usr', '/opt', '~/.cache', vim.env.TMPDIR or '/tmp' },
+			should_autosave = function()
+				-- Do not autosave if git commit/rebase session.
+				return vim.env.GIT_EXEC_PATH == nil
+			end,
+		},
+		config = function(_, opts)
+			if vim.g.in_pager_mode or vim.env.GIT_EXEC_PATH ~= nil then
+				-- Do not autoload if stdin has been provided, or git commit session.
+				opts.autoload = false
+			end
+			require('persisted').setup(opts)
+		end,
 		init = function()
+			-- Detect if stdin has been provided.
 			vim.g.in_pager_mode = false
 			vim.api.nvim_create_autocmd('StdinReadPre', {
 				group = vim.api.nvim_create_augroup('rafi_persisted', {}),
@@ -34,25 +51,19 @@ return {
 					vim.g.in_pager_mode = true
 				end
 			})
-		end,
-		opts = {
-			follow_cwd = false,
-			ignored_dirs = { '~/.cache', vim.env.TMPDIR or '/tmp' },
-			autoload = function()
-				-- Do not autoload if stdin has been provided, or git commit session.
-				return vim.g.in_pager_mode == false and vim.env.GIT_EXEC_PATH == nil
-			end,
-			should_autosave = function()
-				-- Do not autosave if git commit/rebase session. Causes a race-condition
-				return vim.env.GIT_EXEC_PATH == nil
-			end,
-		},
-		config = function(_, opts)
-			if type(opts.autoload) == 'function' then
-				opts.autoload	= opts.autoload()
-			end
-			require('persisted').setup(opts)
-
+			-- Close all floats before loading a session. (e.g. Lazy.nvim)
+			vim.api.nvim_create_autocmd('User', {
+				group = 'rafi_persisted',
+				pattern = 'PersistedLoadPre',
+				callback = function()
+					for _, win in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+						if vim.api.nvim_win_get_config(win).zindex then
+							vim.api.nvim_win_close(win, false)
+						end
+					end
+				end
+			})
+			-- Close all plugin owned buffers before saving a session.
 			vim.api.nvim_create_autocmd('User', {
 				pattern = 'PersistedSavePre',
 				group = 'rafi_persisted',
@@ -72,7 +83,6 @@ return {
 					end
 				end,
 			})
-
 			-- When switching to a different session using Telescope, save and stop
 			-- current session to avoid previous session to be overwritten.
 			vim.api.nvim_create_autocmd('User', {
@@ -83,7 +93,6 @@ return {
 					require('persisted').stop()
 				end
 			})
-
 			-- When switching to a different session using Telescope, after new
 			-- session has been loaded, start it - so it will be auto-saved.
 			vim.api.nvim_create_autocmd('User', {
@@ -203,6 +212,7 @@ return {
 		opts = {
 			plugins = {
 				gitsigns = { enabled = true },
+				tmux = { enabled = vim.env.TMUX ~= nil },
 			},
 		}
 	},
@@ -234,6 +244,8 @@ return {
 		'folke/todo-comments.nvim',
 		dependencies = 'nvim-telescope/telescope.nvim',
 		keys = {
+			{ ']t', function() require('todo-comments').jump_next() end, desc = 'Next todo comment' },
+			{ '[t', function() require('todo-comments').jump_prev() end, desc = 'Previous todo comment' },
 			{ '<LocalLeader>dt', '<cmd>TodoTelescope<CR>', desc = 'todo' },
 			{ '<leader>xt', '<cmd>TodoTrouble<CR>', desc = 'Todo (Trouble)' },
 			{ '<leader>xT', '<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>', desc = 'Todo/Fix/Fixme (Trouble)' },
@@ -261,59 +273,43 @@ return {
 		keys = {
 			{ '<Leader>gv', '<cmd>DiffviewOpen<CR>', desc = 'Diff View' }
 		},
-		config = function()
+		opts = function()
 			local actions = require('diffview.actions')
-			vim.cmd [[
-				augroup rafi_diffview
-					autocmd!
-					autocmd WinEnter,BufEnter diffview://* setlocal cursorline
-					autocmd WinEnter,BufEnter diffview:///panels/* setlocal winhighlight=CursorLine:WildMenu
-				augroup END
-			]]
+			vim.api.nvim_create_autocmd({'WinEnter', 'BufEnter'}, {
+				group = vim.api.nvim_create_augroup('rafi_diffview', {}),
+				pattern = 'diffview:///panels/*',
+				callback = function()
+					vim.wo.winhighlight = 'CursorLine:WildMenu'
+				end,
+			})
 
-			require('diffview').setup({
+			return {
 				enhanced_diff_hl = true, -- See ':h diffview-config-enhanced_diff_hl'
 				keymaps = {
 					view = {
-						{'n', 'q',       '<cmd>DiffviewClose<CR>' },
-						{'n', '<tab>',   actions.select_next_entry },
-						{'n', '<s-tab>', actions.select_prev_entry },
-						{'n', ';a',      actions.focus_files },
-						{'n', ';e',      actions.toggle_files },
+						{ 'n', 'q',       '<cmd>DiffviewClose<CR>' },
+						{ 'n', '<Tab>',   actions.select_next_entry },
+						{ 'n', '<S-Tab>', actions.select_prev_entry },
+						{ 'n', '<LocalLeader>a', actions.focus_files },
+						{ 'n', '<LocalLeader>e', actions.toggle_files },
 					},
 					file_panel = {
-						{'n', 'q',       '<cmd>DiffviewClose<CR>' },
-						{'n', 'j',       actions.next_entry },
-						{'n', '<down>',  actions.next_entry },
-						{'n', 'k',       actions.prev_entry },
-						{'n', '<up>',    actions.prev_entry },
-						{'n', 'h',       actions.prev_entry },
-						{'n', 'l',       actions.select_entry },
-						{'n', '<cr>',    actions.select_entry },
-						{'n', 'o',       actions.focus_entry },
-						{'n', 'gf',      actions.goto_file },
-						{'n', 'sg',      actions.goto_file_split },
-						{'n', 'st',      actions.goto_file_tab },
-						{'n', 'r',       actions.refresh_files },
-						{'n', 'R',       actions.refresh_files },
-						{'n', '<c-r>',   actions.refresh_files },
-						{'n', '<tab>',   actions.select_next_entry },
-						{'n', '<s-tab>', actions.select_prev_entry },
-						{'n', ';a',      actions.focus_files },
-						{'n', ';e',      actions.toggle_files },
+						{'n', 'q',     '<cmd>DiffviewClose<CR>' },
+						{'n', 'h',     actions.prev_entry },
+						{'n', 'o',     actions.focus_entry },
+						{'n', 'gf',    actions.goto_file },
+						{'n', 'sg',    actions.goto_file_split },
+						{'n', 'st',    actions.goto_file_tab },
+						{'n', '<C-r>', actions.refresh_files },
+						{'n', ';e',    actions.toggle_files },
 					},
 					file_history_panel = {
-						{'n', 'o',    actions.focus_entry },
-						{'n', 'l',    actions.select_entry },
-						{'n', '<cr>', actions.select_entry },
-						{'n', 'O',    actions.options },
-					},
-					option_panel = {
-						{'n', '<tab>', actions.select },
-						{'n', 'q',     actions.close },
+						{'n', 'q', '<cmd>DiffviewClose<CR>' },
+						{'n', 'o', actions.focus_entry },
+						{'n', 'O', actions.options },
 					},
 				}
-			})
+			}
 		end
 	},
 
@@ -326,6 +322,7 @@ return {
 		},
 		opts = {
 			width = 30,
+			autofold_depth = 0,
 			keymaps = {
 				hover_symbol = 'K',
 				toggle_preview = 'p',
@@ -354,7 +351,7 @@ return {
 						vim.api.nvim_set_current_win(picked_window_id)
 					end
 				end,
-				desc = 'Jump to window with selection',
+				desc = 'Pick window',
 			},
 			{
 				'sw',
@@ -368,7 +365,7 @@ return {
 						vim.api.nvim_win_set_buf(picked_window_id, current_bufnr)
 					end
 				end,
-				desc = 'Swap window with selection',
+				desc = 'Swap picked window',
 			},
 		},
 		opts = {
@@ -384,18 +381,9 @@ return {
 		'rest-nvim/rest.nvim',
 		ft = 'http',
 		keys = {
-			{ ',ht', '<Plug>RestNvim', desc = 'Execute HTTP request' }
+			{ ',ht', '<Plug>RestNvim', desc = 'Execute HTTP request' },
 		},
 		opts = { skip_ssl_verification = true },
-		init = function()
-			vim.api.nvim_create_autocmd('FileType', {
-				group = vim.api.nvim_create_augroup('rafi_rest', {}),
-				pattern = 'httpResult',
-				callback = function(event)
-					vim.keymap.set('n', 'q', '<cmd>quit<CR>', { buffer = event.buf })
-				end
-			})
-		end
 	},
 
 	-----------------------------------------------------------------------------
@@ -472,6 +460,8 @@ return {
 	-----------------------------------------------------------------------------
 	{
 		'echasnovski/mini.bufremove',
+		main = 'mini.bufremove',
+		config = true,
 		keys = {
 			{
 				'<leader>bd', function()
