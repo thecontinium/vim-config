@@ -1,4 +1,4 @@
--- Rafi's config loader
+-- Rafi's Neovim config loader
 -- https://github.com/rafi/vim-config
 
 -- This is part of LazyVim's code, with my modifications.
@@ -16,6 +16,11 @@ local defaults = {
 		autocmds = true, -- rafi.config.autocmds
 		keymaps = true,  -- rafi.config.keymaps
 		options = true,  -- rafi.config.options
+
+		features = {
+			elite_mode = false,
+			window_q_mapping = true,
+		},
 	},
 	-- String like `habamax` or a function that will load the colorscheme.
 	---@type string|fun()
@@ -106,6 +111,9 @@ local options
 
 ---@param user_opts table|nil
 function M.setup(user_opts)
+	if not M.did_init then
+		M.init()
+	end
 	options = vim.tbl_deep_extend('force', defaults, user_opts or {})
 	if not M.has_version() then
 		require('lazy.core.util').error(
@@ -117,10 +125,19 @@ function M.setup(user_opts)
 		error('Exiting')
 	end
 
-	M.vim_require('.vault.vim')
-	M.load('keymaps')
-	M.load('autocmds')
+	-- Override config with user config at lua/config/setup.lua
+	local user_setup_path = M.path_join(vim.fn.stdpath('config'), 'lua', 'config', 'setup.lua')
+	if vim.loop.fs_stat(user_setup_path) ~= nil then
+		options = require('config.setup').override(options)
+	end
+	for feat_name, feat_val in pairs(options.defaults.features) do
+		vim.g['rafi_' .. feat_name] = feat_val
+	end
 
+	M.load('autocmds')
+	M.load('keymaps')
+
+	-- Set colorscheme
 	require('lazy.core.util').try(function()
 		if type(M.colorscheme) == 'function' then
 			M.colorscheme()
@@ -180,15 +197,6 @@ function M.plugin_opts(name)
 	end
 	local Plugin = require('lazy.core.plugin')
 	return Plugin.values(plugin, 'opts', false)
-end
-
--- Source vim script file, if exists.
----@param relpath string
-function M.vim_require(relpath)
-	local abspath = M.path_join(vim.fn.stdpath('config'), relpath)
-	if vim.loop.fs_stat(abspath) then
-		vim.fn.execute('source ' .. abspath)
-	end
 end
 
 ---@param name "autocmds" | "options" | "keymaps"

@@ -104,6 +104,7 @@ return {
 	{
 		"Olical/conjure",
 		ft = { "clojure", "python" },
+		-- branch = "develop",
 		config = function()
 			vim.g["conjure#mapping#prefix"] = ","
 			vim.g["conjure#mapping#log_split"] = "lv"

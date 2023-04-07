@@ -1,11 +1,12 @@
 *~
 /benchmarks/
 /spell/
-/.vault.vim
 /.stignore
 /.stfolder
 /.stversions
-/lua/plugins.lua
-/lua/lsp/
 .clj-kondo/
 .lsp/
+/lua/config/
+/lua/lsp/
+/lua/plugins/
+/lua/plugins.lua
