@@ -139,6 +139,7 @@ return {
 				'bash',
 				'comment',
 				'css',
+				'cue',
 				'diff',
 				'dockerfile',
 				'fish',
@@ -199,22 +200,8 @@ return {
 	-----------------------------------------------------------------------------
 	{
 		'andymass/vim-matchup',
-		config = function()
-			-- vim.g.matchup_transmute_enabled = 1
-			vim.g.matchup_matchparen_offscreen = {
-				method = 'popup',
-				border = 'shadow',
-				highlight = 'NormalFloat',
-				fullwidth = true,
-			}
-			vim.api.nvim_create_autocmd('User', {
-				group = vim.api.nvim_create_augroup('rafi_matchup', {}),
-				pattern = 'MatchupOffscreenEnter',
-				callback = function()
-					vim.api.nvim_win_set_option(0, 'colorcolumn', '')
-					vim.api.nvim_win_set_option(0, 'number', false)
-				end,
-			})
+		init = function()
+			vim.g.matchup_matchparen_offscreen = {}
 		end
 	},
 
@@ -302,7 +289,7 @@ return {
 						.. (' '):rep(width - cur_width - vim.fn.strdisplaywidth(lines) - 3)
 
 					table.insert(text, { suffix, 'UfoFoldedEllipsis' })
-					table.insert(text, { lines, 'UfoCursorFoldedLine' })
+					table.insert(text, { lines, 'Folded' })
 					return text
 				end,
 			}

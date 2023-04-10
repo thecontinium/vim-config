@@ -79,6 +79,7 @@ return {
 				bottom_search = true,
 				command_palette = true,
 				long_message_to_split = true,
+				lsp_doc_border = true,
 			},
 			commands = {
 				all = {
@@ -102,7 +103,7 @@ return {
 		'SmiteshP/nvim-navic',
 		keys = {
 			{
-				'<Leader>f',
+				'<Leader>tf',
 				function()
 					if vim.b.navic_winbar then
 						vim.b.navic_winbar = false
@@ -130,9 +131,8 @@ return {
 		end,
 		opts = function()
 			return {
-				separator = ' ',
+				separator = '  ',
 				highlight = true,
-				depth_limit = 5,
 				icons = require('rafi.config').icons.kinds,
 			}
 		end,
@@ -290,7 +290,7 @@ return {
 			highlighter = {
 				auto_enable = true,
 				lsp = true,
-				excludes = { 'lazy', 'mason' },
+				excludes = { 'lazy', 'mason', 'help', 'neo-tree' },
 			},
 		},
 	},
