@@ -6,7 +6,4 @@
 /.stversions
 .clj-kondo/
 .lsp/
-/lua/config/
 /lua/lsp/
-/lua/plugins/
-/lua/plugins.lua
