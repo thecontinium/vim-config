@@ -250,6 +250,8 @@ return {
 			{ '<LocalLeader>dt', '<cmd>TodoTelescope<CR>', desc = 'todo' },
 			{ '<leader>xt', '<cmd>TodoTrouble<CR>', desc = 'Todo (Trouble)' },
 			{ '<leader>xT', '<cmd>TodoTrouble keywords=TODO,FIX,FIXME<cr>', desc = 'Todo/Fix/Fixme (Trouble)' },
+			{ '<leader>st', '<cmd>TodoTelescope<cr>', desc = 'Todo' },
+			{ '<leader>sT', '<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>', desc = 'Todo/Fix/Fixme' },
 		},
 		opts = { signs = false },
 	},
@@ -334,7 +336,8 @@ return {
 				group = vim.api.nvim_create_augroup('rafi_outline', {}),
 				pattern = 'Outline',
 				callback = function()
-					vim.opt_local.winhighlight = 'CursorLine:WildMenu'
+					vim.wo.winhighlight = 'CursorLine:WildMenu'
+					vim.wo.signcolumn = 'auto'
 				end
 			})
 		end
@@ -407,7 +410,7 @@ return {
 
 	-----------------------------------------------------------------------------
 	{
-		'windwp/nvim-spectre',
+		'nvim-pack/nvim-spectre',
 		keys = {
 			{
 				'<Leader>sp',

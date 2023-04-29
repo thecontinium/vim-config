@@ -6,7 +6,7 @@ return {
 	-----------------------------------------------------------------------------
 	{ 'nvim-tree/nvim-web-devicons', lazy = false },
 	{ 'MunifTanjim/nui.nvim', lazy = false },
-	{ 'rafi/tabstrip.nvim', lazy = false, opts = true },
+	{ 'rafi/tabstrip.nvim', lazy = false, priority = 98, opts = true },
 
 	-----------------------------------------------------------------------------
 	{
@@ -100,6 +100,23 @@ return {
 
 	-----------------------------------------------------------------------------
 	{
+		'stevearc/dressing.nvim',
+		init = function()
+			---@diagnostic disable-next-line: duplicate-set-field
+			vim.ui.select = function(...)
+				require('lazy').load({ plugins = { 'dressing.nvim' } })
+				return vim.ui.select(...)
+			end
+			---@diagnostic disable-next-line: duplicate-set-field
+			vim.ui.input = function(...)
+				require('lazy').load({ plugins = { 'dressing.nvim' } })
+				return vim.ui.input(...)
+			end
+		end,
+	},
+
+	-----------------------------------------------------------------------------
+	{
 		'SmiteshP/nvim-navic',
 		keys = {
 			{
@@ -148,7 +165,7 @@ return {
 				function()
 					require('notify').dismiss({ silent = true, pending = true })
 				end,
-				desc = 'Delete all Notifications',
+				desc = 'Dismiss all Notifications',
 			},
 		},
 		opts = {

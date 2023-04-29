@@ -87,10 +87,12 @@ local plugin_directories = function(opts)
 end
 
 -- Custom window-sizes
+---@param dimensions table
+---@param size integer
+---@return float
 local function get_matched_ratio(dimensions, size)
 	for min_cols, scale in pairs(dimensions) do
 		if min_cols == 'lower' or size >= min_cols then
-			vim.print(size, scale)
 			return math.floor(size * scale)
 		end
 	end
@@ -134,7 +136,6 @@ return {
 		cmd = 'Telescope',
 		dependencies = {
 			'nvim-lua/plenary.nvim',
-			'nvim-telescope/telescope-ui-select.nvim',
 			'jvgrootveld/telescope-zoxide',
 			'folke/todo-comments.nvim',
 			'rafi/telescope-thesaurus.nvim',
@@ -142,7 +143,6 @@ return {
 		config = function(_, opts)
 			require('telescope').setup(opts)
 			require('telescope').load_extension('persisted')
-			require('telescope').load_extension('ui-select')
 		end,
 		keys = {
 			-- General pickers
@@ -166,12 +166,14 @@ return {
 			{ '<localleader>/', '<cmd>Telescope search_history<CR>', desc = 'Search history' },
 			{ '<leader>/', '<cmd>Telescope current_buffer_fuzzy_find<CR>', desc = 'Buffer find' },
 
-			{ '<leader>sd', '<cmd>Telescope diagnostics<CR>', desc = 'Diagnostics' },
+			{ '<leader>sd', '<cmd>Telescope diagnostics bufnr=0<CR>', desc = 'Document diagnostics' },
+			{ '<leader>sD', '<cmd>Telescope diagnostics<CR>', desc = 'Workspace diagnostics' },
 			{ '<leader>sh', '<cmd>Telescope help_tags<CR>', desc = 'Help Pages' },
 			{ '<leader>sk', '<cmd>Telescope keymaps<CR>', desc = 'Key Maps' },
 			{ '<leader>sm', '<cmd>Telescope man_pages<CR>', desc = 'Man Pages' },
 			{ '<leader>sw', '<cmd>Telescope grep_string<CR>', desc = 'Word' },
 			{ '<leader>sc', '<cmd>Telescope colorscheme<CR>', desc = 'Colorscheme' },
+			{ '<leader>uC', '<cmd>Telescope colorscheme<CR>', desc = 'Colorscheme' },
 
 			-- LSP related
 			{ '<localleader>dd', '<cmd>Telescope lsp_definitions<CR>', desc = 'Definitions' },
@@ -202,7 +204,7 @@ return {
 			{
 				'<leader>sS',
 				function()
-					require('telescope.builtin').lsp_workspace_symbols({
+					require('telescope.builtin').lsp_dynamic_workspace_symbols({
 						symbols = {
 							'Class',
 							'Function',
@@ -488,11 +490,6 @@ return {
 							end
 						},
 					},
-				},
-				['ui-select'] = {
-					require('telescope.themes').get_cursor({
-						layout_config = { width = 0.35, height = 0.35 },
-					})
 				},
 			}
 		}
