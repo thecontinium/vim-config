@@ -1,4 +1,4 @@
-vim.cmd.runtime("plugin/zipPlugin.vim")
+-- vim.cmd.runtime("plugin/zipPlugin.vim")
 
 return {
 	-- - repo: windwp/nvim-autopairs
