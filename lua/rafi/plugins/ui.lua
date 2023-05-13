@@ -10,14 +10,6 @@ return {
 
 	-----------------------------------------------------------------------------
 	{
-		'rafi/theme-loader.nvim',
-		lazy = false,
-		priority = 99,
-		opts = { initial_colorscheme = 'hybrid' },
-	},
-
-	-----------------------------------------------------------------------------
-	{
 		'folke/noice.nvim',
 		event = 'VeryLazy',
 		dependencies = {
@@ -198,7 +190,7 @@ return {
 		},
 		opts = {
 			sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
-			bookmark_1 = { sign = '' },  -- ⚐ ⚑      
+			bookmark_1 = { sign = '󰈼' },  -- ⚐ ⚑ 󰈻 󰈼 󰈽 󰈾 󰈿 󰉀
 			mappings = {
 				annotate = 'm<Space>',
 			},
@@ -236,6 +228,13 @@ return {
 				'Trouble',
 			},
 		},
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'tenxsoydev/tabs-vs-spaces.nvim',
+		event = { 'BufReadPost', 'BufNewFile' },
+		config = true,
 	},
 
 	-----------------------------------------------------------------------------

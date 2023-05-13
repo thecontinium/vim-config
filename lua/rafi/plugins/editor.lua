@@ -6,18 +6,23 @@ local is_windows = vim.loop.os_uname().sysname == 'Windows_NT'
 return {
 
 	-----------------------------------------------------------------------------
-	{ 'christoomey/vim-tmux-navigator', lazy = false, cond = not is_windows },
+	{ 'nmac427/guess-indent.nvim', lazy = false, priority = 50, config = true },
 	{ 'tweekmonster/helpful.vim', cmd = 'HelpfulVersion' },
 	{ 'lambdalisue/suda.vim', event = 'BufRead' },
 
 	-----------------------------------------------------------------------------
 	{
-		'tpope/vim-sleuth',
+		'christoomey/vim-tmux-navigator',
 		lazy = false,
-		priority = 50,
-		init = function ()
-			vim.g.sleuth_no_filetype_indent_on = 1
-			vim.g.sleuth_gitcommit_heuristics = 0
+		cond = not is_windows,
+		keys = {
+			{ '<C-h>', '<cmd>TmuxNavigateLeft<CR>', mode = { 'n', 't' }, silent = true, desc = 'Jump to left pane' },
+			{ '<C-j>', '<cmd>TmuxNavigateDown<CR>', mode = { 'n', 't' }, silent = true, desc = 'Jump to lower pane' },
+			{ '<C-k>', '<cmd>TmuxNavigateUp<CR>', mode = { 'n', 't' }, silent = true, desc = 'Jump to upper pane' },
+			{ '<C-l>', '<cmd>TmuxNavigateRight<CR>', mode = { 'n', 't' }, silent = true, desc = 'Jump to right pane' },
+		},
+		init = function()
+			vim.g.tmux_navigator_no_mappings = true
 		end
 	},
 
@@ -314,6 +319,28 @@ return {
 				}
 			}
 		end
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'akinsho/toggleterm.nvim',
+		cmd = 'ToggleTerm',
+		keys = {
+			{ '<C-\\>', mode = { 'n', 't' }, silent = true, function()
+				local venv = vim.b['virtual_env']
+				local term = require('toggleterm.terminal').Terminal:new({
+					env = venv and { VIRTUAL_ENV = venv } or nil,
+					count = vim.v.count > 0 and vim.v.count or 1,
+				})
+				term:toggle()
+			end, desc = 'Toggle terminal' },
+		},
+		opts = {
+			open_mapping = false,
+			float_opts = {
+				border = 'curved',
+			},
+		},
 	},
 
 	-----------------------------------------------------------------------------

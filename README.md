@@ -478,6 +478,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [williamboman/mason-lspconfig.nvim] | Mason extension for easier lspconfig integration
 | [hrsh7th/cmp-nvim-lsp] | nvim-cmp source for neovim builtin LSP client
 | [b0o/SchemaStore.nvim] | JSON schemas for Neovim
+| [rafi/neoconf-venom.nvim] | Automatically set virtual-environment python runtime
 | [jose-elias-alvarez/null-ls.nvim] | Inject LSP diagnostics, code actions, and more
 
 ### Editor Plugins
@@ -485,10 +486,10 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | Name           | Description
 | -------------- | ----------------------
 | [folke/lazy.nvim] | Modern plugin manager for Neovim
+| [nmac427/guess-indent.nvim] | Automatic indentation style detection
 | [christoomey/tmux-navigator] | Seamless navigation between tmux panes and vim splits
 | [tweekmonster/helpful.vim] | Display vim version numbers in docs
 | [lambdalisue/suda.vim] | An alternative sudo for Vim and Neovim
-| [tpope/vim-sleuth] | Heuristically set buffer indent options
 | [olimorris/persisted.nvim] | Simple session management for Neovim with git branching
 | [RRethy/vim-illuminate] | Highlights other uses of the word under the cursor
 | [mbbill/undotree] | Ultimate undo history visualizer
@@ -502,6 +503,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [folke/todo-comments.nvim] | Highlight, list and search todo comments in your projects
 | [folke/trouble.nvim] | Pretty lists to help you solve all code diagnostics
 | [sindrets/diffview.nvim] | Tabpage interface for cycling through diffs
+| [akinsho/toggleterm.nvim] | Persist and toggle multiple terminals
 | [simrat39/symbols-outline.nvim] | Tree like view for symbols using LSP
 | [s1n7ax/nvim-window-picker] | Window picker
 | [rest-nvim/rest.nvim] | Fast Neovim http client written in Lua
@@ -540,6 +542,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 
 | Name           | Description
 | -------------- | ----------------------
+| [rafi/neo-hybrid.vim] | Modern dark colorscheme, hybrid improved
 | [rafi/awesome-colorschemes] | Awesome color-schemes
 | [AlexvZyl/nordic.nvim] | Nord for Neovim, but warmer and darker
 | [folke/tokyonight.nvim] | Clean, dark Neovim theme
@@ -568,6 +571,9 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [nvim-neo-tree/neo-tree.nvim] | File explorer written in Lua
 | [nvim-telescope/telescope.nvim] | Find, Filter, Preview, Pick. All lua.
 | [jvgrootveld/telescope-zoxide] | Telescope extension for Zoxide
+| [rafi/telescope-thesaurus.nvim] | Browse synonyms from thesaurus.com
+| [nvim-telescope/telescope-frecency.nvim] | Intelligent prioritization when selecting files from your editing history
+| [kkharji/sqlite.lua] | SQLite LuaJIT binding with a simple API
 | [nvim-lua/plenary.nvim] | Lua functions library
 
 ### Treesitter & Syntax
@@ -598,12 +604,15 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | -------------- | ----------------------
 | [nvim-tree/nvim-web-devicons] | Lua fork of vim-devicons
 | [MunifTanjim/nui.nvim] | UI Component Library
+| [rafi/tabstrip.nvim] | Minimal and opinionated tabline
+| [rafi/theme-loader.nvim] | Use last-used colorscheme
 | [folke/noice.nvim] | Replaces the UI for messages, cmdline and the popupmenu
 | [stevearc/dressing.nvim] | Improve the default vim-ui interfaces
 | [SmiteshP/nvim-navic] | Shows your current code context in winbar/statusline
 | [rcarriga/nvim-notify] | Fancy notification manager for NeoVim
 | [chentau/marks.nvim] | Interacting with and manipulating marks
 | [lukas-reineke/indent-blankline.nvim] | Visually display indent levels
+| [tenxsoydev/tabs-vs-spaces.nvim] | Hint and fix deviating indentation
 | [t9md/vim-quickhl] | Highlight words quickly
 | [kevinhwang91/nvim-bqf] | Better quickfix window in Neovim
 | [uga-rosa/ccc.nvim] | Super powerful color picker/colorizer plugin
@@ -617,13 +626,14 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [williamboman/mason-lspconfig.nvim]: https://github.com/williamboman/mason-lspconfig.nvim
 [hrsh7th/cmp-nvim-lsp]: https://github.com/hrsh7th/cmp-nvim-lsp
 [b0o/SchemaStore.nvim]: https://github.com/b0o/SchemaStore.nvim
+[rafi/neoconf-venom.nvim]: https://github.com/rafi/neoconf-venom.nvim
 [jose-elias-alvarez/null-ls.nvim]: https://github.com/jose-elias-alvarez/null-ls.nvim
 
 [folke/lazy.nvim]: https://github.com/folke/lazy.nvim
+[nmac427/guess-indent.nvim]: https://github.com/nmac427/guess-indent.nvim
 [christoomey/tmux-navigator]: https://github.com/christoomey/vim-tmux-navigator
 [tweekmonster/helpful.vim]: https://github.com/tweekmonster/helpful.vim
 [lambdalisue/suda.vim]: https://github.com/lambdalisue/suda.vim
-[tpope/vim-sleuth]: https://github.com/tpope/vim-sleuth
 [olimorris/persisted.nvim]: https://github.com/olimorris/persisted.nvim
 [RRethy/vim-illuminate]: https://github.com/RRethy/vim-illuminate
 [mbbill/undotree]: https://github.com/mbbill/undotree
@@ -637,6 +647,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [folke/todo-comments.nvim]: https://github.com/folke/todo-comments.nvim
 [folke/trouble.nvim]: https://github.com/folke/trouble.nvim
 [sindrets/diffview.nvim]: https://github.com/sindrets/diffview.nvim
+[akinsho/toggleterm.nvim]: https://github.com/akinsho/toggleterm.nvim
 [simrat39/symbols-outline.nvim]: https://github.com/simrat39/symbols-outline.nvim
 [s1n7ax/nvim-window-picker]: https://github.com/s1n7ax/nvim-window-picker
 [rest-nvim/rest.nvim]: https://github.com/rest-nvim/rest.nvim
@@ -667,6 +678,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [AndrewRadev/linediff.vim]: https://github.com/AndrewRadev/linediff.vim
 [AndrewRadev/dsf.vim]: https://github.com/AndrewRadev/dsf.vim
 
+[rafi/neo-hybrid.vim]: https://github.com/rafi/neo-hybrid.vim
 [rafi/awesome-colorschemes]: https://github.com/rafi/awesome-vim-colorschemes
 [AlexvZyl/nordic.nvim]: https://github.com/AlexvZyl/nordic.nvim
 [folke/tokyonight.nvim]: https://github.com/folke/tokyonight.nvim
@@ -687,6 +699,9 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [nvim-neo-tree/neo-tree.nvim]: https://github.com/nvim-neo-tree/neo-tree.nvim
 [nvim-telescope/telescope.nvim]: https://github.com/nvim-telescope/telescope.nvim
 [jvgrootveld/telescope-zoxide]: https://github.com/jvgrootveld/telescope-zoxide
+[rafi/telescope-thesaurus.nvim]: https://github.com/rafi/telescope-thesaurus.nvim
+[nvim-telescope/telescope-frecency.nvim]: https://github.com/nvim-telescope/telescope-frecency.nvim
+[kkharji/sqlite.lua]: https://github.com/kkharji/sqlite.lua
 [nvim-lua/plenary.nvim]: https://github.com/nvim-lua/plenary.nvim
 
 [nvim-treesitter/nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
@@ -709,12 +724,15 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 
 [nvim-tree/nvim-web-devicons]: https://github.com/nvim-tree/nvim-web-devicons
 [MunifTanjim/nui.nvim]: https://github.com/MunifTanjim/nui.nvim
+[rafi/tabstrip.nvim]: https://github.com/rafi/tabstrip.nvim
+[rafi/theme-loader.nvim]: https://github.com/rafi/theme-loader.nvim
 [folke/noice.nvim]: https://github.com/folke/noice.nvim
 [stevearc/dressing.nvim]: https://github.com/stevearc/dressing.nvim
 [SmiteshP/nvim-navic]: https://github.com/SmiteshP/nvim-navic
 [rcarriga/nvim-notify]: https://github.com/rcarriga/nvim-notify
 [chentau/marks.nvim]: https://github.com/chentau/marks.nvim
 [lukas-reineke/indent-blankline.nvim]: https://github.com/lukas-reineke/indent-blankline.nvim
+[tenxsoydev/tabs-vs-spaces.nvim]: https://github.com/tenxsoydev/tabs-vs-spaces.nvim
 [t9md/vim-quickhl]: https://github.com/t9md/vim-quickhl
 [kevinhwang91/nvim-bqf]: https://github.com/kevinhwang91/nvim-bqf
 [uga-rosa/ccc.nvim]: https://github.com/uga-rosa/ccc.nvim
