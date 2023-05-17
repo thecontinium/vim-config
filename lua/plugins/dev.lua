@@ -9,7 +9,7 @@ return {
 		"guns/vim-sexp",
 		ft = "clojure",
 		config = function(_, _)
-			vim.g.sexp_enable_insert_mode_mappings = 1
+			vim.g.sexp_enable_insert_mode_mappings = 0
 			vim.g.sexp_mappings = {
 				sexp_round_head_wrap_list = ",i",
 				sexp_round_tail_wrap_list = ",I",
@@ -115,6 +115,14 @@ return {
 			vim.g["conjure#highlight#enabled"] = true
 			-- allow lisp K mapping and delegate this to ,K
 			vim.g["conjure#mapping#doc_word"] = "K"
+		end,
+	},
+
+	{
+		"gpanders/nvim-parinfer",
+		ft = "clojure",
+		config = function()
+			vim.g.parinfer_force_balance = true
 		end,
 	},
 
