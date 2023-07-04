@@ -68,7 +68,6 @@ Please read "[Extending](#extending)" to learn how to customize and modify.
   * [Editor UI](#editor-ui)
   * [Custom Tools & Plugins](#custom-tools--plugins)
   * [Window Management](#window-management)
-  * [Plugin: Mini.Bracketed](#plugin-minibracketed)
   * [Plugin: Mini.Surround](#plugin-minisurround)
   * [Plugin: Gitsigns](#plugin-gitsigns)
   * [Plugin: Telescope](#plugin-telescope)
@@ -86,7 +85,7 @@ Please read "[Extending](#extending)" to learn how to customize and modify.
 * Robust, yet light-weight
 * Plugin management with [folke/lazy.nvim]. Use with `:Lazy` or <kbd>Space</kbd>+<kbd>l</kbd>
 * Install LSP, DAP, linters, and formatters. Use with `:Mason` or <kbd>Space</kbd>+<kbd>mm</kbd>
-* LSP configuration with [nvim-lspconfig] and [folke/neoconf.nvim] (see [neoconf.json])
+* LSP configuration with [nvim-lspconfig]
 * [telescope.nvim] centric work-flow with lists (try <kbd>;</kbd>+<kbd>f</kbd>…)
 * Custom context-menu (try it! <kbd>;</kbd>+<kbd>c</kbd>)
 * Auto-complete extensive setup with [nvim-cmp]
@@ -151,8 +150,8 @@ You'll need utilities like `npm` and `curl` to install some extensions, see
 [requirements](https://github.com/williamboman/mason.nvim#requirements)
 (or `:h mason-requirements`) for more information.
 
-See [neoconf.json] and [lua/rafi/plugins/lsp/init.lua] for custom key-mappings
-and configuration for some language-servers.
+See [lua/rafi/plugins/lsp/init.lua] for custom key-mappings and configuration
+for some language-servers.
 
 ### Recommended LSP
 
@@ -409,7 +408,7 @@ package.loaded['rafi.config.options'] = true
 
 To override **LSP configurations**, you can do either:
 
-1. Customize `neoconf.json` or per project's `.neoconf.json`
+1. Customize per project's `.neoconf.json`
 
 2. Or, override server options with nvim-lspconfig plugin, for example:
 
@@ -532,7 +531,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [JoosepAlviste/nvim-ts-context-commentstring] | Set the commentstring based on the cursor location
 | [echasnovski/mini.comment] | Fast and familiar per-line commenting
 | [echasnovski/mini.trailspace] | Trailing whitespace highlight and remove
-| [echasnovski/mini.bracketed] | Go forward/backward with square brackets
 | [echasnovski/mini.ai] | Extend and create `a`/`i` textobjects
 | [echasnovski/mini.splitjoin] | Split and join arguments
 | [AndrewRadev/linediff.vim] | Perform diffs on blocks of code
@@ -586,7 +584,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [RRethy/nvim-treesitter-endwise] | Wisely add "end" in various filetypes
 | [windwp/nvim-ts-autotag] | Use treesitter to auto close and auto rename html tag
 | [andymass/vim-matchup] | Modern matchit and matchparen
-| [kevinhwang91/nvim-ufo] | Make folds look modern and keep a high performance
 | [iloginow/vim-stylus] | Better vim plugin for stylus
 | [chrisbra/csv.vim] | Handling column separated data
 | [towolf/vim-helm] | Syntax for Helm templates (yaml + gotmpl + sprig)
@@ -672,7 +669,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [JoosepAlviste/nvim-ts-context-commentstring]: https://github.com/JoosepAlviste/nvim-ts-context-commentstring
 [echasnovski/mini.comment]: https://github.com/echasnovski/mini.comment
 [echasnovski/mini.trailspace]: https://github.com/echasnovski/mini.trailspace
-[echasnovski/mini.bracketed]: https://github.com/echasnovski/mini.bracketed
 [echasnovski/mini.ai]: https://github.com/echasnovski/mini.ai
 [echasnovski/mini.splitjoin]: https://github.com/echasnovski/mini.splitjoin
 [AndrewRadev/linediff.vim]: https://github.com/AndrewRadev/linediff.vim
@@ -710,7 +706,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [RRethy/nvim-treesitter-endwise]: https://github.com/RRethy/nvim-treesitter-endwise
 [windwp/nvim-ts-autotag]: https://github.com/windwp/nvim-ts-autotag
 [andymass/vim-matchup]: https://github.com/andymass/vim-matchup
-[kevinhwang91/nvim-ufo]: https://github.com/kevinhwang91/nvim-ufo
 [iloginow/vim-stylus]: https://github.com/iloginow/vim-stylus
 [chrisbra/csv.vim]: https://github.com/chrisbra/csv.vim
 [towolf/vim-helm]: https://github.com/towolf/vim-helm
@@ -788,6 +783,7 @@ Spec: `rafi.plugins.extras.editor.<name>`
 | `anyjump` | [pechorin/any-jump.vim] | Jump to any definition and references without overhead
 | `flybuf`  | [glepnir/flybuf.nvim] | List buffers in a float window
 | `sidebar` | [sidebar-nvim/sidebar.nvim] | Generic and modular lua sidebar
+| `ufo`     | [kevinhwang91/nvim-ufo] | Make folds look modern and keep a high performance
 
 ### Extra Plugins: Formatting
 
@@ -848,6 +844,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 [pechorin/any-jump.vim]: https://github.com/pechorin/any-jump.vim
 [glepnir/flybuf.nvim]: https://github.com/glepnir/flybuf.nvim
 [sidebar-nvim/sidebar.nvim]: https://github.com/sidebar-nvim/sidebar.nvim
+[kevinhwang91/nvim-ufo]: https://github.com/kevinhwang91/nvim-ufo
 [hrsh7th/nvim-gtd]: https://github.com/hrsh7th/nvim-gtd
 [lvimuser/lsp-inlayhints.nvim]: https://github.com/lvimuser/lsp-inlayhints.nvim
 [kosayoda/nvim-lightbulb]: https://github.com/kosayoda/nvim-lightbulb
@@ -913,7 +910,6 @@ Note that,
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
 | <kbd>Space</kbd>+<kbd>cd</kbd> | 𝐍 | Switch to the directory of opened buffer | <small>`:lcd %:p:h`</small>
-| <kbd>gf</kbd> | 𝐍 | Open file under the cursor in a vsplit | <small>`:rightbelow wincmd f`</small>
 | <kbd>Space</kbd>+<kbd>w</kbd> | 𝐍 | Write buffer to file | <small>`:write`</small>
 | <kbd>Ctrl</kbd>+<kbd>s</kbd> | 𝐍 𝐕 𝐂 | Write buffer to file | <small>`:write`</small>
 
@@ -951,8 +947,9 @@ Note that,
 | <kbd>Space</kbd> <kbd>ce</kbd> | 𝐍 | Open diagnostics window | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>ca</kbd> | 𝐍 𝐕 | Code action | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>cA</kbd> | 𝐍 | Source action | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>Space</kbd> <kbd>tp</kbd> | 𝐍 | Toggle buffer diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>Space</kbd> <kbd>tP</kbd> | 𝐍 | Toggle global diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd> <kbd>uh</kbd> | 𝐍 | Toggle inlay-hints | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd> <kbd>ud</kbd> | 𝐍 | Toggle buffer diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd> <kbd>uD</kbd> | 𝐍 | Toggle global diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>,wa</kbd> | 𝐍 | Add workspace folder | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>,wr</kbd> | 𝐍 | Remove workspace folder | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>,wl</kbd> | 𝐍 | List workspace folders | <small>[plugins/lsp/keymaps.lua]</small>
@@ -1019,21 +1016,22 @@ Note that,
 | <kbd>;</kbd>+<kbd>dt</kbd> | 𝐍 | Open TODO Telescope list | <small>[folke/todo-comments.nvim]</small>
 | <kbd>Space</kbd>+<kbd>xt</kbd> | 𝐍 | Open TODO list | <small>[folke/todo-comments.nvim]</small>
 | <kbd>Space</kbd>+<kbd>xT</kbd> | 𝐍 | Open TODO/FIXME list | <small>[folke/todo-comments.nvim]</small>
-| <kbd>Space</kbd>+<kbd>xq</kbd> | 𝐍 | Open Quickfix via Trouble | <small>[folke/trouble.nvim]</small>
-| <kbd>Space</kbd>+<kbd>xl</kbd> | 𝐍 | Open Locationlist via Trouble | <small>[folke/trouble.nvim]</small>
 | <kbd>Space</kbd>+<kbd>e</kbd> | 𝐍 | Open Trouble document | <small>[folke/trouble.nvim]</small>
 | <kbd>Space</kbd>+<kbd>r</kbd> | 𝐍 | Open Trouble workspace | <small>[folke/trouble.nvim]</small>
+| <kbd>Space</kbd>+<kbd>xQ</kbd> | 𝐍 | Open Quickfix via Trouble | <small>[folke/trouble.nvim]</small>
+| <kbd>Space</kbd>+<kbd>xL</kbd> | 𝐍 | Open Locationlist via Trouble | <small>[folke/trouble.nvim]</small>
 
 ### Editor UI
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>Space</kbd> <kbd>ts</kbd> | 𝐍 | Toggle spell-checker | <small>`:setlocal spell!`</small>
-| <kbd>Space</kbd> <kbd>tn</kbd> | 𝐍 | Toggle line numbers | <small>`:setlocal nonumber!`</small>
-| <kbd>Space</kbd> <kbd>tl</kbd> | 𝐍 | Toggle hidden characters | <small>`:setlocal nolist!`</small>
-| <kbd>Space</kbd> <kbd>th</kbd> | 𝐍 | Toggle highlighted search | <small>`:set hlsearch!`</small>
-| <kbd>Space</kbd> <kbd>tw</kbd> | 𝐍 | Toggle wrap | <small>`:setlocal wrap!`</small> …
-| <kbd>Space</kbd> <kbd>ti</kbd> | 𝐍 | Toggle indentation lines | <small>[lukas-reineke/indent-blankline.nvim]</small>
+| <kbd>Space</kbd> <kbd>uf</kbd> | 𝐍 | Toggle format on Save | <small>[config/keymaps.lua]</small>
+| <kbd>Space</kbd> <kbd>us</kbd> | 𝐍 | Toggle spell-checker | <small>`:setlocal spell!`</small>
+| <kbd>Space</kbd> <kbd>ul</kbd> | 𝐍 | Toggle line numbers | <small>`:setlocal nonumber!`</small>
+| <kbd>Space</kbd> <kbd>uo</kbd> | 𝐍 | Toggle hidden characters | <small>`:setlocal nolist!`</small>
+| <kbd>Space</kbd> <kbd>uu</kbd> | 𝐍 | Toggle highlighted search | <small>`:set hlsearch!`</small>
+| <kbd>Space</kbd> <kbd>uw</kbd> | 𝐍 | Toggle wrap | <small>`:setlocal wrap!`</small> …
+| <kbd>Space</kbd> <kbd>ue</kbd> | 𝐍 | Toggle indentation lines | <small>[lukas-reineke/indent-blankline.nvim]</small>
 | <kbd>Space</kbd> <kbd>ui</kbd> | 𝐍 | Show highlight groups for word | <small>`vim.show_pos`</small>
 | <kbd>Space</kbd> <kbd>uC</kbd> | 𝐍 | Select colorscheme | <small>[config/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>un</kbd> | 𝐍 | Dismiss all notifications | <small>[rcarriga/nvim-notify]</small>
@@ -1077,6 +1075,7 @@ Note that,
 | <kbd>Space</kbd> <kbd>mdf</kbd> | 𝐕 | Mark region for diff and compare if more than one | <small>[AndrewRadev/linediff.vim]</small>
 | <kbd>Space</kbd> <kbd>mds</kbd> | 𝐍 | Shows the comparison for all marked regions | <small>[AndrewRadev/linediff.vim]</small>
 | <kbd>Space</kbd> <kbd>mdr</kbd> | 𝐍 | Removes the signs denoting the diff regions | <small>[AndrewRadev/linediff.vim]</small>
+| <kbd>Space</kbd> <kbd>mh</kbd> | 𝐍 | Open HTTP Rest UI | <small>[rest-nvim/rest.nvim]</small>
 | <kbd>Space</kbd> <kbd>mt</kbd> | 𝐍 𝐕 | Toggle highlighted word | <small>[t9md/vim-quickhl]</small>
 | <kbd>Space</kbd> <kbd>zz</kbd> | 𝐍 | Toggle distraction-free writing | <small>[folke/zen-mode.nvim]</small>
 
@@ -1097,28 +1096,6 @@ Note that,
 | <kbd>sx</kbd> | 𝐍 | Delete buffer, leave blank window | <small>`:enew │ bdelete`</small>
 | <kbd>sz</kbd> | 𝐍 | Toggle window zoom | <small>`:vertical resize │ resize`</small>
 | <kbd>sh</kbd> | 𝐍 | Toggle colorscheme background=dark/light | <small>`:set background` …
-
-### Plugin: Mini.Bracketed
-
-Go forward/backward with square brackets. See [echasnovski/mini.bracketed] for
-more mappings and usage information.
-
-| Key                 | Target                                            | Mapping                      |
-|---------------------|-------------------------------------------------- | ---------------------------- |
-| `[B` `[b` `]b` `]B` | Buffer                                            | `MiniBracketed.buffer()`     |
-| `[C` `[c` `]c` `]C` | Comment block                                     | `MiniBracketed.comment()`    |
-| `[X` `[x` `]x` `]X` | Conflict marker                                   | `MiniBracketed.conflict()`   |
-| `[D` `[d` `]d` `]D` | Diagnostic                                        | `MiniBracketed.diagnostic()` |
-| `[F` `[f` `]f` `]F` | File on disk                                      | `MiniBracketed.file()`       |
-| `[I` `[i` `]i` `]I` | Indent change                                     | `MiniBracketed.indent()`     |
-| `[J` `[j` `]j` `]J` | Jump from jumplist inside current buffer          | `MiniBracketed.jump()`       |
-| `[L` `[l` `]l` `]L` | Location from location list                       | `MiniBracketed.location()`   |
-| `[O` `[o` `]o` `]O` | Old files                                         | `MiniBracketed.oldfile()`    |
-| `[Q` `[q` `]q` `]Q` | Quickfix entry from quickfix list                 | `MiniBracketed.quickfix()`   |
-| `[T` `[t` `]t` `]T` | Tree-sitter node and parents                      | `MiniBracketed.treesitter()` |
-| `[U` `[u` `]u` `]U` | Undo states from specially tracked linear history | `MiniBracketed.undo()`       |
-| `[W` `[w` `]w` `]W` | Window in current tab                             | `MiniBracketed.window()`     |
-| `[Y` `[y` `]y` `]Y` | Yank selection replacing the latest put region    | `MiniBracketed.yank()`       |
 
 ### Plugin: Mini.Surround
 
@@ -1310,7 +1287,6 @@ See [chentau/marks.nvim] for more mappings and usage information.
 </details>
 
 [Neovim]: https://github.com/neovim/neovim
-[neoconf.json]: ./neoconf.json
 [lazy.nvim]: https://github.com/folke/lazy.nvim
 [LazyVim/starter]: https://github.com/LazyVim/starter
 [lua/rafi/plugins/lsp/init.lua]: ./lua/rafi/plugins/lsp/init.lua

@@ -117,10 +117,10 @@ return {
 				function()
 					if vim.b.navic_winbar then
 						vim.b.navic_winbar = false
-						vim.wo.winbar = ''
+						vim.opt_local.winbar = ''
 					else
 						vim.b.navic_winbar = true
-						vim.wo.winbar = '%#NavicIconsFile# %t %* '
+						vim.opt_local.winbar = '%#NavicIconsFile# %t %* '
 							.. "%{%v:lua.require'nvim-navic'.get_location()%}"
 					end
 				end,
@@ -202,7 +202,7 @@ return {
 		'lukas-reineke/indent-blankline.nvim',
 		event = 'FileType',
 		keys = {
-			{ '<Leader>ti', '<cmd>IndentBlanklineToggle<CR>' },
+			{ '<Leader>ue', '<cmd>IndentBlanklineToggle<CR>' },
 		},
 		opts = {
 			show_trailing_blankline_indent = false,
@@ -214,6 +214,8 @@ return {
 			filetype_exclude = {
 				'lspinfo',
 				'checkhealth',
+				'git',
+				'gitcommit',
 				'help',
 				'man',
 				'lazy',
