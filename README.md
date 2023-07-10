@@ -239,7 +239,7 @@ git pull --ff --ff-only
 
 There are 2 distinct ways to extend configuration:
 
-1. The second option is to fork this repository and create a directory
+1. The first option is to fork this repository and create a directory
    `lua/config` with one or more of these files: (Optional)
 
    * `lua/config/autocmds.lua` — Custom auto-commands
@@ -570,8 +570,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [nvim-telescope/telescope.nvim] | Find, Filter, Preview, Pick. All lua.
 | [jvgrootveld/telescope-zoxide] | Telescope extension for Zoxide
 | [rafi/telescope-thesaurus.nvim] | Browse synonyms from thesaurus.com
-| [nvim-telescope/telescope-frecency.nvim] | Intelligent prioritization when selecting files from your editing history
-| [kkharji/sqlite.lua] | SQLite LuaJIT binding with a simple API
 | [nvim-lua/plenary.nvim] | Lua functions library
 
 ### Treesitter & Syntax
@@ -696,8 +694,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [nvim-telescope/telescope.nvim]: https://github.com/nvim-telescope/telescope.nvim
 [jvgrootveld/telescope-zoxide]: https://github.com/jvgrootveld/telescope-zoxide
 [rafi/telescope-thesaurus.nvim]: https://github.com/rafi/telescope-thesaurus.nvim
-[nvim-telescope/telescope-frecency.nvim]: https://github.com/nvim-telescope/telescope-frecency.nvim
-[kkharji/sqlite.lua]: https://github.com/kkharji/sqlite.lua
 [nvim-lua/plenary.nvim]: https://github.com/nvim-lua/plenary.nvim
 
 [nvim-treesitter/nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
@@ -778,7 +774,7 @@ Spec: `rafi.plugins.extras.diagnostics.<name>`
 
 Spec: `rafi.plugins.extras.editor.<name>`
 
-| Key       | Name           | Description
+| Name      | Repository     | Description
 | ----------| -------------- | ----------------------
 | `anyjump` | [pechorin/any-jump.vim] | Jump to any definition and references without overhead
 | `flybuf`  | [glepnir/flybuf.nvim] | List buffers in a float window
@@ -792,6 +788,26 @@ Spec: `rafi.plugins.extras.formatting.<name>`
 | Name           | Description
 | -------------- | ----------------------
 | `prettier`     | prettier: null-ls source and mason package
+
+
+### Extra Plugins: Lang
+
+Spec: `rafi.plugins.extras.lang.<name>`
+
+| Name           | Description
+| -------------- | ----------------------
+| `go`           | go syntax, lsp, dap and test
+| `json`         | json syntax, lsp and schemas
+| `python`       | python syntax, lsp, dap, test and [rafi/neoconf-venom.nvim]
+| `yaml`         | yaml syntax, lsp and schemas
+
+### Extra Plugins: Linting
+
+Spec: `rafi.plugins.extras.linting.<name>`
+
+| Name           | Description
+| -------------- | ----------------------
+| `ruff`         | ruff for python
 
 ### Extra Plugins: LSP
 

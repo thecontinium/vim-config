@@ -18,10 +18,9 @@ return {
 			{
 				'hrsh7th/cmp-nvim-lsp',
 				cond = function()
-					return require('rafi.config').has('nvim-cmp')
+					return require('rafi.lib.utils').has('nvim-cmp')
 				end,
 			},
-			'rafi/neoconf-venom.nvim',
 		},
 		---@class PluginLspOpts
 		opts = {
@@ -92,7 +91,7 @@ return {
 			-- Setup autoformat
 			require('rafi.plugins.lsp.format').setup(opts)
 			-- Setup formatting, keymaps and highlights.
-			local lsp_on_attach = require('rafi.config').on_attach
+			local lsp_on_attach = require('rafi.lib.utils').on_attach
 			---@param client lsp.Client
 			---@param buffer integer
 			lsp_on_attach(function(client, buffer)
@@ -104,6 +103,18 @@ return {
 					return
 				end
 			end)
+
+			local register_capability = vim.lsp.handlers['client/registerCapability']
+
+			vim.lsp.handlers['client/registerCapability'] = function(err, res, ctx)
+				local ret = register_capability(err, res, ctx)
+				local client_id = ctx.client_id
+				---@type lsp.Client
+				local client = vim.lsp.get_client_by_id(client_id)
+				local buffer = vim.api.nvim_get_current_buf()
+				require('rafi.plugins.lsp.keymaps').on_attach(client, buffer)
+				return ret
+			end
 
 			-- Diagnostics signs and highlights
 			for type, icon in pairs(require('rafi.config').icons.diagnostics) do
@@ -138,9 +149,6 @@ return {
 			end
 
 			vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
-
-			-- See https://github.com/rafi/neoconf-venom.nvim
-			require('venom').setup()
 
 			-- Initialize LSP servers and ensure Mason packages
 

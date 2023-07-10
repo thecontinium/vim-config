@@ -9,6 +9,10 @@ local M = {}
 ---@type PluginLspOpts
 M.opts = nil
 
+function M.enabled()
+	return M.opts.autoformat
+end
+
 function M.toggle()
 	if vim.b.autoformat == false then
 		vim.b.autoformat = nil
@@ -49,7 +53,7 @@ function M.format(opts)
 		filter = function(client)
 			return vim.tbl_contains(client_ids, client.id)
 		end,
-	}, require('rafi.config').plugin_opts('nvim-lspconfig').format or {}))
+	}, require('rafi.lib.utils').opts('nvim-lspconfig').format or {}))
 end
 
 ---@param formatters LazyVimFormatters
@@ -133,7 +137,7 @@ function M.supports_format(client)
 	if
 		client.config
 		and client.config.capabilities
-		and client.config.capabilities.documentFormattingProvider == false
+		and client.config.capabilities['documentFormattingProvider'] == false
 	then
 		return false
 	end
@@ -145,7 +149,7 @@ end
 function M.setup(opts)
 	M.opts = opts
 	vim.api.nvim_create_autocmd('BufWritePre', {
-		group = vim.api.nvim_create_augroup('LazyVimFormat', {}),
+		group = vim.api.nvim_create_augroup('rafi_format', {}),
 		callback = function()
 			if M.opts.autoformat then
 				M.format()
