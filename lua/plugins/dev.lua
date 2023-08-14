@@ -106,6 +106,10 @@ return {
 		ft = { "clojure", "python" },
 		-- branch = "develop",
 		config = function()
+			require("conjure.main").main()
+			require("conjure.mapping")["on-filetype"]()
+		end,
+		init = function()
 			vim.g["conjure#mapping#prefix"] = ","
 			vim.g["conjure#mapping#log_split"] = "lv"
 			vim.g["conjure#mapping#log_toggle"] = "ls"
@@ -118,13 +122,10 @@ return {
 		end,
 	},
 
-	{
-		"gpanders/nvim-parinfer",
-		ft = "clojure",
-		config = function()
-			vim.g.parinfer_force_balance = true
-		end,
-	},
+	-- {
+	-- 	"gpanders/nvim-parinfer",
+	-- 	ft = "clojure",
+	-- },
 
 	{
 		"PaterJason/cmp-conjure",
