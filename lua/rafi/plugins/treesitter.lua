@@ -8,10 +8,9 @@ return {
 	{ 'iloginow/vim-stylus', ft = 'stylus' },
 	{ 'chrisbra/csv.vim', ft = 'csv' },
 	{ 'towolf/vim-helm', ft = 'helm' },
-	{ 'mustache/vim-mustache-handlebars', ft = {'html', 'mustache', 'handlebars'}},
+	{ 'mustache/vim-mustache-handlebars', ft = { 'mustache', 'handlebars' } },
 	{ 'lifepillar/pgsql.vim', ft = 'pgsql' },
 	{ 'MTDL9/vim-log-highlighting', ft = 'log' },
-	{ 'tmux-plugins/vim-tmux', ft = 'tmux' },
 	{ 'reasonml-editor/vim-reason-plus', ft = { 'reason', 'merlin' } },
 	{ 'vmchale/just-vim', ft = 'just' },
 
@@ -60,12 +59,14 @@ return {
 			'TSInstallInfo',
 			'TSModuleInfo',
 			'TSConfigInfo',
+			'TSUpdateSync',
 		},
 		keys = {
 			{ 'v', desc = 'Increment selection', mode = 'x' },
 			{ 'V', desc = 'Shrink selection', mode = 'x' },
 		},
 		---@type TSConfig
+		---@diagnostic disable-next-line: missing-fields
 		opts = {
 			highlight = { enable = true },
 			indent = { enable = true },

@@ -29,7 +29,13 @@ return {
 							usePlaceholders = true,
 							completeUnimported = true,
 							staticcheck = true,
-							directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
+							directoryFilters = {
+								'-.git',
+								'-.vscode',
+								'-.idea',
+								'-.vscode-test',
+								'-node_modules',
+							},
 							semanticTokens = true,
 							codelenses = {
 								gc_details = false,
@@ -70,13 +76,14 @@ return {
 				},
 			},
 			setup = {
-				gopls = function(_, opts)
+				gopls = function(_, _)
 					-- workaround for gopls not supporting semanticTokensProvider
 					-- https://github.com/golang/go/issues/54531#issuecomment-1464982242
 					require('rafi.lib.utils').on_attach(function(client, _)
 						if client.name == 'gopls' then
 							if not client.server_capabilities.semanticTokensProvider then
-								local semantic = client.config.capabilities.textDocument.semanticTokens
+								local semantic =
+									client.config.capabilities.textDocument.semanticTokens
 								if semantic ~= nil then
 									client.server_capabilities.semanticTokensProvider = {
 										full = true,
@@ -98,6 +105,7 @@ return {
 
 	{
 		'jose-elias-alvarez/null-ls.nvim',
+		optional = true,
 		opts = function(_, opts)
 			local nls = require('null-ls')
 			local sources = {
@@ -106,6 +114,7 @@ return {
 				nls.builtins.formatting.gofumpt,
 				-- nls.builtins.formatting.goimports_reviser,
 			}
+			opts.sources = opts.sources or {}
 			for _, source in ipairs(sources) do
 				table.insert(opts.sources, source)
 			end

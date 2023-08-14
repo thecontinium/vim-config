@@ -36,15 +36,12 @@ return {
 			autoload = true,
 			follow_cwd = false,
 			ignored_dirs = { '/usr', '/opt', '~/.cache', vim.env.TMPDIR or '/tmp' },
-			should_autosave = function()
-				-- Do not autosave if git commit/rebase session.
-				return vim.env.GIT_EXEC_PATH == nil
-			end,
 		},
 		config = function(_, opts)
 			if vim.g.in_pager_mode or vim.env.GIT_EXEC_PATH ~= nil then
 				-- Do not autoload if stdin has been provided, or git commit session.
 				opts.autoload = false
+				opts.autosave = false
 			end
 			require('persisted').setup(opts)
 		end,
@@ -240,7 +237,6 @@ return {
 		'folke/which-key.nvim',
 		event = 'VeryLazy',
 		opts = {
-			plugins = { marks = false, registers = false },
 			icons = { separator = ' 󰁔 ' },
 			window = { winblend = 0 },
 			defaults = {
@@ -267,18 +263,6 @@ return {
 			wk.setup(opts)
 			wk.register(opts.defaults)
 		end,
-	},
-
-	-----------------------------------------------------------------------------
-	{
-		'tversteeg/registers.nvim',
-		cmd = 'Registers',
-		keys = {
-			{ '<C-r>', mode = 'i', desc = 'Reveal registers' },
-			{ '"', mode = 'n', desc = 'Reveal registers' },
-			{ '"', mode = 'x', desc = 'Reveal registers' },
-		},
-		opts = { window = { border = 'rounded' } },
 	},
 
 	-----------------------------------------------------------------------------
@@ -477,7 +461,6 @@ return {
 					filetype = { 'notify', 'noice' },
 					buftype = {},
 				},
-
 			},
 		},
 	},
@@ -514,22 +497,10 @@ return {
 	-----------------------------------------------------------------------------
 	{
 		'nvim-pack/nvim-spectre',
+		-- stylua: ignore
 		keys = {
-			{
-				'<Leader>sp',
-				function()
-					require('spectre').open()
-				end,
-				desc = 'Spectre',
-			},
-			{
-				'<Leader>sp',
-				function()
-					require('spectre').open_visual({ select_word = true })
-				end,
-				mode = 'x',
-				desc = 'Spectre Word',
-			},
+			{ '<Leader>sp', function() require('spectre').toggle() end, desc = 'Spectre', },
+			{ '<Leader>sp', function() require('spectre').open_visual({ select_word = true }) end, mode = 'x', desc = 'Spectre Word' },
 		},
 		opts = {
 			mapping = {
@@ -562,7 +533,7 @@ return {
 			default = {
 				find = {
 					cmd = 'rg',
-					options = { 'ignore-case', 'hidden', 'gitignore' }
+					options = { 'ignore-case', 'hidden', 'gitignore' },
 				},
 			},
 		},
@@ -572,13 +543,9 @@ return {
 	{
 		'echasnovski/mini.bufremove',
 		opts = {},
+		-- stylua: ignore
 		keys = {
-			{
-				'<leader>bd', function()
-					require('mini.bufremove').delete(0, false)
-				end,
-				desc = 'Delete Buffer'
-			},
+			{ '<leader>bd', function() require('mini.bufremove').delete(0, false) end, desc = 'Delete Buffer', },
 		},
 	},
 

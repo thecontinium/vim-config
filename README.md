@@ -478,7 +478,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [hrsh7th/cmp-nvim-lsp] | nvim-cmp source for neovim builtin LSP client
 | [b0o/SchemaStore.nvim] | JSON schemas for Neovim
 | [rafi/neoconf-venom.nvim] | Automatically set virtual-environment python runtime
-| [jose-elias-alvarez/null-ls.nvim] | Inject LSP diagnostics, code actions, and more
 
 ### Editor Plugins
 
@@ -498,7 +497,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [haya14busa/vim-edgemotion] | Jump to the edge of block
 | [folke/zen-mode.nvim] | Distraction-free coding for Neovim
 | [folke/which-key.nvim] | Create key bindings that stick
-| [tversteeg/registers.nvim] | Preview the contents of the registers
 | [folke/todo-comments.nvim] | Highlight, list and search todo comments in your projects
 | [folke/trouble.nvim] | Pretty lists to help you solve all code diagnostics
 | [sindrets/diffview.nvim] | Tabpage interface for cycling through diffs
@@ -555,7 +553,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | Name           | Description
 | -------------- | ----------------------
 | [lewis6991/gitsigns.nvim] | Git signs written in pure lua
-| [TimUntersberger/neogit] | Magit clone for Neovim
+| [NeogitOrg/neogit] | Magit clone for Neovim
 | [tpope/vim-fugitive] | Git client
 | [junegunn/gv.vim] | Git log browser
 | [ruifm/gitlinker.nvim] | Browse git repositories
@@ -588,7 +586,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [mustache/vim-mustache-handlebars] | Mustache and handlebars syntax
 | [lifepillar/pgsql.vim] | PostgreSQL syntax and indent
 | [MTDL9/vim-log-highlighting] | Syntax highlighting for generic log files
-| [tmux-plugins/vim-tmux] | Plugin for tmux.conf
 | [reasonml-editor/vim-reason-plus] | Reason syntax and indent
 | [vmchale/just-vim] | Syntax highlighting for Justfiles
 | [pearofducks/ansible-vim] | Improved YAML support for Ansible
@@ -622,7 +619,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [hrsh7th/cmp-nvim-lsp]: https://github.com/hrsh7th/cmp-nvim-lsp
 [b0o/SchemaStore.nvim]: https://github.com/b0o/SchemaStore.nvim
 [rafi/neoconf-venom.nvim]: https://github.com/rafi/neoconf-venom.nvim
-[jose-elias-alvarez/null-ls.nvim]: https://github.com/jose-elias-alvarez/null-ls.nvim
 
 [folke/lazy.nvim]: https://github.com/folke/lazy.nvim
 [nmac427/guess-indent.nvim]: https://github.com/nmac427/guess-indent.nvim
@@ -638,7 +634,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [haya14busa/vim-edgemotion]: https://github.com/haya14busa/vim-edgemotion
 [folke/zen-mode.nvim]: https://github.com/folke/zen-mode.nvim
 [folke/which-key.nvim]: https://github.com/folke/which-key.nvim
-[tversteeg/registers.nvim]: https://github.com/tversteeg/registers.nvim
 [folke/todo-comments.nvim]: https://github.com/folke/todo-comments.nvim
 [folke/trouble.nvim]: https://github.com/folke/trouble.nvim
 [sindrets/diffview.nvim]: https://github.com/sindrets/diffview.nvim
@@ -683,7 +678,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [nyoom-engineering/oxocarbon.nvim]: https://github.com/nyoom-engineering/oxocarbon.nvim
 
 [lewis6991/gitsigns.nvim]: https://github.com/lewis6991/gitsigns.nvim
-[TimUntersberger/neogit]: https://github.com/TimUntersberger/neogit
+[NeogitOrg/neogit]: https://github.com/NeogitOrg/neogit
 [tpope/vim-fugitive]: https://github.com/tpope/vim-fugitive
 [junegunn/gv.vim]: https://github.com/junegunn/gv.vim
 [ruifm/gitlinker.nvim]: https://github.com/ruifm/gitlinker.nvim
@@ -708,7 +703,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [mustache/vim-mustache-handlebars]: https://github.com/mustache/vim-mustache-handlebars
 [lifepillar/pgsql.vim]: https://github.com/lifepillar/pgsql.vim
 [MTDL9/vim-log-highlighting]: https://github.com/MTDL9/vim-log-highlighting
-[tmux-plugins/vim-tmux]: https://github.com/tmux-plugins/vim-tmux
 [reasonml-editor/vim-reason-plus]: https://github.com/reasonml-editor/vim-reason-plus
 [vmchale/just-vim]: https://github.com/vmchale/just-vim
 [pearofducks/ansible-vim]: https://github.com/pearofducks/ansible-vim
@@ -756,6 +750,7 @@ Spec: `rafi.plugins.extras.coding.<name>`
 | Name           | Repository     | Description
 | -------------- | -------------- | ----------------------
 | `autopairs`    | [windwp/nvim-autopairs] | Autopairs for neovim written by lua
+| `cmp-git`      | [petertriho/cmp-git] | Git source for nvim-cmp
 | `copilot`      | [zbirenbaum/copilot.lua] | Fully featured & enhanced copilot
 | `editorconfig` | [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
 | `emmet`        | [mattn/emmet-vim] | Provides support for expanding abbreviations alá emmet
@@ -818,6 +813,7 @@ Spec: `rafi.plugins.extras.lsp.<name>`
 | `gtd`            | [hrsh7th/nvim-gtd] | LSP's go-to definition plugin
 | `inlayhints`     | [lvimuser/lsp-inlayhints.nvim] | Partial implementation of LSP inlay hint
 | `lightbulb`      | [kosayoda/nvim-lightbulb] | VSCode 💡 for neovim's built-in LSP
+| `null-ls`        | [jose-elias-alvarez/null-ls.nvim] | Inject LSP diagnostics, code actions, and more
 | `yaml-companion` | [yaml-companion.nvim] | Get, set and autodetect YAML schemas in your buffers
 
 ### Extra Plugins: Org
@@ -853,6 +849,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 | `statuscol`    | [luukvbaal/statuscol.nvim] | Configurable 'statuscolumn' and click handlers
 
 [windwp/nvim-autopairs]: https://github.com/windwp/nvim-autopairs
+[petertriho/cmp-git]: https://github.com/petertriho/cmp-git
 [zbirenbaum/copilot.lua]: https://github.com/zbirenbaum/copilot.lua
 [sgur/vim-editorconfig]: https://github.com/sgur/vim-editorconfig
 [mattn/emmet-vim]: https://github.com/mattn/emmet-vim
@@ -864,6 +861,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 [hrsh7th/nvim-gtd]: https://github.com/hrsh7th/nvim-gtd
 [lvimuser/lsp-inlayhints.nvim]: https://github.com/lvimuser/lsp-inlayhints.nvim
 [kosayoda/nvim-lightbulb]: https://github.com/kosayoda/nvim-lightbulb
+[jose-elias-alvarez/null-ls.nvim]: https://github.com/jose-elias-alvarez/null-ls.nvim
 [yaml-companion.nvim]: https://github.com/someone-stole-my-name/yaml-companion.nvim
 [vimwiki/vimwiki]: https://github.com/vimwiki/vimwiki
 [Wansmer/treesj]: https://github.com/Wansmer/treesj

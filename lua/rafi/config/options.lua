@@ -217,20 +217,20 @@ vim.g.no_man_maps = 1       -- See share/nvim/runtime/ftplugin/man.vim
 -- Filetype detection
 -- ===
 
+---@diagnostic disable-next-line: missing-fields
 vim.filetype.add({
 	filename = {
 		Brewfile = 'ruby',
 		justfile = 'just',
 		Justfile = 'just',
 		Tmuxfile = 'tmux',
-		['go.sum'] = 'go',
 		['yarn.lock'] = 'yaml',
 		['.buckconfig'] = 'toml',
 		['.flowconfig'] = 'ini',
-		['.tern-project'] = 'json',
 		['.jsbeautifyrc'] = 'json',
 		['.jscsrc'] = 'json',
 		['.watchmanconfig'] = 'json',
+		['dev-requirements.txt'] = 'requirements',
 	},
 	pattern = {
 		['.*%.js%.map'] = 'json',
@@ -238,6 +238,7 @@ vim.filetype.add({
 		['Jenkinsfile.*'] = 'groovy',
 		['%.kube/config'] = 'yaml',
 		['%.config/git/users/.*'] = 'gitconfig',
+		['requirements-.*%.txt'] = 'requirements',
 		['.*/templates/.*%.ya?ml'] = 'helm',
 		['.*/templates/.*%.tpl'] = 'helm',
 		['.*/playbooks/.*%.ya?ml'] = 'yaml.ansible',
