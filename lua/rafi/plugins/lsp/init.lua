@@ -11,7 +11,7 @@ return {
 		'neovim/nvim-lspconfig',
 		event = { 'BufReadPre', 'BufNewFile' },
 		dependencies = {
-			{ 'folke/neoconf.nvim', cmd = 'Neoconf', opts = {} },
+			{ 'folke/neoconf.nvim', cmd = 'Neoconf', config = false, dependencies = { 'nvim-lspconfig' } },
 			{ 'folke/neodev.nvim', opts = {} },
 			'williamboman/mason.nvim',
 			'williamboman/mason-lspconfig.nvim',
@@ -90,6 +90,10 @@ return {
 		},
 		---@param opts PluginLspOpts
 		config = function(_, opts)
+			if require('rafi.lib.utils').has('neoconf.nvim') then
+				local plugin = require('lazy.core.config').spec.plugins['neoconf.nvim']
+				require('neoconf').setup(require('lazy.core.plugin').values(plugin, 'opts', false))
+			end
 			-- Setup autoformat
 			require('rafi.plugins.lsp.format').setup(opts)
 			-- Setup formatting, keymaps and highlights.
@@ -262,6 +266,26 @@ return {
 				ensure_installed()
 			end
 		end,
+	},
+
+	-----------------------------------------------------------------------------
+	{
+		'mhartington/formatter.nvim',
+		event = { 'BufReadPre', 'BufNewFile' },
+		dependencies = { 'williamboman/mason.nvim', 'neovim/nvim-lspconfig' },
+		opts = function(_, opts)
+			opts = opts or {}
+			local defaults = {
+				logging = true,
+				log_level = vim.log.levels.WARN,
+				filetype = {
+					lua = { require('formatter.filetypes.lua').stylua },
+				},
+			}
+			opts = vim.tbl_extend('keep', opts, defaults)
+			return opts
+		end,
+		config = true,
 	},
 
 	-----------------------------------------------------------------------------
