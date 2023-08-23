@@ -17,39 +17,18 @@ return {
 
 				"bash-language-server",
 				"clojure-lsp",
-				"json-lsp",
-				"lua-language-server",
-				"python-lsp-server",
 				"vim-language-server",
-				"yaml-language-server",
-				"typescript-language-server",
 
-				"yamlfmt",
 
-				"eslint_d",
 
-				"gofumpt",
 
-				"stylua",
 
-				"sql-formatter",
 
-				"shellcheck",
-				"shellharden",
-				"shfmt",
 
-				"hadolint",
 
-				"vint",
 
-				"markdownlint",
 
-				"proselint",
 
-				"fixjson",
-				"golines",
-				"ansible-lint",
-				"mypy",
 				-- 'stylua',
 				-- 'editorconfig-checker',
 				-- 'impl',
