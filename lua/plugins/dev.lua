@@ -9,7 +9,7 @@ return {
 		"guns/vim-sexp",
 		ft = "clojure",
 		config = function(_, _)
-			vim.g.sexp_enable_insert_mode_mappings = 0
+			-- vim.g.sexp_enable_insert_mode_mappings = 0
 			vim.g.sexp_mappings = {
 				sexp_round_head_wrap_list = ",i",
 				sexp_round_tail_wrap_list = ",I",
