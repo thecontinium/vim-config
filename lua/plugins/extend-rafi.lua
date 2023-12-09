@@ -1,12 +1,12 @@
 return {
-	{
-		'lukas-reineke/indent-blankline.nvim',
-		version = '2.20.8',
-	},
-	{
-		'nvim-neo-tree/neo-tree.nvim',
-		branch = "v3.x",
-	},
+	-- {
+	-- 	'lukas-reineke/indent-blankline.nvim',
+	-- 	version = '2.20.8',
+	-- },
+	-- {
+	-- 	'nvim-neo-tree/neo-tree.nvim',
+	-- 	branch = "v3.x",
+	-- },
 	{
 		"nvim-treesitter/nvim-treesitter",
 		opts = function(_, opts)
