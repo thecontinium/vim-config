@@ -93,17 +93,16 @@ return {
 	--   on-source: conjure
 	--
 	{ "clojure-vim/clojure.vim", ft = "clojure" },
-	--
-	-- - repo: clojure-vim/vim-jack-in
-	--   on_cmd: [Clj, Lein]
-	-- - repo: tpope/vim-dispatch
-	--   on_source: vim-jack-in
-	-- - repo: radenling/vim-dispatch-neovim
-	--   on_source: vim-dispatch
-	--
+
+	{
+		"clojure-vim/vim-jack-in",
+		cmd = { 'Clj', 'Lein'},
+		dependencies = { "radenling/vim-dispatch-neovim", "tpope/vim-dispatch" },
+	},
+
 	{
 		"Olical/conjure",
-		ft = { "clojure", "python" },
+		ft = { "clojure", "python", "markdown" },
 		-- branch = "develop",
 		config = function()
 			require("conjure.main").main()
@@ -119,6 +118,14 @@ return {
 			vim.g["conjure#highlight#enabled"] = true
 			-- allow lisp K mapping and delegate this to ,K
 			vim.g["conjure#mapping#doc_word"] = "K"
+			function ClerkShow()
+				vim.cmd(":w")
+				local current_ft = vim.bo.filetype
+				vim.bo.filetype = "clojure"
+				vim.cmd(':ConjureEval (nextjournal.clerk/show! "' .. vim.fn.expand("%:p") .. '")')
+				vim.bo.filetype = current_ft
+			end
+			vim.api.nvim_set_keymap('n', ',cs', ':lua ClerkShow()<CR>', { noremap = true, silent = true })
 		end,
 	},
 
