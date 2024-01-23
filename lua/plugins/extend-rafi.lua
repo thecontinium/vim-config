@@ -10,13 +10,16 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		opts = function(_, opts)
-			opts.ensure_installed = (vim.list_extend(opts.ensure_installed, {'clojure'}))
+			opts.ensure_installed = (vim.list_extend(opts.ensure_installed, { 'clojure' }))
 		end,
 	},
+
+  { "mickael-menu/zk-nvim", enabled = false },
+
 	{
-		"mickael-menu/zk-nvim",
+		'nvim-telescope/telescope.nvim',
 		keys = {
-			{ "<leader>zd", "<Cmd>ZkNew {  dir=vim.env.ZK_NOTEBOOK_DIR .. '/journal/daily' }<CR>", desc = "Zk Diary" },
+			{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>'},
 		},
-	},
+	}
 }
