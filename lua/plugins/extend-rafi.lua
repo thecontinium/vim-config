@@ -20,7 +20,7 @@ return {
 		'nvim-telescope/telescope.nvim',
 		keys = {
 			{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>'},
-		},
+	},
 	}
 }
 	-- {
