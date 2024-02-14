@@ -14,15 +14,25 @@ return {
 		end,
 	},
 
-  { "mickael-menu/zk-nvim", enabled = false },
+	{
+		'williamboman/mason.nvim',
+		opts = function(_, opts)
+			vim.list_extend(opts.ensure_installed, {
+				"bash-language-server",
+				"clojure-lsp",
+				"vim-language-server",
+				"python-lsp-server",
+			})
+		end,
+	},
 
 	{
 		'nvim-telescope/telescope.nvim',
 		keys = {
-			{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>'},
+			{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>' },
+		},
 	},
-	}
-}
+
 	-- {
 	-- 	'mfussenegger/nvim-lint',
 	-- 	opts = {
@@ -45,3 +55,4 @@ return {
 	-- 	},
 	-- },
 	--
+}
