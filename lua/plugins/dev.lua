@@ -67,20 +67,20 @@ return {
 		ft = "clojure",
 	},
 
-	{
-		"echasnovski/mini.pairs",
-		event = "VeryLazy",
-		config = function(_, opts)
-			require("mini.pairs").setup(opts)
-			vim.api.nvim_create_autocmd("FileType", {
-				group = vim.api.nvim_create_augroup("clojure_mini_pair", {}),
-				pattern = { "clojure" },
-				callback = function()
-					vim.b.minipairs_disable = true
-				end,
-			})
-		end,
-	},
+	-- {
+	-- 	"echasnovski/mini.pairs",
+	-- 	event = "VeryLazy",
+	-- 	config = function(_, opts)
+	-- 		require("mini.pairs").setup(opts)
+	-- 		vim.api.nvim_create_autocmd("FileType", {
+	-- 			group = vim.api.nvim_create_augroup("clojure_mini_pair", {}),
+	-- 			pattern = { "clojure" },
+	-- 			callback = function()
+	-- 				vim.b.minipairs_disable = true
+	-- 			end,
+	-- 		})
+	-- 	end,
+	-- },
 
 	-- - repo: thecontinium/marked-streaming-nvim
 	--   on_ft: markdown
