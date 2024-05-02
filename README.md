@@ -259,9 +259,8 @@ Fork this repository and create a directory
 
 Adding plugins or override existing options:
 
-* `lua/plugins/*.lua` or `lua/plugins.lua` — Plugins (See [lazy.nvim] for
-  syntax)
-
+* `lua/plugins/*.lua` or `lua/plugins.lua` — Plugins (See [lazy.nvim] specs
+  for syntax)
 
 ### Extend: Plugins
 
@@ -364,32 +363,56 @@ return {
     vim.g.structure_status = false
     ```
 
-1. Create `lua/config/setup.lua` and return _any_ of these functions:
+1. You can override LazyVim options. For example in `lua/plugins/core.lua`:
 
-    * `opts()` — Override RafiVim setup options
+    ```lua
+    return {
+      {
+        'LazyVim/LazyVim',
+        opts = {
+          icons = {
+            diagnostics = {
+              Error = '',
+              Warn  = '',
+              Info  = '',
+            },
+            status = {
+              diagnostics = {
+                error = 'E',
+                warn  = 'W',
+                info  = 'I',
+                hint  = 'H',
+              },
+            },
+          },
+        },
+      },
+    }
+    ```
+
+1. You can override lazy.nvim (package-manager) global options.
+   Create `lua/config/setup.lua` and return this function:
+
     * `lazy_opts()` — override LazyVim setup options
 
-    For example: (Default values are shown)
+    For example:
 
     ```lua
     local M = {}
 
     ---@return table
-    function M.opts()
-      return {
-        -- See lua/rafi/config/init.lua for all options
-      }
-    end
-
-    ---@return table
     function M.lazy_opts()
       return {
-        -- See https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/init.lua
+        -- See https://github.com/folke/lazy.nvim/#%EF%B8%8F-configuration
+        concurrency = jit.os:find('Windows') and (vim.uv.available_parallelism() * 2) or nil,
       }
     end
 
     return M
     ```
+
+1. You can completely override lazy.nvim setup by creating `lua/config/lazy.lua`
+   to replace `lua/rafi/config/lazy.lua` with your own procedure.
 
 ### Extend: LSP Settings
 
@@ -397,7 +420,7 @@ To override **LSP configurations**, you can either:
 
 1. Customize per project's `.neoconf.json`
 
-1. Or, override server options with nvim-lspconfig plugin, for example:
+1. Or, override server options with [nvim-lspconfig] plugin, for example:
 
    ```lua
    {
@@ -466,7 +489,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [akinsho/toggleterm.nvim] | Persist and toggle multiple terminals
 | [hedyhli/outline.nvim] | Code outline sidebar powered by LSP
 | [s1n7ax/nvim-window-picker] | Window picker
-| [rest-nvim/rest.nvim] | Fast Neovim http client written in Lua
 | [dnlhc/glance.nvim] | Pretty window for navigating LSP locations
 | [nvim-pack/nvim-spectre] | Find the enemy and replace them with dark power
 | [echasnovski/mini.bufremove] | Helper for removing buffers
@@ -594,7 +616,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [folke/trouble.nvim]: https://github.com/folke/trouble.nvim
 [akinsho/toggleterm.nvim]: https://github.com/akinsho/toggleterm.nvim
 [s1n7ax/nvim-window-picker]: https://github.com/s1n7ax/nvim-window-picker
-[rest-nvim/rest.nvim]: https://github.com/rest-nvim/rest.nvim
 [dnlhc/glance.nvim]: https://github.com/dnlhc/glance.nvim
 [nvim-pack/nvim-spectre]: https://github.com/nvim-pack/nvim-spectre
 [echasnovski/mini.bufremove]: https://github.com/echasnovski/mini.bufremove
@@ -722,6 +743,7 @@ Spec: `rafi.plugins.extras.editor.<name>`
 | `flybuf`      | [glepnir/flybuf.nvim]   | List buffers in a float window
 | `harpoon`     | [ThePrimeagen/harpoon]  | Marks for navigating your project
 | `minivisits`  | [echasnovski/mini.visits] | Track and reuse file system visits
+| `rest`        | [rest-nvim/rest.nvim] | Fast Neovim http client written in Lua
 | `sidebar`     | [sidebar-nvim/sidebar.nvim] | Generic and modular lua sidebar
 | `ufo`         | [kevinhwang91/nvim-ufo] | Make folds look modern and keep a high performance
 
@@ -729,6 +751,7 @@ Spec: `rafi.plugins.extras.editor.<name>`
 [glepnir/flybuf.nvim]: https://github.com/glepnir/flybuf.nvim
 [ThePrimeagen/harpoon]: https://github.com/ThePrimeagen/harpoon
 [echasnovski/mini.visits]: https://github.com/echasnovski/mini.visits
+[rest-nvim/rest.nvim]: https://github.com/rest-nvim/rest.nvim
 [sidebar-nvim/sidebar.nvim]: https://github.com/sidebar-nvim/sidebar.nvim
 [kevinhwang91/nvim-ufo]: https://github.com/kevinhwang91/nvim-ufo
 
@@ -992,9 +1015,9 @@ Note that,
 | <kbd>K</kbd>  | 𝐍 | Show hover help or collapsed fold | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>gK</kbd> | 𝐍 | Show signature help | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>cl</kbd>  | 𝐍 | Open LSP info window | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>Space</kbd> <kbd>cs</kbd>  | 𝐍 | Formatter menu selection | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>cr</kbd>  | 𝐍 | Rename | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>ce</kbd>  | 𝐍 | Open diagnostics window | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Space</kbd> <kbd>co</kbd>  | 𝐍 | Formatter menu selection | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>ca</kbd>  | 𝐍 𝐕 | Code action | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>cA</kbd>  | 𝐍 | Source action | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>chi</kbd>  | 𝐍 | LSP incoming calls | <small>[plugins/lsp/keymaps.lua]</small>
