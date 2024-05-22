@@ -3,7 +3,7 @@
 -- ===
 -- This file is automatically loaded by rafi.config.init
 
-local RafiUtil = require('rafi.util')
+local Util = require('rafi.util')
 local map = vim.keymap.set
 
 -- Package-manager
@@ -15,25 +15,38 @@ map('n', '<leader>mx', '<cmd>LazyExtras<CR>', { desc = 'Open Plugin Extras' })
 -- Navigation {{{
 
 -- Moves through display-lines, unless count is provided
-map({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-map({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+map({ 'n', 'x' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, desc = 'Down' })
+map({ 'n', 'x' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, desc = 'Up' })
 
-if vim.g.elite_mode then
+if vim.F.if_nil(vim.g.elite_mode, false) then
 	-- Elite-mode: Arrow-keys resize window
-	map('n', '<Up>', '<cmd>resize +1<cr>', { desc = 'Increase window height' })
-	map('n', '<Down>', '<cmd>resize -1<cr>', { desc = 'Decrease window height' })
-	map('n', '<Left>', '<cmd>vertical resize +1<cr>', { desc = 'Increase window width' })
-	map('n', '<Right>', '<cmd>vertical resize -1<cr>', { desc = 'Decrease window width' })
+	map('n', '<Up>', '<cmd>resize +1<cr>', { desc = 'Increase Window Height' })
+	map('n', '<Down>', '<cmd>resize -1<cr>', { desc = 'Decrease Window Height' })
+	map('n', '<Left>', '<cmd>vertical resize +1<cr>', { desc = 'Increase Window Width' })
+	map('n', '<Right>', '<cmd>vertical resize -1<cr>', { desc = 'Decrease Window Width' })
 else
 	-- Moves through display-lines, unless count is provided
-	map({ 'n', 'x' }, '<Down>', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-	map({ 'n', 'x' }, '<Up>', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+	map({ 'n', 'x' }, '<Down>', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, desc = 'Down' })
+	map({ 'n', 'x' }, '<Up>', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, desc = 'Up' })
 
 	-- Resize window using <ctrl> arrow keys
-	map('n', '<C-Up>', '<cmd>resize +1<cr>', { desc = 'Increase window height' })
-	map('n', '<C-Down>', '<cmd>resize -1<cr>', { desc = 'Decrease window height' })
-	map('n', '<C-Right>', '<cmd>vertical resize +1<cr>', { desc = 'Increase window width' })
-	map('n', '<C-Left>', '<cmd>vertical resize -1<cr>', { desc = 'Decrease window width' })
+	map('n', '<C-Up>', '<cmd>resize +2<cr>', { desc = 'Increase Window Height' })
+	map('n', '<C-Down>', '<cmd>resize -2<cr>', { desc = 'Decrease Window Height' })
+	map('n', '<C-Left>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
+	map('n', '<C-Right>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
+end
+
+if not vim.env.TMUX or vim.uv.os_uname().sysname == 'Windows_NT' then
+	-- Move to window using the <ctrl> hjkl keys
+	map('n', '<C-h>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
+	map('n', '<C-j>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
+	map('n', '<C-k>', '<C-w>k', { desc = 'Go to Upper Window', remap = true })
+	map('n', '<C-l>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
+	-- Terminal Mappings
+	map('t', '<C-h>', '<cmd>wincmd h<cr>', { desc = 'Go to Left Window' })
+	map('t', '<C-j>', '<cmd>wincmd j<cr>', { desc = 'Go to Lower Window' })
+	map('t', '<C-k>', '<cmd>wincmd k<cr>', { desc = 'Go to Upper Window' })
+	map('t', '<C-l>', '<cmd>wincmd l<cr>', { desc = 'Go to Right Window' })
 end
 
 -- Easier line-wise movement
@@ -73,6 +86,7 @@ map('n', '<A-}>', '<cmd>+tabmove<CR>', { desc = 'Tab Move Forwards' })
 -- buffers
 map('n', '<leader>bb', '<cmd>e #<CR>', { desc = 'Switch to Other Buffer' })
 map('n', '<leader>`', '<cmd>e #<CR>', { desc = 'Switch to Other Buffer' })
+map('n', '<leader>bD', '<cmd>:bd<cr>', { desc = 'Delete Buffer and Window' })
 
 -- }}}
 -- Selection {{{
@@ -122,16 +136,16 @@ map('x', 'A',  blockwise_force('A'),  { expr = true, noremap = true, desc = 'Blo
 -- }}}
 -- Jump to {{{
 
-map('n', '[b', '<cmd>bprev<CR>', { desc = 'Prev buffer' })
-map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next buffer' })
-map('n', ']q', vim.cmd.cnext, { desc = 'Next Quickfix Item' })
-map('n', '[q', vim.cmd.cprev, { desc = 'Previous Quickfix Item' })
-map('n', ']a', '<cmd>lnext<CR>', { desc = 'Next Loclist Item' })
-map('n', '[a', '<cmd>lprev<CR>', { desc = 'Previous Loclist Item' })
+map('n', '[b', '<cmd>bprev<CR>', { desc = 'Previous Buffer' })
+map('n', ']b', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
+map('n', ']q', vim.cmd.cnext, { desc = 'Next Quickfix' })
+map('n', '[q', vim.cmd.cprev, { desc = 'Previous Quickfix' })
+map('n', ']a', '<cmd>lnext<CR>', { desc = 'Next Loclist' })
+map('n', '[a', '<cmd>lprev<CR>', { desc = 'Previous Loclist' })
 
 -- Whitespace jump (see plugin/whitespace.vim)
-map('n', ']z', function() RafiUtil.edit.whitespace_jump(1) end, { desc = 'Next Whitespace' })
-map('n', '[z', function() RafiUtil.edit.whitespace_jump(-1) end, { desc = 'Previous Whitespace' })
+map('n', ']z', function() Util.edit.whitespace_jump(1) end, { desc = 'Next Whitespace' })
+map('n', '[z', function() Util.edit.whitespace_jump(-1) end, { desc = 'Previous Whitespace' })
 
 -- Diagnostic movement
 local diagnostic_goto = function(next, severity)
@@ -141,6 +155,7 @@ local diagnostic_goto = function(next, severity)
 		go({ severity = severity_int })
 	end
 end
+map('n', '<Leader>ce', vim.diagnostic.open_float, { desc = 'Line Diagnostics' })
 map('n', ']d', diagnostic_goto(true), { desc = 'Next Diagnostic' })
 map('n', '[d', diagnostic_goto(false), { desc = 'Prev Diagnostic' })
 map('n', ']e', diagnostic_goto(true, 'ERROR'), { desc = 'Next Error' })
@@ -178,6 +193,7 @@ map('n', '<C-q>', 'q', { desc = 'Macro Prefix' })
 
 -- Formatting
 map({ 'n', 'v' }, '<leader>cf', function() LazyVim.format({ force = true }) end, { desc = 'Format' })
+map('n', '<leader>cif', '<cmd>LazyFormatInfo<CR>', { silent = true, desc = 'Formatter Info' })
 
 -- Start new line from any cursor position in insert-mode
 map('i', '<S-Return>', '<C-o>o', { desc = 'Start Newline' })
@@ -207,7 +223,7 @@ map('n', '#', 'g#')
 map('n', 'g#', '#')
 
 -- Clear search with <Esc>
-map('n', '<Esc>', '<cmd>noh<CR>', { desc = 'Clear Search Highlight' })
+map('n', '<Esc>', '<cmd>noh<CR>', { desc = 'Escape and Clear hlsearch' })
 
 -- Use backspace key for matching pairs
 map({ 'n', 'x' }, '<BS>', '%', { remap = true, desc = 'Jump to Paren' })
@@ -227,26 +243,17 @@ map('n', '!', ':!', { desc = 'Execute Shell Command' })
 map('n', 'g!', ":put=execute('')<Left><Left>", { desc = 'Paste Command' })
 
 -- Switch history search pairs, matching my bash shell
----@return string
+map('c', '<Up>', '<C-p>')
+map('c', '<Down>', '<C-n>')
 map('c', '<C-p>', function()
 	return vim.fn.pumvisible() == 1 and '<C-p>' or '<Up>'
 end, { expr = true })
-
 map('c', '<C-n>', function()
 	return vim.fn.pumvisible() == 1 and '<C-n>' or '<Down>'
 end, { expr = true })
 
-map('c', '<Up>', '<C-p>')
-map('c', '<Down>', '<C-n>')
-
--- Allow misspellings
-local cabbrev = vim.cmd.cnoreabbrev
-cabbrev('qw', 'wq')
-cabbrev('Wq', 'wq')
-cabbrev('WQ', 'wq')
-cabbrev('Qa', 'qa')
-cabbrev('Bd', 'bd')
-cabbrev('bD', 'bd')
+-- Use keywordprg
+map('n', '<leader>K', '<cmd>norm! K<cr>', { desc = 'Keywordprg' })
 
 --- }}}
 -- File operations {{{
@@ -260,32 +267,37 @@ map('n', '<Leader>cd', function()
 	end
 end, { desc = 'Change Tab Directory' })
 
+-- New file
+map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
+
 -- Fast saving from all modes
-map('n', '<Leader>w', '<cmd>write<CR>', { desc = 'Save' })
-map({ 'n', 'i', 'v' }, '<C-s>', '<cmd>write<CR>', { desc = 'Save' })
+map('n', '<Leader>w', '<cmd>write<CR>', { desc = 'Save File' })
+map({ 'n', 'i', 'v' }, '<C-s>', '<cmd>write<CR>', { desc = 'Save File' })
 
 -- }}}
 -- Editor UI {{{
 
 -- Toggle list windows
-map('n', '<leader>xl', function() RafiUtil.edit.toggle_list('loclist') end, { desc = 'Toggle Location List' })
-map('n', '<leader>xq', function() RafiUtil.edit.toggle_list('quickfix') end, { desc = 'Toggle Quickfix List' })
+map('n', '<leader>xl', function() Util.edit.toggle_list('loclist') end, { desc = 'Toggle Location List' })
+map('n', '<leader>xq', function() Util.edit.toggle_list('quickfix') end, { desc = 'Toggle Quickfix List' })
 
 -- Set locations with diagnostics and open the list.
 map('n', '<Leader>a', function()
 	if vim.bo.filetype ~= 'qf' then
 		vim.diagnostic.setloclist({ open = false })
 	end
-	RafiUtil.edit.toggle_list('loclist')
+	Util.edit.toggle_list('loclist')
 end, { desc = 'Open Location List' })
 
-map('n', '<leader>uf', function() LazyVim.format.toggle() end, { desc = 'Toggle auto format (global)' })
-map('n', '<leader>uF', function() LazyVim.format.toggle(true) end, { desc = 'Toggle auto format (buffer)' })
+map('n', '<leader>uf', function() LazyVim.format.toggle() end, { desc = 'Toggle Auto Format (Global)' })
+map('n', '<leader>uF', function() LazyVim.format.toggle(true) end, { desc = 'Toggle Auto Format (Buffer)' })
 map('n', '<leader>us', function() LazyVim.toggle('spell') end, { desc = 'Toggle Spelling' })
 map('n', '<leader>uw', function() LazyVim.toggle('wrap') end, { desc = 'Toggle Word Wrap' })
 map('n', '<leader>uL', function() LazyVim.toggle('relativenumber') end, { desc = 'Toggle Relative Line Numbers' })
 map('n', '<leader>ul', function() LazyVim.toggle.number() end, { desc = 'Toggle Line Numbers' })
-map("n", "<leader>ud", function() LazyVim.toggle.diagnostics() end, { desc = "Toggle Diagnostics" })
+map('n', '<Leader>ud', function() Util.edit.diagnostic_toggle(false) end, { desc = 'Disable Diagnostics' })
+map('n', '<Leader>uD', function() Util.edit.diagnostic_toggle(true) end, { desc = 'Disable All Diagnostics' })
+
 map('n', '<Leader>uo', '<cmd>setlocal nolist!<CR>', { desc = 'Toggle Whitespace Symbols' })
 map('n', '<Leader>uu', '<cmd>nohlsearch<CR>', { desc = 'Hide Search Highlight' })
 local conceallevel = vim.o.conceallevel > 0 and vim.o.conceallevel or 3
@@ -298,71 +310,48 @@ map('n', '<leader>ub', function() LazyVim.toggle('background', false, {'light', 
 
 -- Show treesitter nodes under cursor
 map('n', '<Leader>ui', vim.show_pos, { desc = 'Show Treesitter Node' })
+map('n', '<leader>uI', '<cmd>InspectTree<cr>', { desc = 'Inspect Tree' })
 
 -- Clear search, diff update and redraw taken from runtime/lua/_editor.lua
 map(
 	'n',
 	'<leader>ur',
 	'<cmd>nohlsearch<bar>diffupdate<bar>normal! <C-L><CR>',
-	{ desc = 'Redraw / clear hlsearch / diff update' }
+	{ desc = 'Redraw / Clear hlsearch / Diff Update' }
 )
-
--- Smart wrap toggle (breakindent and colorcolumn toggle as-well)
-map('n', '<Leader>uw', function()
-	vim.opt_local.wrap = not vim.wo.wrap
-	vim.opt_local.breakindent = not vim.wo.breakindent
-
-	if vim.wo.colorcolumn == '' then
-		vim.opt_local.colorcolumn = tostring(vim.bo.textwidth)
-	else
-		vim.opt_local.colorcolumn = ''
-	end
-end, { desc = 'Toggle Wrap' })
 
 -- }}}
 -- Plugins & Tools {{{
 
 -- Append mode-line to current buffer
-map('n', '<Leader>ml', function() RafiUtil.edit.append_modeline() end, { desc = 'Append Modeline' })
+map('n', '<Leader>ml', function() Util.edit.append_modeline() end, { desc = 'Append Modeline' })
 
 -- Jump entire buffers throughout jumplist
-map('n', 'g<C-i>', function() RafiUtil.edit.jump_buffer(1) end, { desc = 'Jump to newer buffer' })
-map('n', 'g<C-o>', function() RafiUtil.edit.jump_buffer(-1) end, { desc = 'Jump to older buffer' })
+map('n', 'g<C-i>', function() Util.edit.jump_buffer(1) end, { desc = 'Jump to newer buffer' })
+map('n', 'g<C-o>', function() Util.edit.jump_buffer(-1) end, { desc = 'Jump to older buffer' })
 
 -- Context aware menu. See lua/lib/contextmenu.lua
-map('n', '<RightMouse>', function() RafiUtil.contextmenu.show() end)
-map('n', '<LocalLeader>c', function() RafiUtil.contextmenu.show() end, { desc = 'Content-aware menu' })
+map('n', '<RightMouse>', function() Util.contextmenu.show() end)
+map('n', '<LocalLeader>c', function() Util.contextmenu.show() end, { desc = 'Content-aware menu' })
 
 -- Lazygit
-map('n', '<leader>tg', function() require('lazy.util').float_term({ 'lazygit' }, { cwd = LazyVim.root.git(), esc_esc = false }) end, { desc = 'Lazygit (root dir)' })
-map('n', '<leader>tG', function() require('lazy.util').float_term({ 'lazygit' }, { esc_esc = false }) end, { desc = 'Lazygit (cwd)' })
+map('n', '<leader>tg', function() LazyVim.lazygit( { cwd = LazyVim.root.git() }) end, { desc = 'Lazygit (Root Dir)' })
+map('n', '<leader>tG', function() LazyVim.lazygit() end, { desc = 'Lazygit (cwd)' })
+map('n', '<leader>tm', LazyVim.lazygit.blame_line, { desc = 'Git Blame Line' })
 map('n', '<leader>tf', function()
 	local git_path = vim.api.nvim_buf_get_name(0)
-	LazyVim.terminal({ 'lazygit', '-f', vim.trim(git_path) }, { esc_esc = false, ctrl_hjkl = false })
-end, { desc = 'Lazygit current file history' })
+	LazyVim.lazygit({args = { '-f', vim.trim(git_path) }})
+end, { desc = 'Lazygit Current File History' })
 
 -- Terminal
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Enter Normal Mode' })
 local lazyterm = function() LazyVim.terminal(nil, { cwd = LazyVim.root() }) end
-map('n', '<leader>tt', lazyterm, { desc = 'Terminal (root dir)' })
+map('n', '<leader>tt', lazyterm, { desc = 'Terminal (Root Dir)' })
 map('n', '<leader>tT', function() LazyVim.terminal() end, { desc = 'Terminal (cwd)' })
 
 if vim.fn.has('mac') then
 	-- Open the macOS dictionary on current word
 	map('n', '<Leader>?', '<cmd>silent !open dict://<cword><CR>', { desc = 'Dictionary' })
-
-	-- Use Marked for real-time Markdown preview
-	-- See: https://marked2app.com/
-	if vim.fn.executable('/Applications/Marked 2.app') then
-		vim.api.nvim_create_autocmd('FileType', {
-			group = vim.api.nvim_create_augroup('rafi_marked_preview', {}),
-			pattern = 'markdown',
-			callback = function()
-				local cmd = "<cmd>silent !open -a Marked\\ 2.app '%:p'<CR>"
-				map('n', '<Leader>P', cmd, { desc = 'Markdown Preview' })
-			end,
-		})
-	end
 end
 
 -- }}}
@@ -382,7 +371,6 @@ if vim.F.if_nil(vim.g.window_q_mapping, true) then
 			'notify',
 			'PlenaryTestPopup',
 			'qf',
-			'query',
 			'spectre_panel',
 			'startuptime',
 			'tsplayground',
@@ -409,7 +397,7 @@ if vim.F.if_nil(vim.g.window_q_mapping, true) then
 	end, { desc = 'Close window' })
 end
 
-map('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit all' })
+map('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Quit All' })
 
 -- Switch with adjacent window
 map('n', '<C-x>', '<C-w>x<C-w>w', { remap = true, desc = 'Swap adjacent windows' })

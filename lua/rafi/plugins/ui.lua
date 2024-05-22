@@ -12,7 +12,7 @@ return {
 	{ 'MunifTanjim/nui.nvim', lazy = false },
 
 	-----------------------------------------------------------------------------
-	-- Fancy notification manager for NeoVim
+	-- Fancy notification manager
 	{
 		'rcarriga/nvim-notify',
 		priority = 9000,
@@ -94,6 +94,12 @@ return {
 				-- indicator = {
 				-- 	style = 'underline',
 				-- },
+				close_command = function(n)
+					LazyVim.ui.bufremove(n)
+				end,
+				right_mouse_command = function(n)
+					LazyVim.ui.bufremove(n)
+				end,
 				diagnostics_indicator = function(_, _, diag)
 					local icons = require('lazyvim.config').icons.diagnostics
 					local ret = (diag.error and icons.Error .. diag.error .. ' ' or '')
@@ -128,7 +134,7 @@ return {
 		config = function(_, opts)
 			require('bufferline').setup(opts)
 			-- Fix bufferline when restoring a session
-			vim.api.nvim_create_autocmd('BufAdd', {
+			vim.api.nvim_create_autocmd({ 'BufAdd', 'BufDelete' }, {
 				callback = function()
 					vim.schedule(function()
 						---@diagnostic disable-next-line: undefined-global
@@ -137,6 +143,17 @@ return {
 				end,
 			})
 		end,
+	},
+
+	-----------------------------------------------------------------------------
+	-- Helper for removing buffers
+	{
+		'echasnovski/mini.bufremove',
+		opts = {},
+		-- stylua: ignore
+		keys = {
+			{ '<leader>bd', function() require('mini.bufremove').delete(0, false) end, desc = 'Delete Buffer', },
+		},
 	},
 
 	-----------------------------------------------------------------------------
@@ -151,6 +168,7 @@ return {
 			{ '<leader>snl', function() require('noice').cmd('last') end, desc = 'Noice Last Message' },
 			{ '<leader>snh', function() require('noice').cmd('history') end, desc = 'Noice History' },
 			{ '<leader>sna', function() require('noice').cmd('all') end, desc = 'Noice All' },
+			{ '<leader>snt', function() require('noice').cmd('telescope') end, desc = 'Noice Telescope' },
 			{ '<C-f>', function() if not require('noice.lsp').scroll(4) then return '<C-f>' end end, silent = true, expr = true, desc = 'Scroll Forward', mode = {'i', 'n', 's'} },
 			{ '<C-b>', function() if not require('noice.lsp').scroll(-4) then return '<C-b>' end end, silent = true, expr = true, desc = 'Scroll Backward', mode = {'i', 'n', 's'}},
 		},
@@ -216,13 +234,6 @@ return {
 				lsp_doc_border = true,
 				-- inc_rename = true,
 			},
-			commands = {
-				all = {
-					view = 'split',
-					opts = { enter = true, format = 'details' },
-					filter = {},
-				},
-			},
 		},
 	},
 
@@ -248,9 +259,6 @@ return {
 		},
 		init = function()
 			vim.g.navic_silence = true
-
-			---@param client vim.lsp.Client
-			---@param buffer integer
 			LazyVim.lsp.on_attach(function(client, buffer)
 				if client.supports_method('textDocument/documentSymbol') then
 					require('nvim-navic').attach(client, buffer)
@@ -328,9 +336,7 @@ return {
 	},
 
 	-----------------------------------------------------------------------------
-	-- Active indent guide and indent text objects. When you're browsing
-	-- code, this highlights the current level of indentation, and animates
-	-- the highlighting.
+	-- Visualize and operate on indent scope
 	{
 		'echasnovski/mini.indentscope',
 		event = 'LazyFile',
@@ -432,7 +438,7 @@ return {
 	},
 
 	-----------------------------------------------------------------------------
-	-- Better quickfix window in Neovim
+	-- Better quickfix window
 	{
 		'kevinhwang91/nvim-bqf',
 		ft = 'qf',
@@ -488,20 +494,20 @@ return {
 			highlighter = {
 				auto_enable = true,
 				lsp = true,
+				filetypes = {
+					'html',
+					'lua',
+					'css',
+					'scss',
+					'sass',
+					'less',
+					'stylus',
+					'javascript',
+					'tmux',
+					'typescript',
+				},
 				excludes = { 'lazy', 'mason', 'help', 'neo-tree' },
 			},
 		},
-	},
-
-	-----------------------------------------------------------------------------
-	-- Calendar application
-	{
-		'itchyny/calendar.vim',
-		cmd = 'Calendar',
-		init = function()
-			vim.g.calendar_google_calendar = 1
-			vim.g.calendar_google_task = 1
-			vim.g.calendar_cache_directory = vim.fn.stdpath('data') .. '/calendar'
-		end,
 	},
 }

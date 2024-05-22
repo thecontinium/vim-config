@@ -57,6 +57,7 @@ function M.init()
 	M.did_init = true
 	local plugin = require('lazy.core.config').spec.plugins.LazyVim
 	if plugin then
+		---@diagnostic disable-next-line: undefined-field
 		vim.opt.rtp:append(plugin.dir)
 	end
 
@@ -77,7 +78,7 @@ function M.init()
 	-- Add lua/*/plugins/extras as list of "extra" sources
 	LazyVim.extras.sources = {
 		{
-			name = 'LazyVim ',
+			name = 'LazyVim',
 			desc = 'LazyVim extras',
 			module = 'lazyvim.plugins.extras',
 		},
@@ -89,7 +90,7 @@ function M.init()
 		{
 			name = 'User ',
 			desc = 'User extras',
-			module = 'plugins.extras'
+			module = 'plugins.extras',
 		},
 	}
 end

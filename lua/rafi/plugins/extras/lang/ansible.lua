@@ -2,6 +2,15 @@
 --
 
 return {
+	desc = 'Imports Ansible lang extras and adds more tools.',
+	recommended = function()
+		return LazyVim.extras.wants({
+			ft = 'yaml.ansible',
+			root = { 'ansible.cfg', '.ansible-lint' },
+		})
+	end,
+
+	{ import = 'lazyvim.plugins.extras.lang.ansible' },
 
 	{
 		'nvim-treesitter/nvim-treesitter',
@@ -9,11 +18,7 @@ return {
 			'pearofducks/ansible-vim',
 			ft = { 'ansible', 'ansible_hosts', 'jinja2' },
 		},
-		opts = function(_, opts)
-			if type(opts.ensure_installed) == 'table' then
-				vim.list_extend(opts.ensure_installed, { 'yaml' })
-			end
-
+		opts = function(_, _)
 			vim.filetype.add({
 				pattern = {
 					['.*/playbooks/.*%.ya?ml'] = 'yaml.ansible',
@@ -59,23 +64,6 @@ return {
 					end
 				end,
 			})
-		end,
-	},
-
-	{
-		'neovim/nvim-lspconfig',
-		opts = {
-			servers = {
-				ansiblels = {},
-			},
-		},
-	},
-
-	{
-		'mason.nvim',
-		opts = function(_, opts)
-			opts.ensure_installed = opts.ensure_installed or {}
-			vim.list_extend(opts.ensure_installed, { 'ansible-lint' })
 		end,
 	},
 }

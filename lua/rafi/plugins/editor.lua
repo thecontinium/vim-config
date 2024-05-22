@@ -1,8 +1,6 @@
 -- Plugins: Editor
 -- https://github.com/rafi/vim-config
 
-local is_windows = vim.uv.os_uname().sysname == 'Windows_NT'
-
 return {
 
 	-----------------------------------------------------------------------------
@@ -14,24 +12,6 @@ return {
 
 	-- An alternative sudo for Vim and Neovim
 	{ 'lambdalisue/suda.vim', event = 'BufRead' },
-
-	-----------------------------------------------------------------------------
-	-- Seamless navigation between tmux panes and vim splits
-	{
-		'christoomey/vim-tmux-navigator',
-		lazy = false,
-		cond = vim.env.TMUX and not is_windows,
-		-- stylua: ignore
-		keys = {
-			{ '<C-h>', '<cmd>TmuxNavigateLeft<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Left Window' },
-			{ '<C-j>', '<cmd>TmuxNavigateDown<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Lower Window' },
-			{ '<C-k>', '<cmd>TmuxNavigateUp<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Upper Window' },
-			{ '<C-l>', '<cmd>TmuxNavigateRight<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Right Window' },
-		},
-		init = function()
-			vim.g.tmux_navigator_no_mappings = true
-		end,
-	},
 
 	-----------------------------------------------------------------------------
 	-- Simple lua plugin for automated session management
@@ -104,57 +84,6 @@ return {
 	},
 
 	-----------------------------------------------------------------------------
-	-- Highlights other uses of the word under the cursor
-	{
-		'RRethy/vim-illuminate',
-		event = { 'BufReadPost', 'BufNewFile' },
-		opts = {
-			delay = 200,
-			under_cursor = false,
-			modes_allowlist = { 'n', 'no', 'nt' },
-			filetypes_denylist = {
-				'DiffviewFileHistory',
-				'DiffviewFiles',
-				'fugitive',
-				'git',
-				'minifiles',
-				'neo-tree',
-				'Outline',
-				'SidebarNvim',
-			},
-		},
-		keys = {
-			{ ']]', desc = 'Next Reference' },
-			{ '[[', desc = 'Prev Reference' },
-		},
-		config = function(_, opts)
-			require('illuminate').configure(opts)
-
-			local function map(key, dir, buffer)
-				vim.keymap.set('n', key, function()
-					require('illuminate')['goto_' .. dir .. '_reference'](false)
-				end, {
-					desc = dir:sub(1, 1):upper() .. dir:sub(2) .. ' Reference',
-					buffer = buffer,
-				})
-			end
-
-			map(']]', 'next')
-			map('[[', 'prev')
-
-			-- also set it after loading ftplugins, since a lot overwrite [[ and ]]
-			vim.api.nvim_create_autocmd('FileType', {
-				group = vim.api.nvim_create_augroup('rafi_illuminate', {}),
-				callback = function()
-					local buffer = vim.api.nvim_get_current_buf()
-					map(']]', 'next', buffer)
-					map('[[', 'prev', buffer)
-				end,
-			})
-		end,
-	},
-
-	-----------------------------------------------------------------------------
 	-- Ultimate undo history visualizer
 	{
 		'mbbill/undotree',
@@ -170,14 +99,22 @@ return {
 		'folke/flash.nvim',
 		event = 'VeryLazy',
 		vscode = true,
-		opts = {},
+		---@diagnostic disable-next-line: undefined-doc-name
+		---@type Flash.Config
+		opts = {
+			modes = {
+				search = {
+					enabled = false,
+				},
+			},
+		},
 		-- stylua: ignore
 		keys = {
 			{ 'ss', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' },
 			{ 'S', mode = { 'n', 'x', 'o' }, function() require('flash').treesitter() end, desc = 'Flash Treesitter' },
 			{ 'r', mode = 'o', function() require('flash').remote() end, desc = 'Remote Flash' },
 			{ 'R', mode = { 'x', 'o' }, function() require('flash').treesitter_search() end, desc = 'Treesitter Search' },
-			{ '<c-s>', mode = { 'c' }, function() require('flash').toggle() end, desc = 'Toggle Flash Search' },
+			{ '<C-s>', mode = { 'c' }, function() require('flash').toggle() end, desc = 'Toggle Flash Search' },
 		},
 	},
 
@@ -453,30 +390,5 @@ return {
 				},
 			},
 		},
-	},
-
-	-----------------------------------------------------------------------------
-	-- Helper for removing buffers
-	{
-		'echasnovski/mini.bufremove',
-		opts = {},
-		-- stylua: ignore
-		keys = {
-			{ '<leader>bd', function() require('mini.bufremove').delete(0, false) end, desc = 'Delete Buffer', },
-		},
-	},
-
-	-----------------------------------------------------------------------------
-	-- Generate table of contents for Markdown files
-	{
-		'mzlogin/vim-markdown-toc',
-		cmd = { 'GenTocGFM', 'GenTocRedcarpet', 'GenTocGitLab', 'UpdateToc' },
-		ft = 'markdown',
-		keys = {
-			{ '<leader>mo', '<cmd>UpdateToc<CR>', desc = 'Update table of contents' },
-		},
-		init = function()
-			vim.g.vmt_auto_update_on_save = 0
-		end,
 	},
 }

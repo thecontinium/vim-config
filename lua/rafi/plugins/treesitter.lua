@@ -18,8 +18,10 @@ return {
 		version = false,
 		build = ':TSUpdate',
 		event = { 'LazyFile', 'VeryLazy' },
-		cmd = { 'TSInstall', 'TSUpdate', 'TSUpdateSync' },
+		lazy = vim.fn.argc(-1) == 0, -- load treesitter early when opening a file from the cmdline
+		cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
 		keys = {
+			{ '<C-Space>', desc = 'Increment Selection' },
 			{ 'v', desc = 'Increment Selection', mode = 'x' },
 			{ 'V', desc = 'Shrink Selection', mode = 'x' },
 		},
@@ -33,33 +35,6 @@ return {
 			require('nvim-treesitter.query_predicates')
 		end,
 		dependencies = {
-			-- Textobjects using treesitter queries
-			{
-				'nvim-treesitter/nvim-treesitter-textobjects',
-				config = function()
-					-- When in diff mode, we want to use the default
-					-- vim text objects c & C instead of the treesitter ones.
-					local move = require('nvim-treesitter.textobjects.move') ---@type table<string,fun(...)>
-					local configs = require('nvim-treesitter.configs')
-					for name, fn in pairs(move) do
-						if name:find('goto') == 1 then
-							move[name] = function(q, ...)
-								if vim.wo.diff then
-									local config = configs.get_module('textobjects.move')[name] ---@type table<string,string>
-									for key, query in pairs(config or {}) do
-										if q == query and key:find('[%]%[][cC]') then
-											vim.cmd('normal! ' .. key)
-											return
-										end
-									end
-								end
-								return fn(q, ...)
-							end
-						end
-					end
-				end,
-			},
-
 			-- Modern matchit and matchparen
 			{
 				'andymass/vim-matchup',
@@ -71,8 +46,9 @@ return {
 			-- Wisely add "end" in various filetypes
 			'RRethy/nvim-treesitter-endwise',
 		},
+		---@diagnostic disable-next-line: undefined-doc-name
 		---@type TSConfig
-		---@diagnostic disable-next-line: missing-fields
+		---@diagnostic disable: missing-fields
 		opts = {
 			highlight = { enable = true },
 			indent = { enable = true },
@@ -189,7 +165,6 @@ return {
 				'ssh_config',
 				'starlark',
 				'svelte',
-				'tmux',
 				'todotxt',
 				'toml',
 				'vim',
@@ -199,48 +174,52 @@ return {
 				'zig',
 			},
 		},
+		---@diagnostic disable-next-line: undefined-doc-name
 		---@param opts TSConfig
 		config = function(_, opts)
-			local langs = opts.ensure_installed
-			if type(langs) == 'table' then
-				---@type table<string, boolean>
-				local added = {}
-				opts.ensure_installed = vim.tbl_filter(function(lang)
-					if added[lang] then
-						return false
-					end
-					added[lang] = true
-					return true
-				end, langs)
+			if type(opts.ensure_installed) == 'table' then
+				---@diagnostic disable-next-line: inject-field
+				opts.ensure_installed = LazyVim.dedup(opts.ensure_installed)
 			end
 			require('nvim-treesitter.configs').setup(opts)
 		end,
 	},
 
 	-----------------------------------------------------------------------------
-	-- Show context of the current function
+	-- Textobjects using treesitter queries
 	{
-		'nvim-treesitter/nvim-treesitter-context',
-		-- event = 'LazyFile',
-		opts = {
-			mode = 'cursor',
-			max_lines = 3,
-		},
-		keys = {
-			{
-				'<leader>ut',
-				function()
-					local tsc = require('treesitter-context')
-					tsc.toggle()
-					if LazyVim.inject.get_upvalue(tsc.toggle, 'enabled') then
-						LazyVim.info('Enabled Treesitter Context', { title = 'Option' })
-					else
-						LazyVim.warn('Disabled Treesitter Context', { title = 'Option' })
+		'nvim-treesitter/nvim-treesitter-textobjects',
+		event = 'VeryLazy',
+		config = function()
+			-- If treesitter is already loaded, we need to run config again for textobjects
+			if LazyVim.is_loaded('nvim-treesitter') then
+				local opts = LazyVim.opts('nvim-treesitter')
+				require('nvim-treesitter.configs').setup({
+					textobjects = opts.textobjects,
+				})
+			end
+
+			-- When in diff mode, we want to use the default
+			-- vim text objects c & C instead of the treesitter ones.
+			local move = require('nvim-treesitter.textobjects.move') ---@type table<string,fun(...)>
+			local configs = require('nvim-treesitter.configs')
+			for name, fn in pairs(move) do
+				if name:find('goto') == 1 then
+					move[name] = function(q, ...)
+						if vim.wo.diff then
+							local config = configs.get_module('textobjects.move')[name] ---@type table<string,string>
+							for key, query in pairs(config or {}) do
+								if q == query and key:find('[%]%[][cC]') then
+									vim.cmd('normal! ' .. key)
+									return
+								end
+							end
+						end
+						return fn(q, ...)
 					end
-				end,
-				desc = 'Toggle Treesitter Context',
-			},
-		},
+				end
+			end
+		end,
 	},
 
 	-----------------------------------------------------------------------------
@@ -251,6 +230,7 @@ return {
 		opts = {
 			-- Removed markdown due to errors
 			filetypes = {
+				'astro',
 				'glimmer',
 				'handlebars',
 				'hbs',
@@ -258,6 +238,7 @@ return {
 				'javascript',
 				'javascriptreact',
 				'jsx',
+				'php',
 				'rescript',
 				'svelte',
 				'tsx',

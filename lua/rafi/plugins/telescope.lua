@@ -144,8 +144,9 @@ return {
 		cmd = 'Telescope',
 		dependencies = {
 			'nvim-lua/plenary.nvim',
+			-- Telescope extension for Zoxide
 			'jvgrootveld/telescope-zoxide',
-			'folke/todo-comments.nvim',
+			-- Browse synonyms for a word
 			'rafi/telescope-thesaurus.nvim',
 		},
 		config = function(_, opts)
@@ -158,7 +159,7 @@ return {
 			{ '<localleader>p', '<cmd>Telescope pickers<CR>', desc = 'Pickers' },
 			{ '<localleader>f', '<cmd>Telescope find_files<CR>', desc = 'Find Files' },
 			{ '<localleader>g', '<cmd>Telescope live_grep<CR>', desc = 'Grep' },
-			{ '<localleader>b', '<cmd>Telescope buffers sort_mru=true sort_lastused=true<CR>', desc = 'Buffers' },
+			{ '<localleader>b', '<cmd>Telescope buffers<CR>', desc = 'Buffers' },
 			{ '<localleader>h', '<cmd>Telescope highlights<CR>', desc = 'Highlights' },
 			{ '<localleader>j', '<cmd>Telescope jumplist<CR>', desc = 'Jump List' },
 			{ '<localleader>m', '<cmd>Telescope marks<CR>', desc = 'Marks' },

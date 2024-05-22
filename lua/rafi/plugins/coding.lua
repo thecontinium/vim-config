@@ -17,8 +17,6 @@ return {
 			'hrsh7th/cmp-path',
 			-- nvim-cmp source for emoji
 			'hrsh7th/cmp-emoji',
-			-- nvim-cmp source for tmux
-			'andersevenrud/cmp-tmux',
 		},
 		-- Not all LSP servers add brackets when completing a function.
 		-- To better deal with this, LazyVim adds a custom option to cmp,
@@ -26,7 +24,7 @@ return {
 		--
 		-- ```lua
 		-- opts = {
-		--   auto_brackets = { "python" }
+		--   auto_brackets = { 'python' }
 		-- }
 		-- ```
 
@@ -38,6 +36,7 @@ return {
 			)
 			local cmp = require('cmp')
 			local defaults = require('cmp.config.default')()
+			local Util = require('rafi.util')
 
 			return {
 				-- configure any filetype to auto add brackets
@@ -57,22 +56,23 @@ return {
 				}, {
 					{ name = 'buffer', priority = 50, keyword_length = 3 },
 					{ name = 'emoji', insert = true, priority = 20 },
-					{
-						name = 'tmux',
-						priority = 10,
-						keyword_length = 3,
-						option = { all_panes = true, label = 'tmux' },
-					},
 				}),
 				mapping = cmp.mapping.preset.insert({
 					-- <CR> accepts currently selected item.
-					-- Set `select` to `false` to only confirm explicitly selected items.
-					['<CR>'] = cmp.mapping.confirm({ select = false }),
-					['<S-CR>'] = cmp.mapping.confirm({
+					['<CR>'] = LazyVim.cmp.confirm(),
+					-- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+					['<S-CR>'] = LazyVim.cmp.confirm({
 						behavior = cmp.ConfirmBehavior.Replace,
-						select = false,
 					}),
 					['<C-Space>'] = cmp.mapping.complete(),
+					['<Tab>'] = Util.cmp.supertab({
+						behavior = require('cmp').SelectBehavior.Select,
+					}),
+					['<S-Tab>'] = Util.cmp.supertab_shift({
+						behavior = require('cmp').SelectBehavior.Select,
+					}),
+					['<C-j>'] = Util.cmp.snippet_jump_forward(),
+					['<C-k>'] = Util.cmp.snippet_jump_backward(),
 					['<C-n>'] = cmp.mapping.select_next_item({
 						behavior = cmp.SelectBehavior.Insert,
 					}),
@@ -118,19 +118,14 @@ return {
 				source.group_index = source.group_index or 1
 			end
 			local cmp = require('cmp')
-			local Kind = cmp.lsp.CompletionItemKind
 			cmp.setup(opts)
 			cmp.event:on('confirm_done', function(event)
-				if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-					return
+				if vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
+					LazyVim.cmp.auto_brackets(event.entry)
 				end
-				local entry = event.entry
-				local item = entry:get_completion_item()
-				if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
-					local keys =
-						vim.api.nvim_replace_termcodes('()<left>', false, false, true)
-					vim.api.nvim_feedkeys(keys, 'i', true)
-				end
+			end)
+			cmp.event:on('menu_opened', function(event)
+				LazyVim.cmp.add_missing_snippet_docs(event.window)
 			end)
 		end,
 	},
@@ -152,10 +147,12 @@ return {
 					require('luasnip.loaders.from_lua').load({ paths = { './snippets' } })
 				end,
 			},
+			-- Adds luasnip source to nvim-cmp.
 			{
 				'nvim-cmp',
 				dependencies = {
-					{ 'saadparwaiz1/cmp_luasnip' },
+					-- Luasnip completion source for nvim-cmp
+					'saadparwaiz1/cmp_luasnip',
 				},
 				opts = function(_, opts)
 					opts.snippet = {
@@ -164,13 +161,6 @@ return {
 						end,
 					}
 					table.insert(opts.sources, { name = 'luasnip', keyword_length = 2 })
-
-					local Util = require('rafi.util')
-					local behavior = { behavior = require('cmp').SelectBehavior.Select }
-					opts.mapping['<Tab>'] = Util.cmp.luasnip_supertab(behavior)
-					opts.mapping['<S-Tab>'] = Util.cmp.luasnip_shift_supertab(behavior)
-					opts.mapping['<C-j>'] = Util.cmp.luasnip_jump_forward()
-					opts.mapping['<C-b>'] = Util.cmp.luasnip_jump_backward()
 				end,
 			},
 		},
@@ -205,14 +195,13 @@ return {
 			{
 				'<leader>up',
 				function()
-					local Util = require('lazy.core.util')
 					vim.g.autopairs_disable = not vim.g.autopairs_disable
 					if vim.g.autopairs_disable then
 						require('nvim-autopairs').disable()
-						Util.warn('Disabled auto pairs', { title = 'Option' })
+						LazyVim.warn('Disabled auto pairs', { title = 'Option' })
 					else
 						require('nvim-autopairs').enable()
-						Util.info('Enabled auto pairs', { title = 'Option' })
+						LazyVim.info('Enabled auto pairs', { title = 'Option' })
 					end
 				end,
 				desc = 'Toggle auto pairs',
@@ -277,24 +266,25 @@ return {
 	},
 
 	-----------------------------------------------------------------------------
-	-- Fast and familiar per-line commenting
+	-- Powerful line and block-wise commenting
 	{
-		'echasnovski/mini.comment',
+		'numToStr/Comment.nvim',
 		event = 'VeryLazy',
 		dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
 		-- stylua: ignore
 		keys = {
-			{ '<Leader>v', 'gcc', remap = true, silent = true, mode = 'n', desc = 'Comment' },
-			{ '<Leader>v', 'gc', remap = true, silent = true, mode = 'x', desc = 'Comment' },
+			{ '<Leader>v', '<Plug>(comment_toggle_linewise_current)', mode = 'n', desc = 'Comment' },
+			{ '<Leader>v', '<Plug>(comment_toggle_linewise_visual)', mode = 'x', desc = 'Comment' },
+			{ '<Leader>V', '<Plug>(comment_toggle_blockwise_current)', mode = 'n', desc = 'Comment' },
+			{ '<Leader>V', '<Plug>(comment_toggle_blockwise_visual)', mode = 'x', desc = 'Comment' },
 		},
-		opts = {
-			options = {
-				custom_commentstring = function()
-					return require('ts_context_commentstring.internal').calculate_commentstring()
-						or vim.bo.commentstring
-				end,
-			},
-		},
+		opts = function(_, opts)
+			local ok, tcc =
+				pcall(require, 'ts_context_commentstring.integrations.comment_nvim')
+			if ok then
+				opts.pre_hook = tcc.create_pre_hook()
+			end
+		end,
 	},
 
 	-----------------------------------------------------------------------------
@@ -351,80 +341,37 @@ return {
 	},
 
 	-----------------------------------------------------------------------------
-	-- Extend and create `a`/`i` textobjects
+	-- Extend and create `a`/`i` text-objects
 	{
 		'echasnovski/mini.ai',
 		event = 'VeryLazy',
 		opts = function()
+			LazyVim.on_load('which-key.nvim', function()
+				vim.schedule(LazyVim.mini.ai_whichkey)
+			end)
 			local ai = require('mini.ai')
 			return {
 				n_lines = 500,
 				-- stylua: ignore
 				custom_textobjects = {
-					o = ai.gen_spec.treesitter({
+					o = ai.gen_spec.treesitter({ -- code block
 						a = { '@block.outer', '@conditional.outer', '@loop.outer' },
 						i = { '@block.inner', '@conditional.inner', '@loop.inner' },
-					}, {}),
-					f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }, {}),
-					c = ai.gen_spec.treesitter({ a = '@class.outer', i = '@class.inner' }, {}),
-					t = { '<([%p%w]-)%f[^<%w][^<>]->.-</%1>', '^<.->().*()</[^/]->$' },
+					}),
+					f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }),
+					c = ai.gen_spec.treesitter({ a = '@class.outer', i = '@class.inner' }),
+					t = { '<([%p%w]-)%f[^<%w][^<>]->.-</%1>', '^<.->().*()</[^/]->$' }, -- tags
+					d = { '%f[%d]%d+' }, -- digits
+					e = { -- Word with case
+						{ '%u[%l%d]+%f[^%l%d]', '%f[%S][%l%d]+%f[^%l%d]', '%f[%P][%l%d]+%f[^%l%d]', '^[%l%d]+%f[^%l%d]' },
+						'^().*()$',
+					},
+					i = LazyVim.mini.ai_indent, -- indent
+					g = LazyVim.mini.ai_buffer, -- buffer
+					u = ai.gen_spec.function_call(), -- u for Usage
+					U = ai.gen_spec.function_call({ name_pattern = '[%w_]' }), -- without dot in function name
 				},
 			}
-		end,
-		config = function(_, opts)
-			require('mini.ai').setup(opts)
-
-			-- register all text objects with which-key
-			LazyVim.on_load('which-key.nvim', function()
-				---@type table<string, string|table>
-				local i = {
-					[' '] = 'Whitespace',
-					['"'] = 'Balanced "',
-					["'"] = "Balanced '",
-					['`'] = 'Balanced `',
-					['('] = 'Balanced (',
-					[')'] = 'Balanced ) including white-space',
-					['>'] = 'Balanced > including white-space',
-					['<lt>'] = 'Balanced <',
-					[']'] = 'Balanced ] including white-space',
-					['['] = 'Balanced [',
-					['}'] = 'Balanced } including white-space',
-					['{'] = 'Balanced {',
-					['?'] = 'User Prompt',
-					_ = 'Underscore',
-					a = 'Argument',
-					b = 'Balanced ), ], }',
-					c = 'Class',
-					f = 'Function',
-					o = 'Block, conditional, loop',
-					q = 'Quote `, ", \'',
-					t = 'Tag',
-				}
-				local a = vim.deepcopy(i) --[[@as table]]
-				for k, v in pairs(a) do
-					a[k] = v:gsub(' including.*', '')
-				end
-
-				local ic = vim.deepcopy(i)
-				local ac = vim.deepcopy(a)
-				for key, name in pairs({ n = 'Next', l = 'Last' }) do
-					i[key] = vim.tbl_extend(
-						'force',
-						{ name = 'Inside ' .. name .. ' textobject' },
-						ic
-					)
-					a[key] = vim.tbl_extend(
-						'force',
-						{ name = 'Around ' .. name .. ' textobject' },
-						ac
-					)
-				end
-				require('which-key').register({
-					mode = { 'o', 'x' },
-					i = i,
-					a = a,
-				})
-			end)
 		end,
 	},
 }

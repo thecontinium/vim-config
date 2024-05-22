@@ -7,15 +7,19 @@
 return {
 
 	-----------------------------------------------------------------------------
-	-- LSP config
+	-- Quickstart configurations for the Nvim LSP client
 	{
 		'neovim/nvim-lspconfig',
 		event = 'LazyFile',
 		-- stylua: ignore
 		dependencies = {
+			-- Manage global and project-local settings
 			{ 'folke/neoconf.nvim', cmd = 'Neoconf', config = false, dependencies = { 'nvim-lspconfig' } },
+			-- Neovim setup for init.lua and plugin development
 			{ 'folke/neodev.nvim', opts = {} },
+			-- Portable package manager for Neovim
 			'williamboman/mason.nvim',
+			-- Mason extension for easier lspconfig integration
 			'williamboman/mason-lspconfig.nvim',
 		},
 		---@class PluginLspOpts
@@ -29,6 +33,9 @@ return {
 					spacing = 4,
 					source = 'if_many',
 					prefix = '●',
+					-- this will set set the prefix to a function that returns the diagnostics icon based on the severity
+					-- this only works on a recent 0.10.0 build. Will be set to "●" when not supported
+					-- prefix = 'icons',
 				},
 				severity_sort = true,
 				float = {
@@ -58,6 +65,10 @@ return {
 			codelens = {
 				enabled = false,
 			},
+			-- Enable lsp cursor word highlighting
+			document_highlight = {
+				enabled = true,
+			},
 			-- Add any global capabilities here
 			capabilities = {},
 			-- Formatting options for vim.lsp.buf.format
@@ -75,6 +86,17 @@ return {
 							workspace = { checkThirdParty = false },
 							codeLens = { enable = true },
 							completion = { callSnippet = 'Replace' },
+							doc = {
+								privateName = { '^_' },
+							},
+							hint = {
+								enable = true,
+								setType = false,
+								paramType = true,
+								paramName = 'Disable',
+								semicolon = 'Disable',
+								arrayIndex = 'Disable',
+							},
 						},
 					},
 				},
@@ -95,73 +117,61 @@ return {
 		---@param opts PluginLspOpts
 		config = function(_, opts)
 			if LazyVim.has('neoconf.nvim') then
-				local plugin = require('lazy.core.config').spec.plugins['neoconf.nvim']
-				require('neoconf').setup(
-					require('lazy.core.plugin').values(plugin, 'opts', false)
-				)
+				require('neoconf').setup(LazyVim.opts('neoconf.nvim'))
 			end
 
 			-- Setup autoformat
 			LazyVim.format.register(LazyVim.lsp.formatter())
 
-			-- Setup formatting, keymaps and highlights.
+			-- Setup keymaps.
 			LazyVim.lsp.on_attach(function(client, buffer)
 				require('rafi.plugins.lsp.keymaps').on_attach(client, buffer)
-				if not LazyVim.has('vim-illuminate') then
-					require('rafi.plugins.lsp.highlight').on_attach(client, buffer)
-				end
-
-				if vim.diagnostic.is_disabled() or vim.bo[buffer].buftype ~= '' then
-					vim.diagnostic.disable(buffer)
-					return
-				end
 			end)
 
-			local register_capability = vim.lsp.handlers['client/registerCapability']
+			-- When LSP client stops, undo buffer keymaps and such.
+			vim.api.nvim_create_autocmd('LspDetach', {
+				callback = function(args)
+					local buffer = args.buf ---@type number
+					local client = vim.lsp.get_client_by_id(args.data.client_id)
+					require('rafi.plugins.lsp.keymaps').on_detach(client, buffer)
+				end,
+			})
 
-			---@diagnostic disable-next-line: duplicate-set-field
-			vim.lsp.handlers['client/registerCapability'] = function(err, res, ctx)
-				local ret = register_capability(err, res, ctx)
-				local client = vim.lsp.get_client_by_id(ctx.client_id)
-				local buffer = vim.api.nvim_get_current_buf()
-				require('rafi.plugins.lsp.keymaps').on_attach(client, buffer)
-				return ret
-			end
+			LazyVim.lsp.setup()
+			LazyVim.lsp.on_dynamic_capability(require('rafi.plugins.lsp.keymaps').on_attach)
+
+			LazyVim.lsp.words.setup(opts.document_highlight)
 
 			-- Diagnostics signs and highlights.
 			if vim.fn.has('nvim-0.10.0') == 0 then
-				for severity, icon in pairs(opts.diagnostics.signs.text) do
-					local name =
-						vim.diagnostic.severity[severity]:lower():gsub('^%l', string.upper)
-					name = 'DiagnosticSign' .. name
-					vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
+				if type(opts.diagnostics.signs) ~= 'boolean' then
+					for severity, icon in pairs(opts.diagnostics.signs.text) do
+						local name = vim.diagnostic.severity[severity]
+							:lower()
+							:gsub('^%l', string.upper)
+						name = 'DiagnosticSign' .. name
+						vim.fn.sign_define(name, { text = icon, texthl = name, numhl = '' })
+					end
 				end
 			end
 
-			-- Setup inlay-hints
-			if opts.inlay_hints.enabled then
-				LazyVim.lsp.on_attach(function(client, buffer)
-					if client.supports_method('textDocument/inlayHint') then
+			if vim.fn.has('nvim-0.10') == 1 then
+				-- inlay hints
+				if opts.inlay_hints.enabled then
+					LazyVim.lsp.on_supports_method('textDocument/inlayHint', function(_, buffer)
 						LazyVim.toggle.inlay_hints(buffer, true)
-					end
-				end)
-			end
-
-			-- code lens
-			if opts.codelens.enabled and vim.lsp.codelens then
-				LazyVim.lsp.on_attach(function(client, buffer)
-					if client.supports_method('textDocument/codeLens') then
+					end)
+				end
+				-- code lens
+				if opts.codelens.enabled and vim.lsp.codelens then
+					LazyVim.lsp.on_supports_method('textDocument/codeLens', function(_, buffer)
 						vim.lsp.codelens.refresh()
-						--- autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
-						vim.api.nvim_create_autocmd(
-							{ 'BufEnter', 'CursorHold', 'InsertLeave' },
-							{
-								buffer = buffer,
-								callback = vim.lsp.codelens.refresh,
-							}
-						)
-					end
-				end)
+						vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'InsertLeave' }, {
+							buffer = buffer,
+							callback = vim.lsp.codelens.refresh,
+						})
+					end)
+				end
 			end
 
 			if
@@ -182,7 +192,7 @@ return {
 
 			vim.diagnostic.config(vim.deepcopy(opts.diagnostics))
 
-			-- Enable rounded borders in :LspInfo window.
+			-- Enable custom rounded borders in :LspInfo window.
 			require('lspconfig.ui.windows').default_options.border = 'rounded'
 
 			-- Initialize LSP servers and ensure Mason packages
@@ -216,6 +226,7 @@ return {
 					end
 				end
 
+				-- Load user-defined custom settings for each LSP server.
 				local exists, module = pcall(require, 'lsp.' .. server_name)
 				if exists and module ~= nil then
 					local user_config = module.config(server_opts) or {}
@@ -252,8 +263,12 @@ return {
 
 			if have_mason then
 				mlsp.setup({
-					ensure_installed = ensure_installed,
 					handlers = { make_config },
+					ensure_installed = vim.tbl_deep_extend(
+						'force',
+						ensure_installed,
+						LazyVim.opts('mason-lspconfig.nvim').ensure_installed or {}
+					),
 				})
 			end
 
@@ -282,6 +297,7 @@ return {
 				border = 'rounded',
 			},
 		},
+		---@diagnostic disable-next-line: undefined-doc-name
 		---@param opts MasonSettings | {ensure_installed: string[]}
 		config = function(_, opts)
 			require('mason').setup(opts)

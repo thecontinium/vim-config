@@ -8,7 +8,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ';'
 
--- Enable LazyVim auto format
+-- LazyVim auto format
 vim.g.autoformat = false
 
 -- Enable elite-mode (hjkl mode. arrow-keys resize window)
@@ -34,6 +34,9 @@ vim.g.root_spec = { 'lsp', { '.git', 'lua' }, 'cwd' }
 -- Set to false to disable.
 vim.g.lazygit_config = true
 
+-- Hide deprecation warnings
+vim.g.deprecation_warnings = false
+
 -- General
 -- ===
 -- stylua: ignore start
@@ -51,13 +54,13 @@ opt.spelllang = { 'en' }
 opt.spelloptions:append('camel')
 opt.updatetime = 200           -- Idle time to write swap and trigger CursorHold
 if not vim.g.vscode then
-	opt.timeoutlen = 300         -- Time out on mappings
+	opt.timeoutlen = 500  -- Time out on mappings
+	opt.ttimeoutlen = 10  -- Time out on key codes
 end
-if not vim.env.SSH_TTY then
-	-- only set clipboard if not in ssh, to make sure the OSC 52
-	-- integration works automatically. Requires Neovim >= 0.10.0
-	opt.clipboard = 'unnamedplus' -- Sync with system clipboard
-end
+
+-- only set clipboard if not in ssh, to make sure the OSC 52
+-- integration works automatically. Requires Neovim >= 0.10.0
+opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
 
 opt.completeopt = 'menu,menuone,noinsert'
 opt.wildmode = 'longest:full,full'
@@ -98,15 +101,6 @@ end
 opt.ignorecase = true -- Search ignoring case
 opt.smartcase = true  -- Keep case when searching with *
 opt.inccommand = 'nosplit' -- Preview incremental substitute
-opt.grepformat = '%f:%l:%c:%m'
-
-if vim.fn.executable('rg') then
-	opt.grepprg = 'rg --vimgrep --no-heading'
-		.. (opt.smartcase and ' --smart-case' or '') .. ' --'
-elseif vim.fn.executable('ag') then
-	opt.grepprg = 'ag --vimgrep'
-		.. (opt.smartcase and ' --smart-case' or '') .. ' --'
-end
 
 -- Formatting
 -- ===
@@ -114,6 +108,8 @@ end
 opt.wrap = false                -- No wrap by default
 opt.linebreak = true            -- Break long lines at 'breakat'
 opt.breakindent = true
+opt.formatexpr = "v:lua.require'lazyvim.util'.format.formatexpr()"
+
 opt.formatoptions = opt.formatoptions
 	- 'a' -- Auto formatting is BAD.
 	- 't' -- Don't auto format my code. I got linters for that.
@@ -138,6 +134,7 @@ opt.numberwidth = 2       -- Minimum number of columns to use for the line numbe
 opt.number = false        -- Don't show line numbers
 opt.ruler = false         -- Disable default status ruler
 opt.list = true           -- Show hidden characters
+opt.foldlevel = 99
 opt.cursorline = true     -- Highlight the text line under the cursor
 opt.splitbelow = true     -- New split at bottom
 opt.splitright = true     -- New split on right
@@ -164,7 +161,7 @@ opt.listchars = {
 	trail = '·'
 }
 opt.fillchars = {
-	foldopen = '󰅀', -- 󰅀 
+	foldopen = '', -- 󰅀 
 	foldclose = '', -- 󰅂 
 	fold = ' ', -- ⸱
 	foldsep = ' ',
@@ -179,31 +176,17 @@ opt.fillchars = {
 	verthoriz = '╋',
 }
 
+opt.statuscolumn = [[%!v:lua.require'lazyvim.util'.ui.statuscolumn()]]
+
 if vim.fn.has('nvim-0.10') == 1 then
 	opt.smoothscroll = true
-end
-
--- Folds
--- ===
-
-opt.foldlevel = 99
-
-if vim.fn.has('nvim-0.9.0') == 1 then
-	vim.opt.statuscolumn = [[%!v:lua.require'lazyvim.util'.ui.statuscolumn()]]
-	vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-end
-
--- HACK: causes freezes on <= 0.9, so only enable on >= 0.10 for now
-if vim.fn.has('nvim-0.10') == 1 then
-	vim.opt.foldmethod = 'expr'
 	vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-	vim.opt.foldtext = ""
-	vim.opt.fillchars = "fold: "
+	vim.opt.foldmethod = 'expr'
+	vim.opt.foldtext = ''
 else
 	vim.opt.foldmethod = 'indent'
+	vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
 end
-
-vim.o.formatexpr = "v:lua.require'lazyvim.util'.format.formatexpr()"
 
 -- Misc
 -- ===
@@ -229,18 +212,21 @@ vim.filetype.add({
 		Brewfile = 'ruby',
 		justfile = 'just',
 		Justfile = 'just',
-		Tmuxfile = 'tmux',
 		['.buckconfig'] = 'toml',
 		['.flowconfig'] = 'ini',
 		['.jsbeautifyrc'] = 'json',
 		['.jscsrc'] = 'json',
 		['.watchmanconfig'] = 'json',
+		['helmfile.yaml'] = 'yaml',
+		['todo.txt'] = 'todotxt',
+		['yarn.lock'] = 'yaml',
 	},
 	pattern = {
+		['%.config/git/users/.*'] = 'gitconfig',
+		['%.kube/config'] = 'yaml',
 		['.*%.js%.map'] = 'json',
 		['.*%.postman_collection'] = 'json',
 		['Jenkinsfile.*'] = 'groovy',
-		['%.config/git/users/.*'] = 'gitconfig',
 	},
 })
 
