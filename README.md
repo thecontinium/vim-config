@@ -497,9 +497,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [hrsh7th/cmp-buffer] | nvim-cmp source for buffer words
 | [hrsh7th/cmp-path] | nvim-cmp source for path
 | [hrsh7th/cmp-emoji] | nvim-cmp source for emoji
-| [L3MON4D3/LuaSnip] | Snippet Engine written in Lua
 | [rafamadriz/friendly-snippets] | Preconfigured snippets for different languages
-| [saadparwaiz1/cmp_luasnip] | Luasnip completion source for nvim-cmp
 | [windwp/nvim-autopairs] | Powerful auto-pair plugin with multiple characters support
 | [echasnovski/mini.surround] | Fast and feature-rich surround actions
 | [JoosepAlviste/nvim-ts-context-commentstring] | Set the commentstring based on the cursor location
@@ -576,7 +574,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [tenxsoydev/tabs-vs-spaces.nvim] | Hint and fix deviating indentation
 | [t9md/vim-quickhl] | Highlight words quickly
 | [kevinhwang91/nvim-bqf] | Better quickfix window
-| [uga-rosa/ccc.nvim] | Super powerful color picker/colorizer plugin
 
 [neovim/nvim-lspconfig]: https://github.com/neovim/nvim-lspconfig
 [folke/neoconf.nvim]: https://github.com/folke/neoconf.nvim
@@ -607,9 +604,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [hrsh7th/cmp-buffer]: https://github.com/hrsh7th/cmp-buffer
 [hrsh7th/cmp-path]: https://github.com/hrsh7th/cmp-path
 [hrsh7th/cmp-emoji]: https://github.com/hrsh7th/cmp-emoji
-[L3MON4D3/LuaSnip]: https://github.com/L3MON4D3/LuaSnip
 [rafamadriz/friendly-snippets]: https://github.com/rafamadriz/friendly-snippets
-[saadparwaiz1/cmp_luasnip]: https://github.com/saadparwaiz1/cmp_luasnip
 [windwp/nvim-autopairs]: https://github.com/windwp/nvim-autopairs
 [echasnovski/mini.surround]: https://github.com/echasnovski/mini.surround
 [JoosepAlviste/nvim-ts-context-commentstring]: https://github.com/JoosepAlviste/nvim-ts-context-commentstring
@@ -666,7 +661,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [tenxsoydev/tabs-vs-spaces.nvim]: https://github.com/tenxsoydev/tabs-vs-spaces.nvim
 [t9md/vim-quickhl]: https://github.com/t9md/vim-quickhl
 [kevinhwang91/nvim-bqf]: https://github.com/kevinhwang91/nvim-bqf
-[uga-rosa/ccc.nvim]: https://github.com/uga-rosa/ccc.nvim
 
 </details>
 
@@ -693,8 +687,8 @@ Spec: `rafi.plugins.extras.coding.<name>`
 | `chainsaw`     | [chrisgrieser/nvim-chainsaw] | Create log statements on the fly
 | `editorconfig` | [sgur/vim-editorconfig] | EditorConfig plugin written entirely in Vimscript
 | `emmet`        | [mattn/emmet-vim] | Provides support for expanding abbreviations alá emmet
-| `mini.comment` | [echasnovski/mini.comment] | Fast and familiar per-line commenting
-| `minipairs`    | [echasnovski/mini.pairs] | Automatically manage character pairs
+| `luasnip`      | [L3MON4D3/LuaSnip] [saadparwaiz1/cmp_luasnip] | Snippet Engine and cmp source
+| `mini-pairs`   | [echasnovski/mini.pairs] | Automatically manage character pairs
 | `neogen`       | [danymat/neogen] | Annotation generator
 | `sandwich`     | [machakann/vim-sandwich] | Search, select, and edit sandwich text objects
 
@@ -702,7 +696,8 @@ Spec: `rafi.plugins.extras.coding.<name>`
 [chrisgrieser/nvim-chainsaw]: https://github.com/chrisgrieser/nvim-chainsaw
 [sgur/vim-editorconfig]: https://github.com/sgur/vim-editorconfig
 [mattn/emmet-vim]: https://github.com/mattn/emmet-vim
-[echasnovski/mini.comment]: https://github.com/echasnovski/mini.comment
+[L3MON4D3/LuaSnip]: https://github.com/L3MON4D3/LuaSnip
+[saadparwaiz1/cmp_luasnip]: https://github.com/saadparwaiz1/cmp_luasnip
 [echasnovski/mini.pairs]: https://github.com/echasnovski/mini.pairs
 [danymat/neogen]: https://github.com/danymat/neogen
 [machakann/vim-sandwich]: https://github.com/machakann/vim-sandwich
@@ -740,7 +735,7 @@ Spec: `rafi.plugins.extras.editor.<name>`
 | `anyjump`     | [pechorin/any-jump.vim] | Jump to any definition and references without overhead
 | `flybuf`      | [glepnir/flybuf.nvim]   | List buffers in a float window
 | `harpoon`     | [ThePrimeagen/harpoon]  | Marks for navigating your project
-| `minivisits`  | [echasnovski/mini.visits] | Track and reuse file system visits
+| `mini-visits` | [echasnovski/mini.visits] | Track and reuse file system visits
 | `rest`        | [rest-nvim/rest.nvim] | Fast Neovim http client written in Lua
 | `sidebar`     | [sidebar-nvim/sidebar.nvim] | Generic and modular lua sidebar
 | `ufo`         | [kevinhwang91/nvim-ufo] | Make folds look modern and keep a high performance
@@ -835,6 +830,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 | ----------------- | -------------- | ----------------------
 | `alpha`           | [goolord/alpha-nvim] | Fast and fully programmable greeter
 | `barbecue`        | [utilyre/barbecue.nvim] | VS Code like winbar
+| `ccc`             | [uga-rosa/ccc.nvim] | Super powerful color picker/colorizer plugin
 | `cursorword`      | [itchyny/cursorword] | Underlines word under cursor
 | `cybu`            | [ghillb/cybu.nvim] | Cycle buffers with a customizable notification window
 | `deadcolumn`      | [Bekaboo/deadcolumn.nvim] | Show colorcolumn dynamically
@@ -842,13 +838,14 @@ Spec: `rafi.plugins.extras.ui.<name>`
 | `headlines`       | [lukas-reineke/headlines.nvim] | Adds horizontal highlights for headlines and code background.
 | `illuminate`      | [RRethy/vim-illuminate] | Highlights other uses of the word under the cursor
 | `incline`         | [b0o/incline.nvim] | Floating statuslines
-| `miniclue`        | [echasnovski/mini.clue] | Show next key clues
-| `minimap`         | [echasnovski/mini.map] | Window with buffer text overview, scrollbar and highlights
+| `mini-clue`       | [echasnovski/mini.clue] | Show next key clues
+| `mini-map`        | [echasnovski/mini.map] | Window with buffer text overview, scrollbar and highlights
 | `render-markdown` | [MeanderingProgrammer/markdown.nvim] | Improve viewing Markdown files
 | `symbols-outline` | [simrat39/symbols-outline.nvim] | Tree like view for symbols using LSP
 
 [goolord/alpha-nvim]: https://github.com/goolord/alpha-nvim
 [utilyre/barbecue.nvim]: https://github.com/utilyre/barbecue.nvim
+[uga-rosa/ccc.nvim]: https://github.com/uga-rosa/ccc.nvim
 [itchyny/cursorword]: https://github.com/itchyny/vim-cursorword
 [ghillb/cybu.nvim]: https://github.com/ghillb/cybu.nvim
 [Bekaboo/deadcolumn.nvim]: https://github.com/Bekaboo/deadcolumn.nvim
@@ -937,12 +934,12 @@ Note that,
 | ----- |:----:| ------------------ | ------
 | <kbd>Space</kbd>+<kbd>Space</kbd> | 𝐍 𝐕 | Toggle visual-line mode | <small>`V` / <kbd>Escape</kbd></small>
 | <kbd>v</kbd> / <kbd>V</kbd> | 𝐕 | Increment/shrink selection | <small>[nvim-treesitter]</small>
-| <kbd>gpp</kbd> | 𝐍 | Select last paste |
-| <kbd>sg</kbd> | 𝐕 | Replace within selected area |
-| <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐕 | Replace selection with step-by-step confirmation |
-| <kbd>></kbd> / <kbd><</kbd> | 𝐕 | Indent and re-select |
-| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent and re-select |
-| <kbd>I</kbd> / <kbd>gI</kbd> / <kbd>A</kbd> | 𝐕 | Force blockwise operation |
+| <kbd>vp</kbd> | 𝐍 | Select last paste | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>sg</kbd> | 𝐕 | Replace within selected area | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐕 | Replace selection with step-by-step confirmation | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>></kbd> / <kbd><</kbd> | 𝐕 | Indent and re-select | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent and re-select | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>I</kbd> / <kbd>gI</kbd> / <kbd>A</kbd> | 𝐕 | Force blockwise operation | <small>[plugins/lsp/keymaps.lua]</small>
 
 ### Jump To
 
@@ -951,9 +948,9 @@ Note that,
 | <kbd>],</kbd> or <kbd>[,</kbd> | 𝐍 | Next/previous parameter | <small>[akinsho/bufferline.nvim]</small>
 | <kbd>]q</kbd> or <kbd>[q</kbd> | 𝐍 | Next/previous on quick-fix | <small>`:cnext` / `:cprev`</small>
 | <kbd>]a</kbd> or <kbd>[a</kbd> | 𝐍 | Next/previous on location-list | <small>`:lnext` / `:lprev`</small>
-| <kbd>]d</kbd> or <kbd>[d</kbd> | 𝐍 | Next/previous diagnostics |
-| <kbd>]e</kbd> or <kbd>[e</kbd> | 𝐍 | Next/previous error |
-| <kbd>]w</kbd> or <kbd>[w</kbd> | 𝐍 | Next/previous warning |
+| <kbd>]d</kbd> or <kbd>[d</kbd> | 𝐍 | Next/previous diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>]e</kbd> or <kbd>[e</kbd> | 𝐍 | Next/previous error | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>]w</kbd> or <kbd>[w</kbd> | 𝐍 | Next/previous warning | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>]b</kbd> or <kbd>[b</kbd> | 𝐍 | Next/previous buffer | <small>[akinsho/bufferline.nvim]</small>
 | <kbd>]f</kbd> or <kbd>[f</kbd> | 𝐍 | Next/previous function start | <small>[echasnovski/mini.ai]</small>
 | <kbd>]F</kbd> or <kbd>[F</kbd> | 𝐍 | Next/previous function end | <small>[echasnovski/mini.ai]</small>
@@ -963,7 +960,6 @@ Note that,
 | <kbd>]M</kbd> or <kbd>[M</kbd> | 𝐍 | Next/previous method end | <small>[echasnovski/mini.ai]</small>
 | <kbd>]g</kbd> or <kbd>[g</kbd> | 𝐍 | Next/previous Git hunk | <small>[lewis6991/gitsigns.nvim]</small>
 | <kbd>]i</kbd> or <kbd>[i</kbd> | 𝐍 | Next/previous indent scope | <small>[echasnovski/mini.indentscope]</small>
-| <kbd>]s</kbd> or <kbd>[s</kbd> | 𝐍 | Next/previous misspelled word
 | <kbd>]t</kbd> or <kbd>[t</kbd> | 𝐍 | Next/previous TODO | <small>[folke/todo-comments.nvim]</small>
 | <kbd>]z</kbd> or <kbd>[z</kbd> | 𝐍 | Next/previous whitespace error | <small>[config/keymaps.lua]</small>
 
@@ -1059,7 +1055,6 @@ Note that,
 | <kbd>Space</kbd>+<kbd>v</kbd> | 𝐍 𝐕 | Toggle line-wise comments | <small>[numToStr/Comment.nvim]</small>
 | <kbd>Space</kbd>+<kbd>V</kbd> | 𝐍 𝐕 | Toggle block-wise comments | <small>[numToStr/Comment.nvim]</small>
 | <kbd>Space</kbd>+<kbd>dd</kbd> | 𝐍 𝐕 | Duplicate line or selection | <small>[config/keymaps.lua]</small>
-| <kbd>Space</kbd>+<kbd>p</kbd> | 𝐍 | Duplicate paragraph | <small>`yap<S-}>p`</small>
 | <kbd>Space</kbd>+<kbd>cw</kbd> | 𝐍 | Remove all spaces at EOL | <small>[echasnovski/mini.trailspace]</small>
 | <kbd>sj</kbd> / <kbd>sk</kbd> | 𝐍 | Join/split arguments | <small>[echasnovski/mini.splitjoin]</small>
 | <kbd>dsf</kbd> / <kbd>csf</kbd> | 𝐍 | Delete/change surrounding function call | <small>[AndrewRadev/dsf.vim]</small>
@@ -1083,7 +1078,6 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>!</kbd> | 𝐍 | Shortcut for shell command | <small>`:!`</small>
 | <kbd>g!</kbd> | 𝐍 | Read vim command into buffer | <small>`:put=execute('⌴')`</small>
 | <kbd>Ctrl</kbd>+<kbd>n</kbd> / <kbd>p</kbd> | 𝐂 | Switch history search pairs | <kbd>↓</kbd> / <kbd>↑</kbd>
 | <kbd>↓</kbd> / <kbd>↑</kbd> | 𝐂 | Switch history search pairs | <small>`Ctrl` `n`/`p`</small>
@@ -1172,42 +1166,42 @@ Note that,
 
 See [echasnovski/mini.surround] for more mappings and usage information.
 
-| Key            | Mode  | Action                       |
-| -------------- |:-----:| ---------------------------- |
-| <kbd>sa</kbd> & movement  | 𝐍 𝐕 | Add surrounding |
-| <kbd>cs</kbd> & movement  | 𝐍   | Replace surrounding |
-| <kbd>ds</kbd> & movement  | 𝐍   | Delete surrounding |
-| <kbd>gzf</kbd> & movement | 𝐍   | Find surrounding (to the right) |
-| <kbd>gzF</kbd> & movement | 𝐍   | Find surrounding (to the left) |
-| <kbd>gzh</kbd> & movement | 𝐍   | Highlight surrounding |
-| <kbd>gzn</kbd> & movement | 𝐍   | Update neighbor lines |
+| Key            | Mode  | Action
+| -------------- |:-----:| ----------------------------
+| <kbd>sa</kbd> & movement  | 𝐍 𝐕 | Add surrounding
+| <kbd>cs</kbd> & movement  | 𝐍   | Replace surrounding
+| <kbd>ds</kbd> & movement  | 𝐍   | Delete surrounding
+| <kbd>gzf</kbd> & movement | 𝐍   | Find surrounding (to the right)
+| <kbd>gzF</kbd> & movement | 𝐍   | Find surrounding (to the left)
+| <kbd>gzh</kbd> & movement | 𝐍   | Highlight surrounding
+| <kbd>gzn</kbd> & movement | 𝐍   | Update neighbor lines
 
 #### Plugin: Gitsigns
 
 See [lewis6991/gitsigns.nvim] for more mappings and usage information.
 
-| Key   | Mode | Action             |
-| ----- |:----:| ------------------ |
-| <kbd>]g</kbd> or <kbd>]g</kbd> | 𝐍 | Next/previous Git hunk |
-| <kbd>gs</kbd>                  | 𝐍 | Preview hunk |
-| <kbd>Space</kbd> <kbd>hp</kbd> | 𝐍 | Preview hunk inline |
-| <kbd>Space</kbd> <kbd>hb</kbd> | 𝐍 | Blame line |
-| <kbd>Space</kbd> <kbd>hs</kbd> | 𝐍 𝐕 | Stage hunk |
-| <kbd>Space</kbd> <kbd>hr</kbd> | 𝐍 𝐕 | Reset hunk |
-| <kbd>Space</kbd> <kbd>hu</kbd> | 𝐍 | Undo stage hunk |
-| <kbd>Space</kbd> <kbd>hS</kbd> | 𝐍 | Stage buffer |
-| <kbd>Space</kbd> <kbd>hR</kbd> | 𝐍 | Reset buffer |
-| <kbd>Space</kbd> <kbd>hd</kbd> | 𝐍 | Diff against the index |
-| <kbd>Space</kbd> <kbd>hD</kbd> | 𝐍 | Diff against the last commit |
-| <kbd>Space</kbd> <kbd>hw</kbd> | 𝐍 | Toggle word diff |
-| <kbd>Space</kbd> <kbd>hl</kbd> | 𝐍 | Publish hunks to location-list |
-| <kbd>Space</kbd> <kbd>htb</kbd> | 𝐍 | Toggle git current line blame |
-| <kbd>Space</kbd> <kbd>htd</kbd> | 𝐍 | Toggle git deleted |
-| <kbd>Space</kbd> <kbd>htw</kbd> | 𝐍 | Toggle git word diff |
-| <kbd>Space</kbd> <kbd>htl</kbd> | 𝐍 | Toggle git line highlight |
-| <kbd>Space</kbd> <kbd>htn</kbd> | 𝐍 | Toggle git number highlight |
-| <kbd>Space</kbd> <kbd>hts</kbd> | 𝐍 | Toggle git signs |
-| <kbd>ih</kbd>                  | 𝐎 | Select inner hunk operator |
+| Key   | Mode | Action
+| ----- |:----:| ------------------
+| <kbd>]g</kbd> or <kbd>]g</kbd> | 𝐍 | Next/previous Git hunk
+| <kbd>gs</kbd>                  | 𝐍 | Preview hunk
+| <kbd>Space</kbd> <kbd>hp</kbd> | 𝐍 | Preview hunk inline
+| <kbd>Space</kbd> <kbd>hb</kbd> | 𝐍 | Blame line
+| <kbd>Space</kbd> <kbd>hs</kbd> | 𝐍 𝐕 | Stage hunk
+| <kbd>Space</kbd> <kbd>hr</kbd> | 𝐍 𝐕 | Reset hunk
+| <kbd>Space</kbd> <kbd>hu</kbd> | 𝐍 | Undo stage hunk
+| <kbd>Space</kbd> <kbd>hS</kbd> | 𝐍 | Stage buffer
+| <kbd>Space</kbd> <kbd>hR</kbd> | 𝐍 | Reset buffer
+| <kbd>Space</kbd> <kbd>hd</kbd> | 𝐍 | Diff against the index
+| <kbd>Space</kbd> <kbd>hD</kbd> | 𝐍 | Diff against the last commit
+| <kbd>Space</kbd> <kbd>hw</kbd> | 𝐍 | Toggle word diff
+| <kbd>Space</kbd> <kbd>hl</kbd> | 𝐍 | Publish hunks to location-list
+| <kbd>Space</kbd> <kbd>htb</kbd> | 𝐍 | Toggle git current line blame
+| <kbd>Space</kbd> <kbd>htd</kbd> | 𝐍 | Toggle git deleted
+| <kbd>Space</kbd> <kbd>htw</kbd> | 𝐍 | Toggle git word diff
+| <kbd>Space</kbd> <kbd>htl</kbd> | 𝐍 | Toggle git line highlight
+| <kbd>Space</kbd> <kbd>htn</kbd> | 𝐍 | Toggle git number highlight
+| <kbd>Space</kbd> <kbd>hts</kbd> | 𝐍 | Toggle git signs
+| <kbd>ih</kbd>                  | 𝐎 | Select inner hunk operator
 
 #### Plugin: Diffview
 
