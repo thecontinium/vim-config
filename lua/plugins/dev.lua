@@ -5,32 +5,32 @@ return {
 	--   if: has('nvim-0.5')
 	--   hook_post_source: lua require('local-plugins.autopairs')
 	--
-	{
-		"guns/vim-sexp",
-		ft = "clojure",
-		config = function(_, _)
-			-- vim.g.sexp_enable_insert_mode_mappings = 0
-			vim.g.sexp_mappings = {
-				sexp_round_head_wrap_list = ",i",
-				sexp_round_tail_wrap_list = ",I",
-				sexp_square_head_wrap_list = "",
-				sexp_square_tail_wrap_list = "",
-				sexp_curly_head_wrap_list = "",
-				sexp_curly_tail_wrap_list = "",
-				sexp_round_head_wrap_element = ",w",
-				sexp_round_tail_wrap_element = ",W",
-				sexp_square_head_wrap_element = "",
-				sexp_square_tail_wrap_element = "",
-				sexp_curly_head_wrap_element = "",
-				sexp_curly_tail_wrap_element = "",
-				sexp_insert_at_list_head = ",h",
-				sexp_insert_at_list_tail = ",l",
-				sexp_splice_list = ",d",
-				sexp_raise_list = ",o",
-				sexp_raise_element = ",O",
-			}
-		end,
-	},
+	-- {
+	-- 	"guns/vim-sexp",
+	-- 	ft = "clojure",
+	-- 	config = function(_, _)
+	-- 		-- vim.g.sexp_enable_insert_mode_mappings = 0
+	-- 		vim.g.sexp_mappings = {
+	-- 			sexp_round_head_wrap_list = ",i",
+	-- 			sexp_round_tail_wrap_list = ",I",
+	-- 			sexp_square_head_wrap_list = "",
+	-- 			sexp_square_tail_wrap_list = "",
+	-- 			sexp_curly_head_wrap_list = "",
+	-- 			sexp_curly_tail_wrap_list = "",
+	-- 			sexp_round_head_wrap_element = ",w",
+	-- 			sexp_round_tail_wrap_element = ",W",
+	-- 			sexp_square_head_wrap_element = "",
+	-- 			sexp_square_tail_wrap_element = "",
+	-- 			sexp_curly_head_wrap_element = "",
+	-- 			sexp_curly_tail_wrap_element = "",
+	-- 			sexp_insert_at_list_head = ",h",
+	-- 			sexp_insert_at_list_tail = ",l",
+	-- 			sexp_splice_list = ",d",
+	-- 			sexp_raise_list = ",o",
+	-- 			sexp_raise_element = ",O",
+	-- 		}
+	-- 	end,
+	-- },
 
 	-- # Movement
 	-- ()      move cursor to matching paren (same as % but easier) _[SEXP]_
@@ -62,9 +62,69 @@ return {
 	-- daf dif  delete around/in form
 	-- ,o       delete outer form _[SEXP]_
 	{
-		"tpope/vim-sexp-mappings-for-regular-people",
-		dependencies = { "guns/vim-sexp" },
+		"PaterJason/nvim-treesitter-sexp",
 		ft = "clojure",
+		dependencies = 'echasnovski/mini.surround',
+		init = function()
+			vim.api.nvim_create_autocmd('FileType', {
+				group = vim.api.nvim_create_augroup('group_treesitter-sexp', {}),
+				pattern = 'clojure',
+				callback = function()
+					vim.keymap.set('n', ',w', 'saie)<I',
+						{ buffer = true, remap = true, desc = 'Insert surround elem head' })
+					vim.keymap.set('n', ',W', 'saie)>I ',
+						{ buffer = true, remap = true, desc = 'Insert surround elem tail' })
+					vim.keymap.set('n', ',i', 'saif)((<I',
+						{ buffer = true, remap = true, desc = 'Insert surround form head' })
+					vim.keymap.set('n', ',I', 'saif)))>I ',
+						{ buffer = true, remap = true, desc = 'Insert surround form head' })
+				end,
+			})
+		end,
+		opts = {
+			-- Enable/disable
+			enabled = true,
+			-- Move cursor when applying commands
+			set_cursor = true,
+			-- Set to false to disable all keymaps
+			keymaps = {
+				-- Set to false to disable keymap type
+				commands = {
+					-- Set to false to disable individual keymaps
+					swap_prev_elem = "<e",
+					swap_next_elem = ">e",
+					swap_prev_form = "<f",
+					swap_next_form = ">f",
+					promote_elem = ",O",
+					promote_form = ",o",
+					splice = ",d",
+					slurp_left = "<(",
+					slurp_right = ">)",
+					barf_left = ">(",
+					barf_right = "<)",
+					insert_head = "<I",
+					insert_tail = ">I",
+				},
+				motions = {
+					form_start = "(",
+					form_end = ")",
+					prev_elem = "[E", --"[e"
+					next_elem = "]E", --"]e"
+					prev_elem_end = false, --"[E"
+					next_elem_end = false, --"]E"
+					prev_top_level = "[[",
+					next_top_level = "]]",
+				},
+				textobjects = {
+					inner_elem = "ie",
+					outer_elem = "ae",
+					inner_form = "if",
+					outer_form = "af",
+					inner_top_level = "iF",
+					outer_top_level = "aF",
+				},
+			},
+		},
 	},
 
 	-- {
@@ -96,18 +156,49 @@ return {
 
 	{
 		"clojure-vim/vim-jack-in",
-		cmd = { 'Clj', 'Lein'},
+		cmd = { 'Clj', 'Lein' },
 		dependencies = { "radenling/vim-dispatch-neovim", "tpope/vim-dispatch" },
 	},
 
 	{
 		"Olical/conjure",
 		ft = { "clojure", "python", "markdown" },
-		-- branch = "develop",
+		branch = "develop",
 		config = function()
 			require("conjure.main").main()
 			require("conjure.mapping")["on-filetype"]()
 		end,
+		dependencies = {
+			{
+				"PaterJason/cmp-conjure",
+				config = function(_, _)
+					local function get_sources(arr)
+						local config = {
+							buffer = { name = "buffer" },
+							nvim_lsp = { name = "nvim_lsp" },
+							nvim_lua = { name = "nvim_lua" },
+							path = { name = "path" },
+							emoji = { name = "emoji" },
+							vsnip = { name = "vsnip" },
+							luasnip = { name = "luasnip" },
+							tmux = { name = "tmux", option = { all_panes = true } },
+							latex = { name = "latex_symbols" },
+							conjure = { name = "conjure" },
+						}
+						local sources = {}
+						for _, name in ipairs(arr) do
+							sources[#sources + 1] = config[name]
+						end
+						return sources
+					end
+					local cmp = require("cmp")
+					cmp.setup.filetype({ "clojure" }, {
+						sources = get_sources({ "nvim_lsp", "buffer", "path", "luasnip",
+							"tmux", "conjure" }),
+					})
+				end,
+			},
+		},
 		init = function()
 			vim.g["conjure#mapping#prefix"] = ","
 			vim.g["conjure#mapping#log_split"] = "lv"
@@ -122,10 +213,13 @@ return {
 				vim.cmd(":w")
 				local current_ft = vim.bo.filetype
 				vim.bo.filetype = "clojure"
-				vim.cmd(':ConjureEval (nextjournal.clerk/show! "' .. vim.fn.expand("%:p") .. '")')
+				vim.cmd(':ConjureEval (nextjournal.clerk/show! "' ..
+					vim.fn.expand("%:p") .. '")')
 				vim.bo.filetype = current_ft
 			end
-			vim.api.nvim_set_keymap('n', ',cs', ':lua ClerkShow()<CR>', { noremap = true, silent = true })
+
+			vim.api.nvim_set_keymap('n', ',cs', ':lua ClerkShow()<CR>',
+				{ noremap = true, silent = true })
 		end,
 	},
 
@@ -134,36 +228,6 @@ return {
 	-- 	ft = "clojure",
 	-- },
 
-	{
-		"PaterJason/cmp-conjure",
-		dependencies = { "hrsh7th/nvim-cmp" },
-		ft = "clojure",
-		config = function(_, _)
-			local function get_sources(arr)
-				local config = {
-					buffer = { name = "buffer" },
-					nvim_lsp = { name = "nvim_lsp" },
-					nvim_lua = { name = "nvim_lua" },
-					path = { name = "path" },
-					emoji = { name = "emoji" },
-					vsnip = { name = "vsnip" },
-					luasnip = { name = "luasnip" },
-					tmux = { name = "tmux", option = { all_panes = true } },
-					latex = { name = "latex_symbols" },
-					conjure = { name = "conjure" },
-				}
-				local sources = {}
-				for _, name in ipairs(arr) do
-					sources[#sources + 1] = config[name]
-				end
-				return sources
-			end
-			local cmp = require("cmp")
-			cmp.setup.filetype({ "clojure" }, {
-				sources = get_sources({ "nvim_lsp", "buffer", "path", "luasnip", "tmux", "conjure" }),
-			})
-		end,
-	},
 
 	{
 		"goerz/jupytext.vim",
