@@ -64,7 +64,7 @@ return {
 	{
 		"PaterJason/nvim-treesitter-sexp",
 		ft = "clojure",
-		dependencies = 'echasnovski/mini.surround',
+		dependencies = {'echasnovski/mini.surround', 'folke/which-key.nvim'},
 		init = function()
 			vim.api.nvim_create_autocmd('FileType', {
 				group = vim.api.nvim_create_augroup('group_treesitter-sexp', {}),
@@ -77,8 +77,73 @@ return {
 					vim.keymap.set('n', ',i', 'saif)((<I',
 						{ buffer = true, remap = true, desc = 'Insert surround form head' })
 					vim.keymap.set('n', ',I', 'saif)))>I ',
-						{ buffer = true, remap = true, desc = 'Insert surround form head' })
+						{ buffer = true, remap = true, desc = 'Insert surround form tail' })
 				end,
+			})
+
+			local function add_sub_key(table, l, v)
+				local k1 = l:sub(1, 1)
+				local k2 = l:sub(2, 2)
+				if l:len() > 1 then
+					k1 = l:sub(1, l:len() - 1)
+					k2 = l:sub(l:len(), l:len())
+				end
+				if k1 == "" then
+					k1 = l
+				end
+				if k2 ~= "" then
+					if table[k1] == nil then
+						table[k1] = {}
+					end
+					table[k1][k2] = v
+				else
+					table[k1] = v
+				end
+			end
+
+			local function add_which_key(km, ks, opts)
+				local wk = require("which-key")
+				local w = {}
+				for key, lhs in pairs(km) do
+					local k = ks[key]
+					if lhs and k then
+						add_sub_key(w, lhs, k.desc)
+					end
+				end
+				wk.register(vim.tbl_deep_extend("error", opts, w))
+			end
+
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					local bufnr = args.buf
+					local filetype = args.match
+
+					local config = require "treesitter-sexp.config"
+					if not config.options.enabled then
+						return
+					end
+
+					local utils = require "treesitter-sexp.utils"
+					local query = utils.get_query(filetype)
+					if query == nil then
+						return
+					end
+
+					local commands = require "treesitter-sexp.commands"
+					local textobjects = require "treesitter-sexp.textobjects"
+					local motions = require "treesitter-sexp.motions"
+					local keymaps = config.options.keymaps
+
+					if keymaps then
+						add_which_key(keymaps.commands, commands,
+							{ mode = { "n" }, expr = true, buffer = bufnr })
+						add_which_key(keymaps.textobjects, textobjects,
+							{ mode = { "o", "x" }, buffer = bufnr })
+						add_which_key(keymaps.motions, motions,
+							{ mode = { "n", "o", "x" }, buffer = bufnr })
+					end
+				end,
+				group = vim.api.nvim_create_augroup("NvimTreesitter-sexp-whichkey", {})
 			})
 		end,
 		opts = {
