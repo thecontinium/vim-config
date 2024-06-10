@@ -62,22 +62,38 @@ return {
 	-- daf dif  delete around/in form
 	-- ,o       delete outer form _[SEXP]_
 	{
-		"PaterJason/nvim-treesitter-sexp",
-		ft = "clojure",
-		dependencies = {'echasnovski/mini.surround', 'folke/which-key.nvim'},
+		'PaterJason/nvim-treesitter-sexp',
+		ft = 'clojure',
+		dependencies = { 'echasnovski/mini.surround', 'folke/which-key.nvim' },
 		init = function()
 			vim.api.nvim_create_autocmd('FileType', {
 				group = vim.api.nvim_create_augroup('group_treesitter-sexp', {}),
 				pattern = 'clojure',
 				callback = function()
-					vim.keymap.set('n', ',w', 'saie)<I',
-						{ buffer = true, remap = true, desc = 'Insert surround elem head' })
-					vim.keymap.set('n', ',W', 'saie)>I ',
-						{ buffer = true, remap = true, desc = 'Insert surround elem tail' })
-					vim.keymap.set('n', ',i', 'saif)((<I',
-						{ buffer = true, remap = true, desc = 'Insert surround form head' })
-					vim.keymap.set('n', ',I', 'saif)))>I ',
-						{ buffer = true, remap = true, desc = 'Insert surround form tail' })
+					vim.keymap.set(
+						'n',
+						',w',
+						'saie)<I',
+						{ buffer = true, remap = true, desc = 'Insert surround elem head' }
+					)
+					vim.keymap.set(
+						'n',
+						',W',
+						'saie)>I ',
+						{ buffer = true, remap = true, desc = 'Insert surround elem tail' }
+					)
+					vim.keymap.set(
+						'n',
+						',i',
+						'saif)((<I',
+						{ buffer = true, remap = true, desc = 'Insert surround form head' }
+					)
+					vim.keymap.set(
+						'n',
+						',I',
+						'saif)))>I ',
+						{ buffer = true, remap = true, desc = 'Insert surround form tail' }
+					)
 				end,
 			})
 
@@ -88,10 +104,10 @@ return {
 					k1 = l:sub(1, l:len() - 1)
 					k2 = l:sub(l:len(), l:len())
 				end
-				if k1 == "" then
+				if k1 == '' then
 					k1 = l
 				end
-				if k2 ~= "" then
+				if k2 ~= '' then
 					if table[k1] == nil then
 						table[k1] = {}
 					end
@@ -102,7 +118,7 @@ return {
 			end
 
 			local function add_which_key(km, ks, opts)
-				local wk = require("which-key")
+				local wk = require('which-key')
 				local w = {}
 				for key, lhs in pairs(km) do
 					local k = ks[key]
@@ -110,40 +126,49 @@ return {
 						add_sub_key(w, lhs, k.desc)
 					end
 				end
-				wk.register(vim.tbl_deep_extend("error", opts, w))
+				wk.register(vim.tbl_deep_extend('error', opts, w))
 			end
 
-			vim.api.nvim_create_autocmd("FileType", {
+			vim.api.nvim_create_autocmd('FileType', {
 				callback = function(args)
 					local bufnr = args.buf
 					local filetype = args.match
 
-					local config = require "treesitter-sexp.config"
+					local config = require('treesitter-sexp.config')
 					if not config.options.enabled then
 						return
 					end
 
-					local utils = require "treesitter-sexp.utils"
+					local utils = require('treesitter-sexp.utils')
 					local query = utils.get_query(filetype)
 					if query == nil then
 						return
 					end
 
-					local commands = require "treesitter-sexp.commands"
-					local textobjects = require "treesitter-sexp.textobjects"
-					local motions = require "treesitter-sexp.motions"
+					local commands = require('treesitter-sexp.commands')
+					local textobjects = require('treesitter-sexp.textobjects')
+					local motions = require('treesitter-sexp.motions')
 					local keymaps = config.options.keymaps
 
 					if keymaps then
-						add_which_key(keymaps.commands, commands,
-							{ mode = { "n" }, expr = true, buffer = bufnr })
-						add_which_key(keymaps.textobjects, textobjects,
-							{ mode = { "o", "x" }, buffer = bufnr })
-						add_which_key(keymaps.motions, motions,
-							{ mode = { "n", "o", "x" }, buffer = bufnr })
+						add_which_key(
+							keymaps.commands,
+							commands,
+							{ mode = { 'n' }, expr = true, buffer = bufnr }
+						)
+						add_which_key(
+							keymaps.textobjects,
+							textobjects,
+							{ mode = { 'o', 'x' }, buffer = bufnr }
+						)
+						add_which_key(
+							keymaps.motions,
+							motions,
+							{ mode = { 'n', 'o', 'x' }, buffer = bufnr }
+						)
 					end
 				end,
-				group = vim.api.nvim_create_augroup("NvimTreesitter-sexp-whichkey", {})
+				group = vim.api.nvim_create_augroup('NvimTreesitter-sexp-whichkey', {}),
 			})
 		end,
 		opts = {
@@ -156,37 +181,37 @@ return {
 				-- Set to false to disable keymap type
 				commands = {
 					-- Set to false to disable individual keymaps
-					swap_prev_elem = "<e",
-					swap_next_elem = ">e",
-					swap_prev_form = "<f",
-					swap_next_form = ">f",
-					promote_elem = ",O",
-					promote_form = ",o",
-					splice = ",d",
-					slurp_left = "<(",
-					slurp_right = ">)",
-					barf_left = ">(",
-					barf_right = "<)",
-					insert_head = "<I",
-					insert_tail = ">I",
+					swap_prev_elem = '<e',
+					swap_next_elem = '>e',
+					swap_prev_form = '<f',
+					swap_next_form = '>f',
+					promote_elem = ',O',
+					promote_form = ',o',
+					splice = ',d',
+					slurp_left = '<(',
+					slurp_right = '>)',
+					barf_left = '>(',
+					barf_right = '<)',
+					insert_head = '<I',
+					insert_tail = '>I',
 				},
 				motions = {
-					form_start = "(",
-					form_end = ")",
-					prev_elem = "[E", --"[e"
-					next_elem = "]E", --"]e"
+					form_start = '(',
+					form_end = ')',
+					prev_elem = '[E', --"[e"
+					next_elem = ']E', --"]e"
 					prev_elem_end = false, --"[E"
 					next_elem_end = false, --"]E"
-					prev_top_level = "[[",
-					next_top_level = "]]",
+					prev_top_level = '[[',
+					next_top_level = ']]',
 				},
 				textobjects = {
-					inner_elem = "ie",
-					outer_elem = "ae",
-					inner_form = "if",
-					outer_form = "af",
-					inner_top_level = "iF",
-					outer_top_level = "aF",
+					inner_elem = 'ie',
+					outer_elem = 'ae',
+					inner_form = 'if',
+					outer_form = 'af',
+					inner_top_level = 'iF',
+					outer_top_level = 'aF',
 				},
 			},
 		},
@@ -217,38 +242,39 @@ return {
 	-- - repo: tpope/vim-repeat
 	--   on-source: conjure
 	--
-	{ "clojure-vim/clojure.vim", ft = "clojure" },
+	{ 'clojure-vim/clojure.vim', ft = 'clojure' },
 
 	{
-		"clojure-vim/vim-jack-in",
+		'clojure-vim/vim-jack-in',
 		cmd = { 'Clj', 'Lein' },
-		dependencies = { "radenling/vim-dispatch-neovim", "tpope/vim-dispatch" },
+		dependencies = { 'radenling/vim-dispatch-neovim', 'tpope/vim-dispatch' },
 	},
 
 	{
-		"Olical/conjure",
-		ft = { "clojure", "python", "markdown" },
-		branch = "develop",
+		'Olical/conjure',
+		ft = { 'clojure', 'python', 'markdown', 'lua' },
+		branch = 'develop',
 		config = function()
-			require("conjure.main").main()
-			require("conjure.mapping")["on-filetype"]()
+			require('conjure.main').main()
+			require('conjure.mapping')['on-filetype']()
 		end,
 		dependencies = {
+			'folke/which-key.nvim',
 			{
-				"PaterJason/cmp-conjure",
+				'PaterJason/cmp-conjure',
 				config = function(_, _)
 					local function get_sources(arr)
 						local config = {
-							buffer = { name = "buffer" },
-							nvim_lsp = { name = "nvim_lsp" },
-							nvim_lua = { name = "nvim_lua" },
-							path = { name = "path" },
-							emoji = { name = "emoji" },
-							vsnip = { name = "vsnip" },
-							luasnip = { name = "luasnip" },
-							tmux = { name = "tmux", option = { all_panes = true } },
-							latex = { name = "latex_symbols" },
-							conjure = { name = "conjure" },
+							buffer = { name = 'buffer' },
+							nvim_lsp = { name = 'nvim_lsp' },
+							nvim_lua = { name = 'nvim_lua' },
+							path = { name = 'path' },
+							emoji = { name = 'emoji' },
+							vsnip = { name = 'vsnip' },
+							luasnip = { name = 'luasnip' },
+							tmux = { name = 'tmux', option = { all_panes = true } },
+							latex = { name = 'latex_symbols' },
+							conjure = { name = 'conjure' },
 						}
 						local sources = {}
 						for _, name in ipairs(arr) do
@@ -256,35 +282,64 @@ return {
 						end
 						return sources
 					end
-					local cmp = require("cmp")
-					cmp.setup.filetype({ "clojure" }, {
-						sources = get_sources({ "nvim_lsp", "buffer", "path", "luasnip",
-							"tmux", "conjure" }),
+					local cmp = require('cmp')
+					cmp.setup.filetype({ 'clojure' }, {
+						sources = get_sources({
+							'nvim_lsp',
+							'buffer',
+							'path',
+							'luasnip',
+							'tmux',
+							'conjure',
+						}),
 					})
 				end,
 			},
 		},
 		init = function()
-			vim.g["conjure#mapping#prefix"] = ","
-			vim.g["conjure#mapping#log_split"] = "lv"
-			vim.g["conjure#mapping#log_toggle"] = "ls"
-			vim.g["conjure#mapping#log_vsplit"] = "lg"
-			vim.g["conjure#log#hud#width"] = 1
-			vim.g["conjure#log#hud#anchor"] = "SE"
-			vim.g["conjure#highlight#enabled"] = true
+			vim.g['conjure#mapping#prefix'] = ','
+			vim.g['conjure#mapping#log_split'] = 'lv'
+			vim.g['conjure#mapping#log_toggle'] = 'ls'
+			vim.g['conjure#mapping#log_vsplit'] = 'lg'
+			vim.g['conjure#log#hud#width'] = 1
+			vim.g['conjure#log#hud#anchor'] = 'SE'
+			vim.g['conjure#highlight#enabled'] = true
 			-- allow lisp K mapping and delegate this to ,K
-			vim.g["conjure#mapping#doc_word"] = "K"
+			vim.g['conjure#mapping#doc_word'] = 'K'
 			function ClerkShow()
-				vim.cmd(":w")
+				vim.cmd(':w')
 				local current_ft = vim.bo.filetype
-				vim.bo.filetype = "clojure"
-				vim.cmd(':ConjureEval (nextjournal.clerk/show! "' ..
-					vim.fn.expand("%:p") .. '")')
+				vim.bo.filetype = 'clojure'
+				vim.cmd(
+					':ConjureEval (nextjournal.clerk/show! "'
+						.. vim.fn.expand('%:p')
+						.. '")'
+				)
 				vim.bo.filetype = current_ft
 			end
-
-			vim.api.nvim_set_keymap('n', ',cs', ':lua ClerkShow()<CR>',
-				{ noremap = true, silent = true })
+			vim.keymap.set(
+				'n',
+				',cs',
+				':lua ClerkShow()<CR>',
+				{ noremap = true, silent = true }
+			)
+			vim.api.nvim_create_autocmd('FileType', {
+				group = vim.api.nvim_create_augroup('group_conjure-wk', {}),
+				pattern = { 'clojure', 'python', 'markdown', 'lua' },
+				callback = function(args)
+					local wk = require('which-key')
+					wk.register({
+						[',c'] = { name = '+connect' },
+						[',e'] = { name = '+evaluate' },
+						[',g'] = { name = '+get' },
+						[',l'] = { name = '+log' },
+						[',r'] = { name = '+refresh' },
+						[',s'] = { name = '+session' },
+						[',t'] = { name = '+test' },
+						[',v'] = { name = '+display' },
+					}, { mode = 'n', buffer = args.buf })
+				end,
+			})
 		end,
 	},
 
@@ -293,27 +348,26 @@ return {
 	-- 	ft = "clojure",
 	-- },
 
-
 	{
-		"goerz/jupytext.vim",
-		event = "VimEnter",
+		'goerz/jupytext.vim',
+		event = 'VimEnter',
 	},
 
 	{
-		"AckslD/nvim-FeMaco.lua",
-		dependencies = { "nvim-treesitter/nvim-treesitter" },
-		cmd = "FeMaco",
+		'AckslD/nvim-FeMaco.lua',
+		dependencies = { 'nvim-treesitter/nvim-treesitter' },
+		cmd = 'FeMaco',
 		config = function(_, _)
-			require("femaco").setup({
+			require('femaco').setup({
 				-- should prepare a new buffer and return the winid
 				-- by default opens a floating window
 				-- provide a different callback to change this behaviour
 				-- @param opts: the return value from float_opts
 				prepare_buffer = function(opts)
 					local bufnr = vim.api.nvim_create_buf(false, false)
-					print("matthew")
-					vim.cmd("split")
-					vim.cmd(string.format("buffer %d", bufnr))
+					print('matthew')
+					vim.cmd('split')
+					vim.cmd(string.format('buffer %d', bufnr))
 					return vim.api.nvim_get_current_win()
 					-- local buf = vim.api.nvim_create_buf(false, false)
 					-- return vim.api.nvim_open_win(buf, true, opts)
@@ -333,7 +387,7 @@ return {
 				end,
 				-- what to do after opening the float
 				post_open_float = function(winnr)
-					vim.wo.signcolumn = "no"
+					vim.wo.signcolumn = 'no'
 				end,
 				-- create the path to a temporary file
 				create_tmp_filepath = function(filetype)
