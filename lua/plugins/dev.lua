@@ -244,11 +244,7 @@ return {
 	--
 	{ 'clojure-vim/clojure.vim', ft = 'clojure' },
 
-	{
-		'clojure-vim/vim-jack-in',
-		cmd = { 'Clj', 'Lein' },
-		dependencies = { 'radenling/vim-dispatch-neovim', 'tpope/vim-dispatch' },
-	},
+	{ 'TreyBastian/nvim-jack-in', config = true, ft = 'clojure' },
 
 	{
 		'Olical/conjure',
@@ -338,6 +334,12 @@ return {
 						[',t'] = { name = '+test' },
 						[',v'] = { name = '+display' },
 					}, { mode = 'n', buffer = args.buf })
+					vim.keymap.set(
+						'n',
+						',n',
+						':terminal bb conjure<CR>',
+						{ noremap = true, silent = true, desc = 'nrepl' }
+					)
 				end,
 			})
 		end,
@@ -421,3 +423,4 @@ return {
 	--       \ })
 	--
 }
+
