@@ -271,13 +271,13 @@ return {
 	{
 		'acksld/nvim-femaco.lua',
 		dependencies = { 'nvim-treesitter/nvim-treesitter' },
-		cmd = 'femaco',
+		cmd = 'FeMaco',
 		config = function()
 			local clip_val = require('femaco.utils').clip_val
 			vim.keymap.set(
 				'n',
 				'<leader>cb',
-				'<cmd>femaco<cr>',
+				'<cmd>FeMaco<cr>',
 				{ desc = 'edit code block' }
 			)
 			local opts = {
