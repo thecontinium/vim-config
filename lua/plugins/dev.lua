@@ -213,7 +213,7 @@ return {
 			vim.g['conjure#mapping#log_toggle'] = 'ls'
 			vim.g['conjure#mapping#log_vsplit'] = 'lg'
 			vim.g['conjure#log#hud#width'] = 1
-			vim.g['conjure#log#hud#anchor'] = 'se'
+			vim.g['conjure#log#hud#anchor'] = 'SE'
 			vim.g['conjure#highlight#enabled'] = true
 			-- allow lisp k mapping and delegate this to ,k
 			vim.g['conjure#mapping#doc_word'] = 'k'

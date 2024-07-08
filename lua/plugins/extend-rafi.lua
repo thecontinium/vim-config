@@ -12,10 +12,7 @@ return {
 	{
 		'williamboman/mason.nvim',
 		opts = function(_, opts)
-			print(opts)
 			vim.list_extend(opts.ensure_installed, {
-				'stylua',
-				'shfmt',
 				'bash-language-server',
 				'clojure-lsp',
 				'vim-language-server',
