@@ -414,11 +414,7 @@ return {
 
 ### Extend: LSP Settings
 
-To override **LSP configurations**, you can either:
-
-1. Customize per project's `.neoconf.json`
-
-1. Or, override server options with [nvim-lspconfig] plugin, for example:
+Override server options with [nvim-lspconfig] plugin, for example:
 
    ```lua
    {
@@ -460,8 +456,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | Name           | Description
 | -------------- | ----------------------
 | [neovim/nvim-lspconfig] | Quickstart configurations for the Nvim LSP client
-| [folke/neoconf.nvim] | Manage global and project-local settings
-| [folke/neodev.nvim] | Neovim setup for init.lua and plugin development
 | [williamboman/mason.nvim] | Portable package manager for Neovim
 | [williamboman/mason-lspconfig.nvim] | Mason extension for easier lspconfig integration
 | [stevearc/conform.nvim] | Lightweight yet powerful formatter plugin
@@ -507,6 +501,8 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [AndrewRadev/linediff.vim] | Perform diffs on blocks of code
 | [AndrewRadev/dsf.vim] | Delete surrounding function call
 | [echasnovski/mini.ai] | Extend and create `a`/`i` textobjects
+| [folke/lazydev.nvim] | Faster LuaLS setup
+| [Bilal2453/luvit-meta] | Manage libuv types with lazy
 
 ### Colorscheme Plugins
 
@@ -576,8 +572,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [kevinhwang91/nvim-bqf] | Better quickfix window
 
 [neovim/nvim-lspconfig]: https://github.com/neovim/nvim-lspconfig
-[folke/neoconf.nvim]: https://github.com/folke/neoconf.nvim
-[folke/neodev.nvim]: https://github.com/folke/neodev.nvim
 [williamboman/mason.nvim]: https://github.com/williamboman/mason.nvim
 [williamboman/mason-lspconfig.nvim]: https://github.com/williamboman/mason-lspconfig.nvim
 [stevearc/conform.nvim]: https://github.com/stevearc/conform.nvim
@@ -614,6 +608,8 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [AndrewRadev/linediff.vim]: https://github.com/AndrewRadev/linediff.vim
 [AndrewRadev/dsf.vim]: https://github.com/AndrewRadev/dsf.vim
 [echasnovski/mini.ai]: https://github.com/echasnovski/mini.ai
+[folke/lazydev.nvim]: https://github.com/folke/lazydev.nvim
+[Bilal2453/luvit-meta]: https://github.com/Bilal2453/luvit-meta
 
 [rafi/theme-loader.nvim]: https://github.com/rafi/theme-loader.nvim
 [rafi/neo-hybrid.vim]: https://github.com/rafi/neo-hybrid.vim
@@ -934,12 +930,12 @@ Note that,
 | ----- |:----:| ------------------ | ------
 | <kbd>Space</kbd>+<kbd>Space</kbd> | 𝐍 𝐕 | Toggle visual-line mode | <small>`V` / <kbd>Escape</kbd></small>
 | <kbd>v</kbd> / <kbd>V</kbd> | 𝐕 | Increment/shrink selection | <small>[nvim-treesitter]</small>
-| <kbd>vsp</kbd> | 𝐍 | Select last paste | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>sg</kbd> | 𝐕 | Replace within selected area | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐕 | Replace selection with step-by-step confirmation | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>></kbd> / <kbd><</kbd> | 𝐕 | Indent and re-select | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent and re-select | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>I</kbd> / <kbd>gI</kbd> / <kbd>A</kbd> | 𝐕 | Force blockwise operation | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>vsp</kbd> | 𝐍 | Select last paste | <small>[config/keymaps.lua]</small>
+| <kbd>sg</kbd> | 𝐕 | Replace within selected area | <small>[config/keymaps.lua]</small>
+| <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐕 | Replace selection with step-by-step confirmation | <small>[config/keymaps.lua]</small>
+| <kbd>></kbd> / <kbd><</kbd> | 𝐕 | Indent and re-select | <small>[config/keymaps.lua]</small>
+| <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐕 | Indent and re-select | <small>[config/keymaps.lua]</small>
+| <kbd>I</kbd> / <kbd>gI</kbd> / <kbd>A</kbd> | 𝐕 | Force blockwise operation | <small>[config/keymaps.lua]</small>
 
 ### Jump To
 
@@ -948,9 +944,9 @@ Note that,
 | <kbd>],</kbd> or <kbd>[,</kbd> | 𝐍 | Next/previous parameter | <small>[akinsho/bufferline.nvim]</small>
 | <kbd>]q</kbd> or <kbd>[q</kbd> | 𝐍 | Next/previous on quick-fix | <small>`:cnext` / `:cprev`</small>
 | <kbd>]a</kbd> or <kbd>[a</kbd> | 𝐍 | Next/previous on location-list | <small>`:lnext` / `:lprev`</small>
-| <kbd>]d</kbd> or <kbd>[d</kbd> | 𝐍 | Next/previous diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>]e</kbd> or <kbd>[e</kbd> | 𝐍 | Next/previous error | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>]w</kbd> or <kbd>[w</kbd> | 𝐍 | Next/previous warning | <small>[plugins/lsp/keymaps.lua]</small>
+| <kbd>]d</kbd> or <kbd>[d</kbd> | 𝐍 | Next/previous diagnostics | <small>[config/keymaps.lua]</small>
+| <kbd>]e</kbd> or <kbd>[e</kbd> | 𝐍 | Next/previous error | <small>[config/keymaps.lua]</small>
+| <kbd>]w</kbd> or <kbd>[w</kbd> | 𝐍 | Next/previous warning | <small>[config/keymaps.lua]</small>
 | <kbd>]b</kbd> or <kbd>[b</kbd> | 𝐍 | Next/previous buffer | <small>[akinsho/bufferline.nvim]</small>
 | <kbd>]f</kbd> or <kbd>[f</kbd> | 𝐍 | Next/previous function start | <small>[echasnovski/mini.ai]</small>
 | <kbd>]F</kbd> or <kbd>[F</kbd> | 𝐍 | Next/previous function end | <small>[echasnovski/mini.ai]</small>
@@ -1211,11 +1207,11 @@ See [sindrets/diffview.nvim] for more mappings and usage information.
 | ----- |:----:| ------------------
 | <kbd>Space</kbd> <kbd>gd</kbd> | 𝐍 | Diff view file history
 | <kbd>Space</kbd> <kbd>gv</kbd> | 𝐍 | Diff view open
-| **Within _diffview_ "view" window** ||
+| **Within _diffview_ "view" window** | | &nbsp;
 | <kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd> | 𝐍 | Select next/previous entry
 | <kbd>;</kbd> <kbd>a</kbd>    | 𝐍 | Focus file
 | <kbd>;</kbd> <kbd>e</kbd>    | 𝐍 | Toggle files panel
-| **Within _diffview_ "file" panel** ||
+| **Within _diffview_ "file" panel** || &nbsp;
 | <kbd>q</kbd>                 | 𝐍 | Close
 | <kbd>h</kbd>                 | 𝐍 | Previous entry
 | <kbd>o</kbd>                 | 𝐍 | Focus entry
@@ -1224,7 +1220,7 @@ See [sindrets/diffview.nvim] for more mappings and usage information.
 | <kbd>st</kbd>                | 𝐍 | Open file in new tab
 | <kbd>Ctrl</kbd>+<kbd>r</kbd> | 𝐍 | Refresh files
 | <kbd>;</kbd> <kbd>e</kbd>    | 𝐍 | Toggle panel
-| **Within _diffview_ "history" panel** ||
+| **Within _diffview_ "history" panel** || &nbsp;
 | <kbd>q</kbd>                 | 𝐍 | Close diffview
 | <kbd>o</kbd>                 | 𝐍 | Focus entry
 | <kbd>O</kbd>                 | 𝐍 | Show options
@@ -1279,7 +1275,7 @@ See [telescope.nvim] for more mappings and usage information.
 | <kbd>Space</kbd> <kbd>st</kbd> | 𝐍 | Todo list
 | <kbd>Space</kbd> <kbd>sT</kbd> | 𝐍 | Todo/Fix/Fixme list
 | <kbd>Space</kbd> <kbd>sw</kbd> | 𝐍 | Grep string
-| **Within _Telescope_ window** ||
+| **Within _Telescope_ window** || &nbsp;
 | <kbd>?</kbd> | 𝐍 | Keymaps help screen
 | <kbd>Ctrl</kbd>+<kbd>Space</kbd> | 𝐍 | Move from none fuzzy search to fuzzy
 | <kbd>jj</kbd> or <kbd>Escape</kbd> | 𝐈 | Leave Insert mode
@@ -1314,7 +1310,7 @@ See [nvim-neo-tree/neo-tree.nvim] for more mappings and usage information.
 | <kbd>be</kbd> | 𝐍 | Open Buffer explorer
 | <kbd>xe</kbd> | 𝐍 | Open Document explorer
 | <kbd>;a</kbd> | 𝐍 | Focus current file in file-explorer
-| **Within _Neo-Tree_ window** ||
+| **Within _Neo-Tree_ window** || &nbsp;
 | <kbd>g?</kbd> | 𝐍 | Show help
 | <kbd>q</kbd> | 𝐍 | Close window
 | <kbd>j</kbd> or <kbd>k</kbd> | 𝐍 | Move up and down the tree
