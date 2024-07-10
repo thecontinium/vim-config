@@ -1,6 +1,17 @@
 return {
 
 	{
+		'nvim-lualine/lualine.nvim',
+		opts = function(_, opts)
+			opts.sections = vim.tbl_extend(
+				'force',
+				opts.sections,
+				{ lualine_b = { LazyVim.lualine.root_dir({ cwd = true }) } }
+			)
+		end,
+	},
+
+	{
 		'nvim-treesitter/nvim-treesitter',
 		opts = function(_, opts)
 			opts.ensure_installed = (
@@ -23,8 +34,11 @@ return {
 
 	{
 		'nvim-telescope/telescope.nvim',
+		-- stylua: ignore
 		keys = {
 			{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>' },
+			{ '<leader>ff', LazyVim.pick('auto', {prompt_title = "Find Files (Root)"  }), desc = 'Find Files (Root Dir)'  },
+			{ '<leader>fg', '<cmd>Telescope git_files<cr>', desc = 'Find Files (git-files)', },
 		},
 		opts = function(_, opts)
 			local has_ripgrep = vim.fn.executable('rg') == 1
