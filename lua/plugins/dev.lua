@@ -1,6 +1,23 @@
 -- vim.cmd.runtime("plugin/zipPlugin.vim")
-
+local util = require('lspconfig.util')
 return {
+	{
+		'neovim/nvim-lspconfig',
+		opts = {
+			servers = {
+				clojure_lsp = {
+					root_dir = util.root_pattern(
+						'project.clj',
+						'deps.edn',
+						'build.boot',
+						'shadow-cljs.edn',
+						'bb.edn'
+					),
+				},
+			},
+		},
+	},
+
 	{
 		'paterjason/nvim-treesitter-sexp',
 		ft = 'clojure',
