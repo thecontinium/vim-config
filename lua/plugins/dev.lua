@@ -1,5 +1,6 @@
 -- vim.cmd.runtime("plugin/zipPlugin.vim")
 local util = require('lspconfig.util')
+
 return {
 	{
 		'neovim/nvim-lspconfig',
@@ -13,6 +14,24 @@ return {
 						'shadow-cljs.edn',
 						'bb.edn'
 					),
+				},
+			},
+		},
+	},
+
+	{
+		'nvim-treesitter/nvim-treesitter',
+		opts = {
+			-- See: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+			textobjects = {
+				select = {
+					disable = { 'clojure' },
+				},
+				move = {
+					disable = { 'clojure' },
+				},
+				swap = {
+					disable = { 'clojure' },
 				},
 			},
 		},
@@ -35,7 +54,7 @@ return {
 					)
 					vim.keymap.set(
 						'n',
-						',w',
+						',W',
 						'saie)>i ',
 						{ buffer = true, remap = true, desc = 'insert surround elem tail' }
 					)
@@ -47,7 +66,7 @@ return {
 					)
 					vim.keymap.set(
 						'n',
-						',i',
+						',I',
 						'saif)))>i ',
 						{ buffer = true, remap = true, desc = 'insert surround form tail' }
 					)
@@ -153,14 +172,14 @@ return {
 					insert_tail = '>i',
 				},
 				motions = {
-					form_start = '(',
-					form_end = ')',
+					form_start = '[f',
+					form_end = ']f',
 					prev_elem = '[e', --"[e"
 					next_elem = ']e', --"]e"
 					prev_elem_end = false, --"[e"
 					next_elem_end = false, --"]e"
-					prev_top_level = '[[',
-					next_top_level = ']]',
+					prev_top_level = '[F',
+					next_top_level = ']F',
 				},
 				textobjects = {
 					inner_elem = 'ie',
