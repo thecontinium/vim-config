@@ -3,11 +3,7 @@ return {
 	{
 		'nvim-lualine/lualine.nvim',
 		opts = function(_, opts)
-			opts.sections = vim.tbl_extend(
-				'force',
-				opts.sections,
-				{ lualine_b = { LazyVim.lualine.root_dir({ cwd = true }) } }
-			)
+			opts.sections.lualine_b[2] = LazyVim.lualine.root_dir({ cwd = true })
 		end,
 	},
 
