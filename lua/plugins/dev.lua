@@ -8,6 +8,7 @@ return {
 			servers = {
 				clojure_lsp = {
 					root_dir = util.root_pattern(
+						'workspace.edn',
 						'project.clj',
 						'deps.edn',
 						'build.boot',
@@ -253,7 +254,7 @@ return {
 			vim.g['conjure#highlight#enabled'] = true
 			-- allow lisp k mapping and delegate this to ,k
 			vim.g['conjure#mapping#doc_word'] = 'k'
-			function clerkshow()
+			function Clerkshow()
 				vim.cmd(':w')
 				local current_ft = vim.bo.filetype
 				vim.bo.filetype = 'clojure'
@@ -267,7 +268,7 @@ return {
 			vim.keymap.set(
 				'n',
 				',cs',
-				':lua clerkshow()<cr>',
+				':lua Clerkshow()<cr>',
 				{ noremap = true, silent = true }
 			)
 			vim.api.nvim_create_autocmd('filetype', {
