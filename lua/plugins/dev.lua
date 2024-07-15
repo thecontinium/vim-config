@@ -74,36 +74,16 @@ return {
 				end,
 			})
 
-			local function add_sub_key(table, l, v)
-				local k1 = l:sub(1, 1)
-				local k2 = l:sub(2, 2)
-				if l:len() > 1 then
-					k1 = l:sub(1, l:len() - 1)
-					k2 = l:sub(l:len(), l:len())
-				end
-				if k1 == '' then
-					k1 = l
-				end
-				if k2 ~= '' then
-					if table[k1] == nil then
-						table[k1] = {}
-					end
-					table[k1][k2] = v
-				else
-					table[k1] = v
-				end
-			end
-
 			local function add_which_key(km, ks, opts)
 				local wk = require('which-key')
 				local w = {}
 				for key, lhs in pairs(km) do
 					local k = ks[key]
 					if lhs and k then
-						add_sub_key(w, lhs, k.desc)
+						table.insert(w,vim.tbl_deep_extend('error',{lhs, desc=k.desc},opts ))
 					end
 				end
-				wk.register(vim.tbl_deep_extend('error', opts, w))
+				wk.add(w)
 			end
 
 			vim.api.nvim_create_autocmd('filetype', {
@@ -131,17 +111,17 @@ return {
 						add_which_key(
 							keymaps.commands,
 							commands,
-							{ mode = { 'n' }, expr = true, buffer = bufnr }
+							{ mode = { 'n' }, expr = true, buffer = bufnr, replace_keycodes = false, }
 						)
 						add_which_key(
 							keymaps.textobjects,
 							textobjects,
-							{ mode = { 'o', 'x' }, buffer = bufnr }
+							{ mode = { 'o', 'x' },  expr = true, buffer = bufnr, replace_keycodes = false, }
 						)
 						add_which_key(
 							keymaps.motions,
 							motions,
-							{ mode = { 'n', 'o', 'x' }, buffer = bufnr }
+							{ mode = { 'n', 'o', 'x' },  expr = true, buffer = bufnr, replace_keycodes = false, }
 						)
 					end
 				end,
@@ -276,16 +256,16 @@ return {
 				pattern = { 'clojure', 'python', 'markdown', 'lua' },
 				callback = function(args)
 					local wk = require('which-key')
-					wk.register({
-						[',c'] = { name = '+connect' },
-						[',e'] = { name = '+evaluate' },
-						[',g'] = { name = '+get' },
-						[',l'] = { name = '+log' },
-						[',r'] = { name = '+refresh' },
-						[',s'] = { name = '+session' },
-						[',t'] = { name = '+test' },
-						[',v'] = { name = '+display' },
-					}, { mode = 'n', buffer = args.buf })
+					wk.add({
+						{ ',c', mode = 'n', buffer = args.buf, group = '+connect' },
+						{ ',e', mode = 'n', buffer = args.buf, group = '+evaluate' },
+						{ ',g', mode = 'n', buffer = args.buf, group = '+get' },
+						{ ',l', mode = 'n', buffer = args.buf, group = '+log' },
+						{ ',r', mode = 'n', buffer = args.buf, group = '+refresh' },
+						{ ',s', mode = 'n', buffer = args.buf, group = '+session' },
+						{ ',t', mode = 'n', buffer = args.buf, group = '+test' },
+						{ ',v', mode = 'n', buffer = args.buf, group = '+display' },
+					})
 					vim.keymap.set(
 						'n',
 						',n',

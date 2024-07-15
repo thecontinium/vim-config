@@ -555,12 +555,11 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 
 | Name           | Description
 | -------------- | ----------------------
-| [nvim-tree/nvim-web-devicons] | Lua fork of vim-devicons
+| [echasnovski/mini.icons] | Icon provider
 | [MunifTanjim/nui.nvim] | UI Component Library
 | [rcarriga/nvim-notify] | Fancy notification manager
 | [stevearc/dressing.nvim] | Improve the default vim-ui interfaces
 | [akinsho/bufferline.nvim] | Snazzy tab/bufferline
-| [echasnovski/mini.bufremove] | Helper for removing buffers
 | [folke/noice.nvim] | Replaces the UI for messages, cmdline and the popupmenu
 | [SmiteshP/nvim-navic] | Shows your current code context in winbar/statusline
 | [chentau/marks.nvim] | Interacting with and manipulating marks
@@ -642,12 +641,11 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [MTDL9/vim-log-highlighting]: https://github.com/MTDL9/vim-log-highlighting
 [reasonml-editor/vim-reason-plus]: https://github.com/reasonml-editor/vim-reason-plus
 
-[nvim-tree/nvim-web-devicons]: https://github.com/nvim-tree/nvim-web-devicons
+[echasnovski/mini.icons]: https://github.com/echasnovski/mini.icons
 [MunifTanjim/nui.nvim]: https://github.com/MunifTanjim/nui.nvim
 [rcarriga/nvim-notify]: https://github.com/rcarriga/nvim-notify
 [stevearc/dressing.nvim]: https://github.com/stevearc/dressing.nvim
 [akinsho/bufferline.nvim]: https://github.com/akinsho/bufferline.nvim
-[echasnovski/mini.bufremove]: https://github.com/echasnovski/mini.bufremove
 [folke/noice.nvim]: https://github.com/folke/noice.nvim
 [SmiteshP/nvim-navic]: https://github.com/SmiteshP/nvim-navic
 [chentau/marks.nvim]: https://github.com/chentau/marks.nvim
@@ -826,6 +824,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 | ----------------- | -------------- | ----------------------
 | `alpha`           | [goolord/alpha-nvim] | Fast and fully programmable greeter
 | `barbecue`        | [utilyre/barbecue.nvim] | VS Code like winbar
+| `bookmarks`        | [tomasky/bookmarks.nvim] | Bookmarks plugin with global file store
 | `ccc`             | [uga-rosa/ccc.nvim] | Super powerful color picker/colorizer plugin
 | `cursorword`      | [itchyny/cursorword] | Underlines word under cursor
 | `cybu`            | [ghillb/cybu.nvim] | Cycle buffers with a customizable notification window
@@ -834,6 +833,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 | `headlines`       | [lukas-reineke/headlines.nvim] | Adds horizontal highlights for headlines and code background.
 | `illuminate`      | [RRethy/vim-illuminate] | Highlights other uses of the word under the cursor
 | `incline`         | [b0o/incline.nvim] | Floating statuslines
+| `marks`         | [chentoast/marks.nvim] | Interacting with and manipulating marks
 | `mini-clue`       | [echasnovski/mini.clue] | Show next key clues
 | `mini-map`        | [echasnovski/mini.map] | Window with buffer text overview, scrollbar and highlights
 | `render-markdown` | [MeanderingProgrammer/markdown.nvim] | Improve viewing Markdown files
@@ -841,6 +841,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 
 [goolord/alpha-nvim]: https://github.com/goolord/alpha-nvim
 [utilyre/barbecue.nvim]: https://github.com/utilyre/barbecue.nvim
+[tomasky/bookmarks.nvim]: https://github.com/tomasky/bookmarks.nvim
 [uga-rosa/ccc.nvim]: https://github.com/uga-rosa/ccc.nvim
 [itchyny/cursorword]: https://github.com/itchyny/vim-cursorword
 [ghillb/cybu.nvim]: https://github.com/ghillb/cybu.nvim
@@ -849,6 +850,7 @@ Spec: `rafi.plugins.extras.ui.<name>`
 [lukas-reineke/headlines.nvim]: https://github.com/lukas-reineke/headlines.nvim
 [RRethy/vim-illuminate]: https://github.com/RRethy/vim-illuminate
 [b0o/incline.nvim]: https://github.com/b0o/incline.nvim
+[chentoast/marks.nvim]: https://github.com/chentoast/marks.nvim
 [echasnovski/mini.clue]: https://github.com/echasnovski/mini.clue
 [echasnovski/mini.map]: https://github.com/echasnovski/mini.map
 [MeanderingProgrammer/markdown.nvim]: https://github.com/MeanderingProgrammer/markdown.nvim
@@ -963,8 +965,7 @@ Note that,
 
 | Key   | Mode | Action             | Plugin or Mapping
 | ----- |:----:| ------------------ | ------
-| <kbd>Space</kbd>+<kbd>bd</kbd> | 𝐍 | Delete buffer | <small>[echasnovski/mini.bufremove]</small>
-
+| <kbd>Space</kbd>+<kbd>bd</kbd> | 𝐍 | Delete buffer | <small>LazyVim.ui.bufremove</small>
 
 ### Clipboard
 
@@ -1245,6 +1246,7 @@ See [telescope.nvim] for more mappings and usage information.
 | <kbd>;n</kbd> | 𝐍 | Plugins
 | <kbd>;k</kbd> | 𝐍 | Thesaurus
 | <kbd>;u</kbd> | 𝐍 | Spelling suggestions
+| <kbd>;s</kbd> | 𝐍 | Sessions
 | <kbd>;x</kbd> | 𝐍 | Old files
 | <kbd>;w</kbd> | 𝐍 | Zk notes
 | <kbd>;z</kbd> | 𝐍 | Zoxide directories

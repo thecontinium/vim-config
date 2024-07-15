@@ -19,7 +19,7 @@ return {
 		'folke/persistence.nvim',
 		event = 'VimEnter',
 		opts = {
-			options = vim.opt_global.sessionoptions:get(),
+			branch = false,
 			-- Enable to autoload session on startup, unless:
 			-- * neovim was started with files as arguments
 			-- * stdin has been provided
@@ -257,7 +257,7 @@ return {
 			local opts = {
 				symbols = {
 					icons = {},
-					filter = LazyVim.config.kind_filter,
+					filter = vim.deepcopy(LazyVim.config.kind_filter),
 				},
 				keymaps = {
 					up_and_jump = '<up>',

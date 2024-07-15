@@ -35,6 +35,7 @@ return {
 			{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>' },
 			{ '<leader>ff', LazyVim.pick('auto', {prompt_title = "Find Files (Root)"  }), desc = 'Find Files (Root Dir)'  },
 			{ '<leader>fg', '<cmd>Telescope git_files<cr>', desc = 'Find Files (git-files)', },
+			{ '<localleader>s', '<cmd>Telescope neovim-project history<CR>', desc = 'Sessions' },
 		},
 		opts = function(_, opts)
 			local has_ripgrep = vim.fn.executable('rg') == 1
@@ -105,12 +106,6 @@ return {
 			},
 		},
 		init = function()
-			vim.keymap.set(
-				'n',
-				'<localLeader>s',
-				'<cmd>Telescope neovim-project history<CR>',
-				{ desc = 'Sessions' }
-			)
 			-- enable saving the state of plugins in the session
 			-- vim.opt.sessionoptions:append('globals') -- save global variables that start with an uppercase letter and contain at least one lowercase letter.
 		end,
