@@ -84,7 +84,6 @@ entire configuration has been rewritten to use [lazy.nvim] and Lua.
     * [Plugin: Diffview](#plugin-diffview)
     * [Plugin: Telescope](#plugin-telescope)
     * [Plugin: Neo-Tree](#plugin-neo-tree)
-    * [Plugin: Spectre](#plugin-spectre)
     * [Plugin: Marks](#plugin-marks)
     * [Plugin: Zk](#plugin-zk)
 
@@ -356,9 +355,6 @@ return {
 
     -- When enabled, 'q' closes any window
     vim.g.window_q_mapping = true
-
-    -- Display structure in statusline by default
-    vim.g.structure_status = false
     ```
 
 1. You can override LazyVim options. For example in `lua/plugins/core.lua`:
@@ -480,7 +476,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | [hedyhli/outline.nvim] | Code outline sidebar powered by LSP
 | [s1n7ax/nvim-window-picker] | Fancy Window picker
 | [dnlhc/glance.nvim] | Pretty window for navigating LSP locations
-| [nvim-pack/nvim-spectre] | Find the enemy and replace them with dark power
+| [MagicDuck/grug-far.nvim] | Search/replace in multiple files
 
 ### Coding Plugins
 
@@ -541,7 +537,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 | -------------- | ----------------------
 | [nvim-treesitter/nvim-treesitter] | Nvim Treesitter configurations and abstraction layer
 | [nvim-treesitter/nvim-treesitter-textobjects] | Textobjects using treesitter queries
-| [nvim-treesitter/nvim-treesitter-context] | Show code context
 | [RRethy/nvim-treesitter-endwise] | Wisely add "end" in various filetypes
 | [windwp/nvim-ts-autotag] | Use treesitter to auto close and auto rename html tag
 | [andymass/vim-matchup] | Modern matchit and matchparen
@@ -590,7 +585,7 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 [akinsho/toggleterm.nvim]: https://github.com/akinsho/toggleterm.nvim
 [s1n7ax/nvim-window-picker]: https://github.com/s1n7ax/nvim-window-picker
 [dnlhc/glance.nvim]: https://github.com/dnlhc/glance.nvim
-[nvim-pack/nvim-spectre]: https://github.com/nvim-pack/nvim-spectre
+[MagicDuck/grug-far.nvim]: https://github.com/MagicDuck/grug-far.nvim
 
 [hrsh7th/nvim-cmp]: https://github.com/hrsh7th/nvim-cmp
 [hrsh7th/cmp-nvim-lsp]: https://github.com/hrsh7th/cmp-nvim-lsp
@@ -631,7 +626,6 @@ _Note_ that 95% of the plugins are **lazy-loaded**.
 
 [nvim-treesitter/nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [nvim-treesitter/nvim-treesitter-textobjects]: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-[nvim-treesitter/nvim-treesitter-context]: https://github.com/nvim-treesitter/nvim-treesitter-context
 [RRethy/nvim-treesitter-endwise]: https://github.com/RRethy/nvim-treesitter-endwise
 [windwp/nvim-ts-autotag]: https://github.com/windwp/nvim-ts-autotag
 [andymass/vim-matchup]: https://github.com/andymass/vim-matchup
@@ -1012,7 +1006,6 @@ Note that,
 | <kbd>Space</kbd> <kbd>chi</kbd>  | 𝐍 | LSP incoming calls | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>cho</kbd>  | 𝐍 | LSP outgoing calls | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>ud</kbd>  | 𝐍 | Toggle buffer diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
-| <kbd>Space</kbd> <kbd>uD</kbd>  | 𝐍 | Toggle global diagnostics | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>fwa</kbd> | 𝐍 | Add workspace folder | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>fwr</kbd> | 𝐍 | Remove workspace folder | <small>[plugins/lsp/keymaps.lua]</small>
 | <kbd>Space</kbd> <kbd>fwl</kbd> | 𝐍 | List workspace folders | <small>[plugins/lsp/keymaps.lua]</small>
@@ -1096,8 +1089,6 @@ Note that,
 | <kbd>Space</kbd> <kbd>us</kbd> | 𝐍 | Toggle spell-checker | <small>`:setlocal spell!`</small>
 | <kbd>Space</kbd> <kbd>ul</kbd> | 𝐍 | Toggle line numbers | <small>`:setlocal nonumber!`</small>
 | <kbd>Space</kbd> <kbd>uL</kbd> | 𝐍 | Toggle relative line numbers | <small>`:setlocal norelativenumber!`</small>
-| <kbd>Space</kbd> <kbd>uo</kbd> | 𝐍 | Toggle hidden characters | <small>`:setlocal nolist!`</small>
-| <kbd>Space</kbd> <kbd>uu</kbd> | 𝐍 | Toggle highlighted search | <small>`:set hlsearch!`</small>
 | <kbd>Space</kbd> <kbd>uw</kbd> | 𝐍 | Toggle wrap | <small>`:setlocal wrap!`</small> …
 | <kbd>Space</kbd> <kbd>ue</kbd> | 𝐍 | Toggle indentation lines | <small>[lukas-reineke/indent-blankline.nvim]</small>
 | <kbd>Space</kbd> <kbd>uh</kbd> | 𝐍 | Toggle inlay-hints | <small>[config/keymaps.lua]</small>
@@ -1346,15 +1337,6 @@ See [nvim-neo-tree/neo-tree.nvim] for more mappings and usage information.
 | <kbd>e</kbd> | 𝐍 | Toggle auto-expand window width
 | <kbd>w</kbd> | 𝐍 | Toggle window width
 | <kbd>z</kbd> | 𝐍 | Collapse all nodes
-
-#### Plugin: Spectre
-
-See [nvim-pack/nvim-spectre] for more mappings and usage information.
-
-| Key   | Mode | Action
-| ----- |:----:| ------------------
-| <kbd>Space</kbd>+<kbd>sp</kbd> | 𝐍 | Open Spectre window (search & replace)
-| <kbd>Space</kbd>+<kbd>sp</kbd> | 𝐕 | Open Spectre with selection
 
 #### Plugin: Marks
 

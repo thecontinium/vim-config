@@ -172,7 +172,7 @@ return {
 									vim.bo[buffer].filetype
 								)
 							then
-								LazyVim.toggle.inlay_hints(buffer, true)
+								vim.lsp.inlay_hint.enable(true, { bufnr = buffer })
 							end
 						end
 					)
@@ -236,6 +236,9 @@ return {
 				local server_opts = vim.tbl_deep_extend('force', {
 					capabilities = vim.deepcopy(capabilities),
 				}, servers[server_name] or {})
+				if server_opts.enabled == false then
+					return
+				end
 
 				if opts.setup[server_name] then
 					if opts.setup[server_name](server_name, server_opts) then
@@ -320,7 +323,6 @@ return {
 				border = 'rounded',
 			},
 		},
-		---@diagnostic disable-next-line: undefined-doc-name
 		---@param opts MasonSettings | {ensure_installed: string[]}
 		config = function(_, opts)
 			require('mason').setup(opts)
