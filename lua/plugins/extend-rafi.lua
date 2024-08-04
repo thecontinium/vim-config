@@ -277,8 +277,10 @@ return {
 		opts = {
 			projects = { -- define project roots
 				'~/dev/thecontinium/*',
+				'~/dev/thecontinium/geniuslabs-ai/MachX/',
 				'~/dev/mn-dimension/*',
-				'~/.config/*',
+				'~/.config/nvim',
+				'~/.config/',
 			},
 			-- Overwrite some of Session Manager options
 			session_manager_opts = {
