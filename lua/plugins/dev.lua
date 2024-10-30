@@ -7,7 +7,7 @@ return {
 		opts = {
 			servers = {
 				clojure_lsp = {
-					root_dir = util.root_pattern(
+					root_dir = util.find_git_ancestor or util.root_pattern(
 						'workspace.edn',
 						'project.clj',
 						'deps.edn',
@@ -19,7 +19,6 @@ return {
 			},
 		},
 	},
-
 	{
 		'nvim-treesitter/nvim-treesitter',
 		opts = {
@@ -80,7 +79,10 @@ return {
 				for key, lhs in pairs(km) do
 					local k = ks[key]
 					if lhs and k then
-						table.insert(w,vim.tbl_deep_extend('error',{lhs, desc=k.desc},opts ))
+						table.insert(
+							w,
+							vim.tbl_deep_extend('error', { lhs, desc = k.desc }, opts)
+						)
 					end
 				end
 				wk.add(w)
@@ -111,17 +113,32 @@ return {
 						add_which_key(
 							keymaps.commands,
 							commands,
-							{ mode = { 'n' }, expr = true, buffer = bufnr, replace_keycodes = false, }
+							{
+								mode = { 'n' },
+								expr = true,
+								buffer = bufnr,
+								replace_keycodes = false,
+							}
 						)
 						add_which_key(
 							keymaps.textobjects,
 							textobjects,
-							{ mode = { 'o', 'x' },  expr = true, buffer = bufnr, replace_keycodes = false, }
+							{
+								mode = { 'o', 'x' },
+								expr = true,
+								buffer = bufnr,
+								replace_keycodes = false,
+							}
 						)
 						add_which_key(
 							keymaps.motions,
 							motions,
-							{ mode = { 'n', 'o', 'x' },  expr = true, buffer = bufnr, replace_keycodes = false, }
+							{
+								mode = { 'n', 'o', 'x' },
+								expr = true,
+								buffer = bufnr,
+								replace_keycodes = false,
+							}
 						)
 					end
 				end,
@@ -180,7 +197,7 @@ return {
 
 	{
 		'olical/conjure',
-		ft = { 'clojure', 'python', 'markdown', 'lua' },
+		ft = { 'clojure', 'lua' },
 		branch = 'develop',
 		config = function()
 			require('conjure.main').main()
@@ -249,11 +266,11 @@ return {
 				'n',
 				',cs',
 				':lua Clerkshow()<cr>',
-				{ noremap = true, silent = true }
+				{ noremap = true, buffer = true, silent = true }
 			)
 			vim.api.nvim_create_autocmd('filetype', {
 				group = vim.api.nvim_create_augroup('group_conjure-wk', {}),
-				pattern = { 'clojure', 'python', 'markdown', 'lua' },
+				pattern = { 'clojure' },
 				callback = function(args)
 					local wk = require('which-key')
 					wk.add({

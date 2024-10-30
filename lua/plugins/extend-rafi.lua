@@ -331,7 +331,7 @@ return {
 						end
 					end
 					item.menu = ({
-						-- buffer = '[Buffer]',
+						buffer = '[Buffer]',
 						nvim_lsp = '[LSP]',
 						nvim_lua = '[Lua]',
 						latex_symbols = '[LaTeX]',
@@ -339,6 +339,8 @@ return {
 						path = '[Path]',
 						emoji = '[Emoji]',
 						conjure = '[Conjure]',
+						obsidian = '[Obsidian]',
+						obsidian_new = '[Obsidian]',
 						git = '[Git]',
 						snippets = '',
 					})[entry.source.name]

@@ -1,3 +1,4 @@
+local util = require('lspconfig.util')
 return {
 	{ import = 'lazyvim.plugins.extras.coding.yanky' },
 	{ import = 'rafi.plugins.extras.coding.align' },
@@ -44,4 +45,43 @@ return {
 			},
 		},
 	},
+
+	{ import = 'rafi.plugins.extras.lang.markdown' },
+	{
+		'MeanderingProgrammer/render-markdown.nvim',
+		opts = {
+			code = {
+				border = 'thin',
+				position = 'right',
+				width = 'block',
+				right_pad = 10,
+				left_pad = 2,
+				sign = false,
+			},
+		},
+	},
+
+	{
+		'mfussenegger/nvim-lint',
+		optional = true,
+		opts = {
+			linters = {
+				['markdownlint-cli2'] = {
+					args = { '--config', vim.fn.expand("~/.config/markdownlint/.markdownlint.jsonc"), '--' }
+				},
+			},
+		},
+		keys = {
+			{
+				'<leader>cin',
+				function()
+					vim.notify(vim.inspect(require('lint')._resolve_linter_by_ft(vim.bo.filetype)))
+				end,
+				silent = true,
+				desc = 'Linter Info',
+			},
+		},
+	},
+
+	{ import = 'lazyvim.plugins.extras.editor.mini-files' },
 }
