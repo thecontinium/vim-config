@@ -348,7 +348,7 @@ return {
 					})[entry.source.name]
 					if item.menu == nil then
 						vim.notify(
-							'Unknown source ' .. entry.source.name .. 'Correct in extend-rafi.lua'
+							'Unknown source ' .. entry.source.name .. ' Correct in extend-rafi.lua'
 						)
 					end
 					return item
