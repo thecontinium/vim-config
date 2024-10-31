@@ -114,6 +114,7 @@ return {
 		},
 		-- Depending on your nvim distro or config you may need to make the loading not lazy
 		lazy = false,
+    priority = 1000, -- make sue it is loaded before neovim-project so BufRead is triggered
 	},
 	{
 		'quarto-dev/quarto-nvim',

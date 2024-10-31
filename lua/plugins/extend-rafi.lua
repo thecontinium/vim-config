@@ -64,9 +64,10 @@ return {
 	-----------------------------------------------------------------------------
 	{ 'folke/persistence.nvim', enabled = false },
 	{
-		'thecontinium/neovim-project',
+		'coffebar/neovim-project',
 		-- name = 'neovim-project',
 		-- dev = true,
+    -- filetype_autocmd_timeout = 500,
 		opts = {
 			projects = { -- define project roots
 				'~/dev/thecontinium/*',
