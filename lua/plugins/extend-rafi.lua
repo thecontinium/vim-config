@@ -340,6 +340,7 @@ return {
 						path = '[Path]',
 						emoji = '[Emoji]',
 						conjure = '[Conjure]',
+						codeium = '[Codeium]',
 						obsidian = '[Obsidian]',
 						obsidian_new = '[Obsidian]',
 						git = '[Git]',
@@ -347,7 +348,7 @@ return {
 					})[entry.source.name]
 					if item.menu == nil then
 						vim.notify(
-							'Unknown source ' .. entry.source.name .. 'Correct in coding.lua'
+							'Unknown source ' .. entry.source.name .. 'Correct in extend-rafi.lua'
 						)
 					end
 					return item
