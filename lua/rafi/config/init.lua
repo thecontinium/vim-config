@@ -52,6 +52,20 @@ function M.load(name)
 	vim.api.nvim_exec_autocmds('User', { pattern = pattern, modeline = false })
 end
 
+-- Check if table has a value that ends with a suffix.
+---@param tbl table
+---@param suffix string
+---@return boolean
+local function tbl_endswith(tbl, suffix)
+	local l = #suffix
+	for _, v in ipairs(tbl) do
+		if string.sub(v, -l) == suffix then
+			return true
+		end
+	end
+	return false
+end
+
 -- This is the main entry-point once lazy.nvim is set-up.
 -- Called from `lua/rafi/plugins/init.lua`
 M.did_init = false
@@ -80,6 +94,28 @@ function M.init()
 	lazy_clipboard = vim.opt.clipboard
 	vim.opt.clipboard = ''
 
+	---@param extra string
+	LazyVim.has_extra = function(extra)
+		local modname = '.extras.' .. extra
+		if tbl_endswith(require('lazy.core.config').spec.modules, modname) then
+			return true
+		end
+		return tbl_endswith(require('lazyvim.config').json.data.extras, modname)
+	end
+	LazyVim.pick.want = function()
+		vim.g.lazyvim_picker = vim.g.lazyvim_picker or 'auto'
+		if vim.g.lazyvim_picker == 'auto' then
+			return LazyVim.has_extra('editor.fzf') and 'fzf' or 'telescope'
+		end
+		return vim.g.lazyvim_picker
+	end
+	LazyVim.cmp_engine = function()
+		vim.g.lazyvim_cmp = vim.g.lazyvim_cmp or 'auto'
+		if vim.g.lazyvim_cmp == 'auto' then
+			return LazyVim.has_extra('coding.blink') and 'blink.cmp' or 'nvim-cmp'
+		end
+		return vim.g.lazyvim_cmp
+	end
 	LazyVim.plugin.setup()
 	LazyVimConfig.json.load()
 

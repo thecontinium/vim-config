@@ -51,6 +51,7 @@ return {
 			desc = 'Explorer NeoTree (cwd)',
 		},
 		{ '<LocalLeader>e', '<leader>fe', desc = 'Explorer NeoTree (Root Dir)', remap = true },
+		{ '<LocalLeader>E', '<leader>fE', desc = 'Explorer NeoTree (cwd)', remap = true },
 		{
 			'<LocalLeader>a',
 			function()
@@ -116,13 +117,13 @@ return {
 		close_if_last_window = true,
 		sources = { 'filesystem', 'buffers', 'git_status' },
 		open_files_do_not_replace_types = {
+			'edgy',
+			'gitsigns-blame',
+			'Outline',
+			'qf',
 			'terminal',
 			'Trouble',
 			'trouble',
-			'qf',
-			'edgy',
-			'Outline',
-			'gitsigns-blame',
 		},
 		popup_border_style = 'rounded',
 		sort_case_insensitive = true,
@@ -159,7 +160,7 @@ return {
 			},
 			name = {
 				trailing_slash = true,
-				highlight_opened_files = true, -- NeoTreeFileNameOpened
+				highlight_opened_files = true,
 				use_git_status_colors = false,
 			},
 			git_status = {
@@ -183,9 +184,16 @@ return {
 			mappings = {
 				['q'] = 'close_window',
 				['?'] = 'noop',
+				['g?'] = 'show_help',
 				['<Space>'] = 'noop',
 
-				['g?'] = 'show_help',
+				-- Close preview or floating neo-tree window, and clear hlsearch.
+				['<Esc>'] = function(_)
+					require('neo-tree.sources.filesystem.lib.filter_external').cancel()
+					require('neo-tree.sources.common.preview').hide()
+					vim.cmd([[ nohlsearch ]])
+				end,
+
 				['<2-LeftMouse>'] = 'open',
 				['<CR>'] = 'open_with_window_picker',
 				['l'] = 'open',
@@ -211,7 +219,6 @@ return {
 				['P'] = 'paste_from_clipboard',
 				['p'] = {
 					'toggle_preview',
-					nowait = true,
 					config = { use_float = true },
 				},
 
@@ -242,6 +249,10 @@ return {
 			},
 		},
 		filesystem = {
+			bind_to_cwd = false,
+			follow_current_file = { enabled = true },
+			group_empty_dirs = true,
+			use_libuv_file_watcher = true,
 			window = {
 				mappings = {
 					['d'] = 'noop',
@@ -264,13 +275,6 @@ return {
 				},
 			},
 
-			-- See `:h neo-tree-cwd`
-			-- bind_to_cwd = false,
-			-- cwd_target = {
-			-- 	sidebar = 'window',
-			-- 	current = 'window',
-			-- },
-
 			filtered_items = {
 				hide_dotfiles = false,
 				hide_gitignored = false,
@@ -292,9 +296,6 @@ return {
 					'vite.config.js.timestamp-*',
 				},
 			},
-			find_by_full_path_words = true,
-			group_empty_dirs = true,
-			use_libuv_file_watcher = true,
 		},
 		buffers = {
 			window = {

@@ -206,7 +206,11 @@ map('n', '<C-q>', 'q', { desc = 'Macro Prefix' })
 
 -- Formatting
 map({ 'n', 'v' }, '<leader>cf', function() LazyVim.format({ force = true }) end, { desc = 'Format' })
+map('n', '<leader>cid', '<cmd>LazyDev<CR>', { silent = true, desc = 'Dev' })
 map('n', '<leader>cif', '<cmd>LazyFormatInfo<CR>', { silent = true, desc = 'Formatter Info' })
+map('n', '<leader>cir', '<cmd>LazyRoot<CR>', { silent = true, desc = 'Root' })
+map('n', '<leader>cil', '<cmd>check lspconfig<cr>', { desc = 'LSP info popup' })
+map({ 'n', 'x' }, '<leader>csf', function() Util.edit.formatter_select() end, { desc = 'Formatter Select' })
 
 -- Start new line from any cursor position in insert-mode
 map('i', '<S-Return>', '<C-o>o', { desc = 'Start Newline' })
@@ -232,8 +236,10 @@ map('n', 'g*', '*')
 map('n', '#', 'g#')
 map('n', 'g#', '#')
 
+map('n', '<C-c>', 'ciw', { desc = 'Change Inner Word' })
+
 -- Clear search with <Esc>
-map('n', '<Esc>', '<cmd>noh<CR>', { desc = 'Clear hlsearch' })
+map('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear hlsearch' })
 
 -- Use backspace key for matching pairs
 map({ 'n', 'x' }, '<BS>', '%', { remap = true, desc = 'Jump to Paren' })
@@ -242,6 +248,9 @@ map({ 'n', 'x' }, '<BS>', '%', { remap = true, desc = 'Jump to Paren' })
 map('n', '<Leader>bf', function()
 	vim.cmd('windo diff' .. (vim.wo.diff and 'off' or 'this'))
 end, { desc = 'Diff Windows in Tab' })
+
+-- External diff
+map('n', '<Leader>bF', '<cmd>!' .. vim.g.diffprg .. ' % #<CR>', { desc = 'Diff with' .. vim.g.diffprg })
 
 -- }}}
 -- Command & History {{{
@@ -279,6 +288,7 @@ map('n', '<leader>fn', '<cmd>enew<cr>', { desc = 'New File' })
 
 -- Fast saving from all modes
 map('n', '<Leader>w', '<cmd>write<CR>', { desc = 'Save File' })
+map('n', '<M-s>', '<cmd>write<CR>', { desc = 'Save File' })
 map({ 'n', 'i', 'v' }, '<C-s>', '<cmd>write<CR>', { desc = 'Save File' })
 
 -- }}}
@@ -301,14 +311,21 @@ end, { desc = 'Open Location List' })
 -- Toggle options
 LazyVim.format.snacks_toggle():map('<leader>uf')
 LazyVim.format.snacks_toggle(true):map('<leader>uF')
-Snacks.toggle.option('spell', { name = 'Spelling'}):map('<leader>us')
-Snacks.toggle.option('wrap', {name = 'Wrap'}):map('<leader>uw')
-Snacks.toggle.option('relativenumber', { name = 'Relative Number'}):map('<leader>uL')
+Snacks.toggle.option('spell', { name = 'Spelling' }):map('<leader>us')
+Snacks.toggle.option('wrap', { name = 'Wrap' }):map('<leader>uw')
+Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map('<leader>uL')
 Snacks.toggle.diagnostics():map('<leader>ud')
 Snacks.toggle.line_number():map('<leader>ul')
-Snacks.toggle.option('conceallevel', {off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2}):map('<leader>uc')
+Snacks.toggle.option('conceallevel', { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2, name = 'Conceal Level' }):map('<leader>uc')
+Snacks.toggle.option('showtabline', { off = 0, on = vim.o.showtabline > 0 and vim.o.showtabline or 2, name = 'Tabline' }):map('<leader>uA')
 Snacks.toggle.treesitter():map('<leader>uT')
-Snacks.toggle.option('background', { off = 'light', on = 'dark' , name = 'Dark Background'}):map('<leader>ub')
+Snacks.toggle.option('background', { off = 'light', on = 'dark' , name = 'Dark Background' }):map('<leader>ub')
+Snacks.toggle.dim():map('<leader>uD')
+Snacks.toggle.animate():map('<leader>ua')
+Snacks.toggle.indent():map('<leader>ug')
+Snacks.toggle.scroll():map('<leader>uS')
+Snacks.toggle.profiler():map('<leader>dpp')
+Snacks.toggle.profiler_highlights():map('<leader>dph')
 if vim.lsp.inlay_hint then
 	Snacks.toggle.inlay_hints():map('<leader>uh')
 end
@@ -343,22 +360,27 @@ map('n', '<LocalLeader>c', function() Util.contextmenu.show() end, { desc = 'Con
 if vim.fn.executable('lazygit') == 1 then
 	map('n', '<leader>gt', function() Snacks.lazygit( { cwd = LazyVim.root.git() }) end, { desc = 'Lazygit (Root Dir)' })
 	map('n', '<leader>gT', function() Snacks.lazygit() end, { desc = 'Lazygit (cwd)' })
-	map('n', '<leader>gm', function() Snacks.git.blame_line() end, { desc = 'Git Blame Line' })
-	map({ 'n', 'x' }, '<leader>go', function() Snacks.gitbrowse() end, { desc = 'Git Browse' })
 	map('n', '<leader>gF', function() Snacks.lazygit.log_file() end, { desc = 'Lazygit Current File History' })
 	map('n', '<leader>gl', function() Snacks.lazygit.log({ cwd = LazyVim.root.git() }) end, { desc = 'Lazygit Log' })
 	map('n', '<leader>gL', function() Snacks.lazygit.log() end, { desc = 'Lazygit Log (cwd)' })
 end
 
+map('n', '<leader>gm', function() Snacks.git.blame_line() end, { desc = 'Git Blame Line' })
+map({ 'n', 'x' }, '<leader>go', function() Snacks.gitbrowse() end, { desc = 'Git Browse' })
+map({ 'n', 'x' }, '<leader>gY', function()
+	Snacks.gitbrowse({ open = function(url) vim.fn.setreg('+', url) end, notify = false })
+end, { desc = 'Git Browse (copy)' })
+
 -- Floating Terminal
-map('n', '<leader>tT', function() Snacks.terminal() end, { desc = 'Terminal (cwd)' })
-map('n', '<leader>tt', function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = 'Terminal (Root Dir)' })
-map('n', '<c-/>',      function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = 'Terminal (Root Dir)' })
-map('n', '<c-_>',      function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = 'which_key_ignore' })
+map('n', '<Leader>tT', function() Snacks.terminal() end, { desc = 'Terminal (cwd)' })
+map('n', '<Leader>tt', function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = 'Terminal (Root Dir)' })
+map('n', '<C-/>',      function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = 'Terminal (Root Dir)' })
+map('n', '<C-_>',      function() Snacks.terminal(nil, { cwd = LazyVim.root() }) end, { desc = 'which_key_ignore' })
 
 -- Terminal Mappings
-map('t', '<C-/>', '<cmd>close<cr>', { desc = 'Hide Terminal' })
-map('t', '<c-_>', '<cmd>close<cr>', { desc = 'which_key_ignore' })
+map('t', '<C-g>', '<C-\\><C-n>', { desc = 'Enter Normal Mode' })
+map('t', '<C-/>', '<cmd>close<CR>', { desc = 'Hide Terminal' })
+map('t', '<C-_>', '<cmd>close<CR>', { desc = 'which_key_ignore' })
 
 if vim.fn.has('mac') then
 	-- Open the macOS dictionary on current word
@@ -368,10 +390,11 @@ end
 -- }}}
 -- Windows and buffers {{{
 
-map('n', '<leader>qq', '<cmd>qa<cr>', { desc = 'Exit Neovim' })
+-- Quit Neovim
+map('n', '<leader>qq', '<cmd>qall<CR>', { desc = 'Exit Neovim' })
 
--- Ultimatus Quitos
-if vim.F.if_nil(vim.g.window_q_mapping, true) then
+-- When enabled, 'q' closes any window.
+if vim.F.if_nil(vim.g.window_q_mapping, false) then
 	map('n', 'q', function()
 		local plugins = {
 			'blame',
@@ -397,7 +420,7 @@ if vim.F.if_nil(vim.g.window_q_mapping, true) then
 		local buf = vim.api.nvim_get_current_buf()
 		if vim.tbl_contains(plugins, vim.bo[buf].filetype) then
 			vim.bo[buf].buflisted = false
-			pcall(vim.api.nvim_buf_delete, buf, { force = true })
+			pcall(vim.api.nvim_buf_delete, buf)
 		else
 			-- Find non-floating windows
 			local wins = vim.fn.filter(vim.api.nvim_list_wins(), function(_, win)
@@ -420,6 +443,7 @@ end
 map('n', '<C-x>', '<C-w>x<C-w>w', { remap = true, desc = 'Swap adjacent windows' })
 map('n', '<C-w>d', '<C-W>c', { desc = 'Delete Window', remap = true })
 
+map('n', 's', '<Nop>')
 map('n', 'sb', '<cmd>buffer#<CR>', { desc = 'Alternate buffer' })
 map('n', 'sc', '<cmd>close<CR>', { desc = 'Close window' })
 map('n', 'sd', '<cmd>bdelete<CR>', { desc = 'Buffer delete' })
@@ -428,25 +452,23 @@ map('n', 'sg', '<cmd>vsplit<CR>', { desc = 'Split window vertically' })
 map('n', 'st', '<cmd>tabnew<CR>', { desc = 'New tab' })
 map('n', 'so', '<cmd>only<CR>', { desc = 'Close other windows' })
 map('n', 'sq', '<cmd>quit<CR>', { desc = 'Quit' })
-
--- Empty buffer but leave window
 map('n', 'sx', function()
 	Snacks.bufdelete({ wipe = true })
 	vim.cmd.enew()
 end, { desc = 'Delete buffer and open new' })
 
--- Toggle window zoom
-LazyVim.ui.maximize():map('sz')
+Snacks.toggle.zoom():map('sz'):map('<leader>uZ')
+Snacks.toggle.zen():map('<leader>uz')
 -- }}}
 
 -- Tabs
-map('n', '<leader><tab>l', '<cmd>tablast<cr>', { desc = 'Last Tab' })
-map('n', '<leader><tab>o', '<cmd>tabonly<cr>', { desc = 'Close Other Tabs' })
-map('n', '<leader><tab>f', '<cmd>tabfirst<cr>', { desc = 'First Tab' })
-map('n', '<leader><tab><tab>', '<cmd>tabnew<cr>', { desc = 'New Tab' })
-map('n', '<leader><tab>]', '<cmd>tabnext<cr>', { desc = 'Next Tab' })
-map('n', '<leader><tab>d', '<cmd>tabclose<cr>', { desc = 'Close Tab' })
-map('n', '<leader><tab>[', '<cmd>tabprevious<cr>', { desc = 'Previous Tab' })
+map('n', '<leader><tab>l', '<cmd>tablast<CR>', { desc = 'Last Tab' })
+map('n', '<leader><tab>o', '<cmd>tabonly<CR>', { desc = 'Close Other Tabs' })
+map('n', '<leader><tab>f', '<cmd>tabfirst<CR>', { desc = 'First Tab' })
+map('n', '<leader><tab><tab>', '<cmd>tabnew<CR>', { desc = 'New Tab' })
+map('n', '<leader><tab>]', '<cmd>tabnext<CR>', { desc = 'Next Tab' })
+map('n', '<leader><tab>d', '<cmd>tabclose<CR>', { desc = 'Close Tab' })
+map('n', '<leader><tab>[', '<cmd>tabprevious<CR>', { desc = 'Previous Tab' })
 
 -- Native snippets. only needed on < 0.11, as 0.11 creates these by default
 if vim.fn.has('nvim-0.11') == 0 then
