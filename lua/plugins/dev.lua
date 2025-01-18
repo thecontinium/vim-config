@@ -2,6 +2,24 @@
 local util = require('lspconfig.util')
 
 return {
+	-----------------------------------------------------------------------------
+	{
+		'folke/flash.nvim',
+		opts = {
+			modes = {
+				-- options used when flash is activated through
+				-- `f`, `F`, `t`, `T`, `;` and `,` motions
+				char = {
+					-- by default all keymaps are enabled, but you can disable some of them,
+					-- by removing them from the list.
+					-- If you rather use another key, you can map them
+					-- to something else, e.g., { [";"] = "L", [","] = H }
+					keys = { 'f', 'F', 't', 'T' }, --';', ',' },
+				},
+			},
+		},
+	},
+	-----------------------------------------------------------------------------
 	{
 		'neovim/nvim-lspconfig',
 		opts = {
@@ -19,6 +37,7 @@ return {
 			},
 		},
 	},
+	-----------------------------------------------------------------------------
 	{
 		'nvim-treesitter/nvim-treesitter',
 		opts = {
@@ -36,7 +55,7 @@ return {
 			},
 		},
 	},
-
+	-----------------------------------------------------------------------------
 	{
 		'paterjason/nvim-treesitter-sexp',
 		ft = 'clojure',
@@ -110,36 +129,24 @@ return {
 					local keymaps = config.options.keymaps
 
 					if keymaps then
-						add_which_key(
-							keymaps.commands,
-							commands,
-							{
-								mode = { 'n' },
-								expr = true,
-								buffer = bufnr,
-								replace_keycodes = false,
-							}
-						)
-						add_which_key(
-							keymaps.textobjects,
-							textobjects,
-							{
-								mode = { 'o', 'x' },
-								expr = true,
-								buffer = bufnr,
-								replace_keycodes = false,
-							}
-						)
-						add_which_key(
-							keymaps.motions,
-							motions,
-							{
-								mode = { 'n', 'o', 'x' },
-								expr = true,
-								buffer = bufnr,
-								replace_keycodes = false,
-							}
-						)
+						add_which_key(keymaps.commands, commands, {
+							mode = { 'n' },
+							expr = true,
+							buffer = bufnr,
+							replace_keycodes = false,
+						})
+						add_which_key(keymaps.textobjects, textobjects, {
+							mode = { 'o', 'x' },
+							expr = true,
+							buffer = bufnr,
+							replace_keycodes = false,
+						})
+						add_which_key(keymaps.motions, motions, {
+							mode = { 'n', 'o', 'x' },
+							expr = true,
+							buffer = bufnr,
+							replace_keycodes = false,
+						})
 					end
 				end,
 				group = vim.api.nvim_create_augroup('nvimtreesitter-sexp-whichkey', {}),
@@ -190,15 +197,14 @@ return {
 			},
 		},
 	},
-
+	-----------------------------------------------------------------------------
 	{ 'clojure-vim/clojure.vim', ft = 'clojure' },
-
-	{ 'treybastian/nvim-jack-in', config = true, ft = 'clojure' },
-
+	-----------------------------------------------------------------------------
+	-- { 'treybastian/nvim-jack-in', config = true, ft = 'clojure' },
+	-----------------------------------------------------------------------------
 	{
 		'olical/conjure',
 		ft = { 'clojure', 'lua' },
-		branch = 'develop',
 		config = function()
 			require('conjure.main').main()
 			require('conjure.mapping')['on-filetype']()
@@ -243,6 +249,19 @@ return {
 		},
 		init = function()
 			vim.g['conjure#mapping#prefix'] = ','
+			vim.g['conjure#filetypes'] = { -- remove python
+				'clojure',
+				'fennel',
+				'janet',
+				'hy',
+				'julia',
+				'racket',
+				'scheme',
+				'lua',
+				'lisp',
+				'rust',
+				'sql',
+			}
 			vim.g['conjure#mapping#log_split'] = 'lv'
 			vim.g['conjure#mapping#log_toggle'] = 'ls'
 			vim.g['conjure#mapping#log_vsplit'] = 'lg'
@@ -251,55 +270,58 @@ return {
 			vim.g['conjure#highlight#enabled'] = true
 			-- allow lisp k mapping and delegate this to ,k
 			vim.g['conjure#mapping#doc_word'] = 'k'
-			function Clerkshow()
-				vim.cmd(':w')
-				local current_ft = vim.bo.filetype
-				vim.bo.filetype = 'clojure'
-				vim.cmd(
-					':conjureeval (nextjournal.clerk/show! "'
-						.. vim.fn.expand('%:p')
-						.. '")'
-				)
-				vim.bo.filetype = current_ft
-			end
-			vim.keymap.set(
-				'n',
-				',cs',
-				':lua Clerkshow()<cr>',
-				{ noremap = true, buffer = true, silent = true }
-			)
 			vim.api.nvim_create_autocmd('filetype', {
 				group = vim.api.nvim_create_augroup('group_conjure-wk', {}),
-				pattern = { 'clojure' },
+				pattern = vim.g['conjure#filetypes'],
 				callback = function(args)
+					function Clerkshow()
+						vim.cmd(':w')
+						local current_ft = vim.bo.filetype
+						vim.bo.filetype = 'clojure'
+						vim.cmd(
+							':conjureeval (nextjournal.clerk/show! "'
+								.. vim.fn.expand('%:p')
+								.. '")'
+						)
+						vim.bo.filetype = current_ft
+					end
+					local is_ft = function(ft)
+						return args.match == ft
+					end
 					local wk = require('which-key')
 					wk.add({
+						{ ',', mode = 'n', buffer = args.buf, group = '+' .. args.match },
 						{ ',c', mode = 'n', buffer = args.buf, group = '+connect' },
 						{ ',e', mode = 'n', buffer = args.buf, group = '+evaluate' },
+						{ ',ec', mode = 'n', buffer = args.buf, group = '+comment' },
 						{ ',g', mode = 'n', buffer = args.buf, group = '+get' },
 						{ ',l', mode = 'n', buffer = args.buf, group = '+log' },
 						{ ',r', mode = 'n', buffer = args.buf, group = '+refresh' },
 						{ ',s', mode = 'n', buffer = args.buf, group = '+session' },
 						{ ',t', mode = 'n', buffer = args.buf, group = '+test' },
 						{ ',v', mode = 'n', buffer = args.buf, group = '+display' },
+						{
+							',n',
+							':terminal bb conjure<cr>',
+							cond = is_ft('clojure'),
+							mode = 'n',
+							buffer = args.buf,
+							desc = 'nrepl',
+						},
+						{
+							',cs',
+							':lua Clerkshow()<cr>',
+							cond = is_ft('clojure'),
+							mode = 'n',
+							buffer = args.buf,
+							desc = 'Clerk Show',
+						},
 					})
-					vim.keymap.set(
-						'n',
-						',n',
-						':terminal bb conjure<cr>',
-						{ noremap = true, silent = true, desc = 'nrepl' }
-					)
 				end,
 			})
 		end,
 	},
-
-	-- remove for now
-	-- {
-	-- 	'goerz/jupytext.vim',
-	-- 	event = 'vimenter',
-	-- },
-
+	-----------------------------------------------------------------------------
 	-- load and set keymapping only after using femaco
 	-- at the moment the first call does not keep the window open
 	{
