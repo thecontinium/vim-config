@@ -5,23 +5,12 @@ return {
 
 	-----------------------------------------------------------------------------
 	-- Statusline plugin with many customizations.
+	-- NOTE: This extends
+	-- $XDG_DATA_HOME/nvim/lazy/LazyVim/lua/lazyvim/plugins/ui.lua
 	{
 		'nvim-lualine/lualine.nvim',
-		event = 'VeryLazy',
 		enabled = not vim.g.started_by_firenvim,
-		init = function()
-			vim.g.qf_disable_statusline = true
-			vim.g.lualine_laststatus = vim.o.laststatus
-			if vim.fn.argc(-1) > 0 then
-				-- set an empty statusline till lualine loads
-				vim.o.statusline = ' '
-			else
-				-- hide the statusline on the starter page
-				vim.o.laststatus = 0
-			end
-		end,
 		opts = function()
-			local Util = require('rafi.util')
 			local icons = LazyVim.config.icons
 
 			local function is_plugin_window()
@@ -52,22 +41,23 @@ return {
 				fg = Snacks.util.color('StatusLineNC'),
 			}
 
+			local ColorUtil = require('rafi.util.color')
 			local theme = {
 				normal = {
 					a = active,
 					b = active,
 					c = active,
 					x = {
-						fg = Util.color.brightness_modifier(active.bg, -80),
+						fg = ColorUtil.brightness_modifier(active.bg, -80),
 						bg = active.bg,
 					},
 					y = {
 						fg = active.fg,
-						bg = Util.color.brightness_modifier(active.bg, -20),
+						bg = ColorUtil.brightness_modifier(active.bg, -20),
 					},
 					z = {
 						fg = active.fg,
-						bg = Util.color.brightness_modifier(active.bg, 63),
+						bg = ColorUtil.brightness_modifier(active.bg, 63),
 					},
 				},
 				inactive = {
@@ -87,13 +77,15 @@ return {
 					theme = theme,
 					globalstatus = vim.o.laststatus == 3,
 					disabled_filetypes = {
-						statusline = { 'dashboard', 'alpha', 'ministarter', 'snacks_dashboard' },
+						statusline = {
+							'dashboard',
+							'alpha',
+							'ministarter',
+							'snacks_dashboard',
+						},
 					},
 				},
-				extensions = {
-					'man',
-					'lazy',
-				},
+				extensions = { 'lazy', 'fzf', 'man' },
 				sections = {
 					lualine_a = {
 						-- Left edge block.
@@ -133,7 +125,7 @@ return {
 						},
 						LazyVim.lualine.root_dir(),
 						{
-							require('rafi.util').lualine.plugin_title(),
+							require('rafi.util.lualine').plugin_title(),
 							padding = { left = 0, right = 1 },
 							cond = is_plugin_window,
 						},
@@ -160,12 +152,18 @@ return {
 						-- Show buffer number in terminal
 						{
 							separator = '',
-							padding = { left = 0, right = 1 },
+							padding = { left = 1, right = 1 },
 							function()
-								return '#' .. vim.b['toggle_number']
+								local s = vim.b.term_title or ''
+								local n = vim.b.toggle_number or ''
+								if vim.b.snacks_terminal then
+									n = vim.b.snacks_terminal.id
+								end
+								return s .. (n and ' #' .. n or '')
 							end,
 							cond = function()
-								return vim.bo.buftype == 'terminal'
+								return vim.bo.buftype == 'snacks_terminal'
+									or vim.bo.buftype == 'terminal'
 							end,
 						},
 						-- Quickfix/location list title
@@ -184,8 +182,9 @@ return {
 						},
 
 						-- Whitespace trails
+						-- stylua: ignore
 						{
-							require('rafi.util').lualine.trails(),
+							require('rafi.util.lualine').trails(),
 							cond = is_file_window,
 							padding = { left = 1, right = 0 },
 							color = function() return { fg = Snacks.util.color('Identifier') } end,
@@ -256,6 +255,7 @@ return {
 							end,
 						},
 						-- showcmd
+						-- stylua: ignore
 						{
 							function()
 								---@diagnostic disable-next-line: undefined-field
@@ -269,6 +269,7 @@ return {
 							color = function() return { fg = Snacks.util.color('Statement') } end,
 						},
 						-- showmode
+						-- stylua: ignore
 						{
 							function()
 								---@diagnostic disable-next-line: undefined-field
@@ -289,6 +290,7 @@ return {
 							color = function() return { fg = Snacks.util.color('Debug') } end,
 						},
 						-- lazy.nvim updates
+						-- stylua: ignore
 						{
 							require('lazy.status').updates,
 							cond = require('lazy.status').has_updates,
@@ -300,7 +302,7 @@ return {
 					},
 					lualine_y = {
 						{
-							require('rafi.util').lualine.filemedia(),
+							require('rafi.util.lualine').filemedia(),
 							padding = 1,
 							cond = function()
 								return is_min_width(70)

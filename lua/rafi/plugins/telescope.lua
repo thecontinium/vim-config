@@ -126,7 +126,7 @@ end
 -- Enable indent-guides in telescope preview
 vim.api.nvim_create_autocmd('User', {
 	pattern = 'TelescopePreviewerLoaded',
-	group = vim.api.nvim_create_augroup('rafi_telescope', {}),
+	group = vim.api.nvim_create_augroup('rafi.telescope', {}),
 	callback = function(args)
 		if args.buf ~= vim.api.nvim_win_get_buf(0) then
 			return
@@ -141,21 +141,16 @@ vim.api.nvim_create_autocmd('User', {
 -- See telescope.nvim/lua/telescope/config.lua for defaults.
 return {
 
-	{
-		import = 'lazyvim.plugins.extras.editor.telescope',
-	},
-
 	-----------------------------------------------------------------------------
 	-- Find, Filter, Preview, Pick. All lua.
+	-- NOTE: This extends
+	-- $XDG_DATA_HOME/nvim/lazy/LazyVim/lua/lazyvim/plugins/extras/editor/telescope.lua
 	{
-		'nvim-telescope/telescope.nvim',
+		'telescope.nvim',
 		version = false,
+		optional = true,
 		cmd = 'Telescope',
-		enabled = function()
-			return LazyVim.pick.want() == 'telescope'
-		end,
 		dependencies = {
-			'nvim-lua/plenary.nvim',
 			-- Telescope extension for Zoxide
 			'jvgrootveld/telescope-zoxide',
 			-- Browse synonyms for a word
@@ -163,48 +158,10 @@ return {
 		},
 		-- stylua: ignore
 		keys = {
-			-- General pickers
-			{ '<localleader>r', '<cmd>Telescope resume<CR>', desc = 'Resume Last' },
+			{ '<leader><space>', false },
 			{ '<localleader>p', '<cmd>Telescope pickers<CR>', desc = 'Pickers' },
-			{ '<localleader>f', '<cmd>Telescope find_files<CR>', desc = 'Find Files' },
-			{ '<localleader>g', '<cmd>Telescope live_grep<CR>', desc = 'Grep' },
-			{ '<localleader>b', '<cmd>Telescope buffers<CR>', desc = 'Buffers' },
-			{ '<localleader>h', '<cmd>Telescope highlights<CR>', desc = 'Highlights' },
-			{ '<localleader>j', '<cmd>Telescope jumplist<CR>', desc = 'Jump List' },
-			{ '<localleader>m', '<cmd>Telescope marks<CR>', desc = 'Marks' },
-			{ '<localleader>o', '<cmd>Telescope vim_options<CR>', desc = 'Neovim Options' },
-			{ '<localleader>t', '<cmd>Telescope lsp_dynamic_workspace_symbols<CR>', desc = 'Workspace Symbols' },
-			{ '<localleader>v', '<cmd>Telescope registers<CR>', desc = 'Registers' },
 			{ '<localleader>u', '<cmd>Telescope spell_suggest<CR>', desc = 'Spell Suggest' },
-			{ '<localleader>s', "<cmd>lua require'persistence'.select()<CR>", desc = 'Sessions' },
-			{ '<localleader>x', '<cmd>Telescope oldfiles<CR>', desc = 'Old Files' },
-			{ '<localleader>;', '<cmd>Telescope command_history<CR>', desc = 'Command History' },
-			{ '<localleader>:', '<cmd>Telescope commands<CR>', desc = 'Commands' },
 			{ '<localleader>/', '<cmd>Telescope search_history<CR>', desc = 'Search History' },
-			{ '<leader>/', '<cmd>Telescope current_buffer_fuzzy_find<CR>', desc = 'Buffer Find' },
-
-			{
-				'<leader>,',
-				'<cmd>Telescope buffers sort_mru=true sort_lastused=true<cr>',
-				desc = 'Switch Buffer',
-			},
-			{ '<leader>ff', '<cmd>Telescope find_files<CR>', desc = 'Find Files' },
-			{ '<leader>fg', '<cmd>Telescope live_grep<CR>', desc = 'Grep' },
-
-			{ '<leader>sd', '<cmd>Telescope diagnostics bufnr=0<CR>', desc = 'Document Diagnostics' },
-			{ '<leader>sD', '<cmd>Telescope diagnostics<CR>', desc = 'Workspace Diagnostics' },
-			{ '<leader>sh', '<cmd>Telescope help_tags<CR>', desc = 'Help Pages' },
-			{ '<leader>sk', '<cmd>Telescope keymaps<CR>', desc = 'Key Maps' },
-			{ '<leader>sj', '<cmd>Telescope jumplist<cr>', desc = 'Jumplist' },
-			{ '<leader>sl', '<cmd>Telescope loclist<cr>', desc = 'Location List' },
-			{ '<leader>sm', '<cmd>Telescope man_pages<CR>', desc = 'Man Pages' },
-			{ '<leader>sq', '<cmd>Telescope quickfix<cr>', desc = 'Quickfix List' },
-
-			{ '<leader>sw', LazyVim.pick('grep_string', { word_match = '-w' }), desc = 'Word (Root Dir)' },
-			{ '<leader>sW', LazyVim.pick('grep_string', { root = false, word_match = '-w' }), desc = 'Word (cwd)' },
-			{ '<leader>sw', LazyVim.pick('grep_string'), mode = 'v', desc = 'Selection (Root Dir)' },
-			{ '<leader>sW', LazyVim.pick('grep_string', { root = false }), mode = 'v', desc = 'Selection (cwd)' },
-			{ '<leader>sc', LazyVim.pick('colorscheme', { enable_preview = true }), desc = 'Colorscheme with Preview' },
 
 			-- LSP related
 			{ '<localleader>dd', '<cmd>Telescope lsp_definitions<CR>', desc = 'Definitions' },
@@ -212,36 +169,10 @@ return {
 			{ '<localleader>dr', '<cmd>Telescope lsp_references<CR>', desc = 'References' },
 			{ '<localleader>da', '<cmd>Telescope lsp_code_actions<CR>', desc = 'Code Actions' },
 			{ '<localleader>da', ':Telescope lsp_range_code_actions<CR>', mode = 'x', desc = 'Code Actions' },
-			{
-				'<leader>ss',
-				function()
-					require('telescope.builtin').lsp_document_symbols({
-						symbols = LazyVim.config.get_kind_filter(),
-					})
-				end,
-				desc = 'Goto Symbol',
-			},
-			{
-				'<leader>sS',
-				function()
-					require('telescope.builtin').lsp_dynamic_workspace_symbols({
-						symbols = LazyVim.config.get_kind_filter(),
-					})
-				end,
-				desc = 'Goto Symbol (Workspace)',
-			},
-
-			-- Git
-			{ '<leader>gs', '<cmd>Telescope git_status<CR>', desc = 'Git Status' },
-			{ '<leader>gr', '<cmd>Telescope git_branches<CR>', desc = 'Git Branches' },
-			{ '<leader>gL', '<cmd>Telescope git_bcommits<CR>', desc = 'Git Buffer Commits' },
-			{ '<leader>gh', '<cmd>Telescope git_stash<CR>', desc = 'Git Stashes' },
-			{ '<leader>gc', '<cmd>Telescope git_bcommits_range<CR>', mode = { 'x', 'n' }, desc = 'Git Buffer Commits Range' },
 
 			-- Plugins
 			{ '<localleader>n', plugin_directories, desc = 'Plugins' },
 			{ '<localleader>k', '<cmd>Telescope thesaurus lookup<CR>', desc = 'Thesaurus' },
-
 			{
 				'<localleader>z',
 				function()
@@ -253,8 +184,6 @@ return {
 				end,
 				desc = 'Zoxide (MRU)',
 			},
-
-			-- Find by...
 			{
 				'<leader>gf',
 				function()
@@ -264,25 +193,6 @@ return {
 				end,
 				desc = 'Find File',
 			},
-			{
-				'<leader>gg', function()
-					require('telescope.builtin').live_grep({
-						default_text = vim.fn.expand('<cword>'),
-					})
-				end,
-				desc = 'Grep Cursor Word',
-			},
-			{
-				'<leader>gg',
-				function()
-					require('telescope.builtin').live_grep({
-						default_text = require('rafi.util.edit').get_visual_selection(),
-					})
-				end,
-				mode = 'x',
-				desc = 'Grep Cursor Word',
-			},
-
 		},
 		opts = function(_, opts)
 			local actions = require('telescope.actions')
@@ -293,6 +203,7 @@ return {
 
 			local function find_command()
 				if 1 == vim.fn.executable('rg') then
+					-- stylua: ignore
 					return { 'rg', '--files', '--color', 'never', '--no-ignore-vcs', '--smart-case', '-g', '!.git' }
 				elseif 1 == vim.fn.executable('fd') then
 					return { 'fd', '--type', 'f', '--color', 'never', '-E', '.git' }
@@ -545,65 +456,6 @@ return {
 			}
 
 			return opts
-		end,
-	},
-
-	-----------------------------------------------------------------------------
-	-- Flash Telescope config
-	{
-		'nvim-telescope/telescope.nvim',
-		optional = true,
-		opts = function(_, opts)
-			if not LazyVim.has('flash.nvim') then
-				return
-			end
-			local function flash(prompt_bufnr)
-				require('flash').jump({
-					pattern = '^',
-					label = { after = { 0, 0 } },
-					search = {
-						mode = 'search',
-						exclude = {
-							function(win)
-								return vim.bo[vim.api.nvim_win_get_buf(win)].filetype
-									~= 'TelescopeResults'
-							end,
-						},
-					},
-					action = function(match)
-						local picker =
-							require('telescope.actions.state').get_current_picker(
-								prompt_bufnr
-							)
-						picker:set_selection(match.pos[1] - 1)
-					end,
-				})
-			end
-			opts.defaults = vim.tbl_deep_extend('force', opts.defaults or {}, {
-				mappings = { n = { s = flash }, i = { ['<c-s>'] = flash } },
-			})
-		end,
-	},
-
-	-----------------------------------------------------------------------------
-	-- better vim.ui with telescope
-	{
-		'stevearc/dressing.nvim',
-		lazy = true,
-		enabled = function()
-			return LazyVim.pick.want() == 'telescope'
-		end,
-		init = function()
-			---@diagnostic disable-next-line: duplicate-set-field
-			vim.ui.select = function(...)
-				require('lazy').load({ plugins = { 'dressing.nvim' } })
-				return vim.ui.select(...)
-			end
-			---@diagnostic disable-next-line: duplicate-set-field
-			vim.ui.input = function(...)
-				require('lazy').load({ plugins = { 'dressing.nvim' } })
-				return vim.ui.input(...)
-			end
 		end,
 	},
 }

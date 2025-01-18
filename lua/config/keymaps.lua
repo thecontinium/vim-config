@@ -13,6 +13,8 @@ if vim.fn.executable('/Applications/Marked 2.app') then
 	})
 end
 
+map({ 'n', 'x' }, '<localleader>s', '<cmd>Telescope neovim-project history<CR>', { remap = true, desc = 'Sessions' })
+
 -- Ultimatus Quitos
 if vim.F.if_nil(vim.g.window_q_mapping, true) then
 	map('n', 'q', function()
