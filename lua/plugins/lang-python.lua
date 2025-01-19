@@ -127,7 +127,7 @@ return {
 							desc = 're-evaluate cell',
 						},
 						{
-							',cd',
+							',ed',
 							':MoltenDelete<cr>',
 							mode = 'n',
 							buffer = args.buf,
