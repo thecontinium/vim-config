@@ -13,43 +13,16 @@ if vim.fn.executable('/Applications/Marked 2.app') then
 	})
 end
 
-map({ 'n', 'x' }, '<localleader>s', '<cmd>Telescope neovim-project history<CR>', { remap = true, desc = 'Sessions' })
-
--- Ultimatus Quitos
-if vim.F.if_nil(vim.g.window_q_mapping, true) then
-	map('n', 'q', function()
-		local plugins = {
-			'blame',
-			'checkhealth',
-			'fugitive',
-			'fugitiveblame',
-			'help',
-			'httpResult',
-			'lspinfo',
-			'notify',
-			'PlenaryTestPopup',
-			'qf',
-			'spectre_panel',
-			'startuptime',
-			'tsplayground',
-		}
-		local buf = vim.api.nvim_get_current_buf()
-		if vim.tbl_contains(plugins, vim.bo[buf].filetype) then
-			vim.bo[buf].buflisted = false
+local map = vim.keymap.set
+local unmap = function(modes, lhs)
+	modes = type(modes) == 'string' and { modes } or modes
+	lhs = type(lhs) == 'string' and { lhs } or lhs
+	for _, mode in pairs(modes) do
+		for _, l in pairs(lhs) do
+			pcall(vim.keymap.del, mode, l)
 		end
-		-- Find non-floating windows
-		local wins = vim.fn.filter(vim.api.nvim_list_wins(), function(_, win)
-				if vim.api.nvim_win_get_config(win).zindex then
-					return nil
-				end
-				return win
-			end)
-		-- If last window, quit
-		if #wins > 1 then
-			vim.api.nvim_win_close(0, false)
-		else
-			vim.cmd[[quit]]
-		end
-	end, { desc = 'Close window' })
+	end
 end
 
+unmap('n', {'<localleader>s',})
+map({ 'n', 'x' }, '<localleader>s', '<cmd>Telescope neovim-project history<CR>', { remap = true, desc = 'Sessions' })

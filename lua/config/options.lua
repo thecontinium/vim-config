@@ -5,5 +5,6 @@ opt.sessionoptions:remove({ 'help' })
 opt.sessionoptions:remove({ 'folds' })
 opt.sessionoptions:append({ 'buffers' })
 
+vim.g.window_q_mapping = true
 vim.g.loaded_python3_provider = nil
 vim.g.python3_host_prog=vim.fn.expand("~/.cache/nvim/venv/bin/python3")
