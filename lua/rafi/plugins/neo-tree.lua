@@ -110,7 +110,7 @@ return {
 				['q'] = 'close_window',
 				['?'] = 'noop',
 				['g?'] = 'show_help',
-				['<Space>'] = 'noop',
+				['<leader>'] = { 'toggle_node', nowait = true },
 
 				-- Close preview or floating neo-tree window, and clear hlsearch.
 				['<Esc>'] = function(_)
@@ -121,7 +121,18 @@ return {
 
 				['<2-LeftMouse>'] = 'open',
 				['<CR>'] = 'open_with_window_picker',
-				['l'] = 'open',
+				['l'] = function(state)
+					-- Toggle directories or nested items.
+					local node = state.tree:get_node()
+					if
+						node.type == 'directory'
+						or (node:has_children() and not node:is_expanded())
+					then
+						state.commands.toggle_node(state)
+					else
+						state.commands.open(state)
+					end
+				end,
 				['h'] = 'close_node',
 				['C'] = 'close_node',
 				['z'] = 'close_all_nodes',
@@ -153,7 +164,7 @@ return {
 					local normal = state.window.width
 					local large = normal * 1.9
 					local small = math.floor(normal / 1.6)
-					local cur_width = state.win_width + 1
+					local cur_width = state.win_width
 					local new_width = normal
 					if cur_width > normal then
 						new_width = small
