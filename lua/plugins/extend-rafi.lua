@@ -21,9 +21,7 @@ return {
 		opts = function(_, opts)
 			vim.list_extend(opts.ensure_installed, {
 				'bash-language-server',
-				'clojure-lsp',
 				'vim-language-server',
-				'python-lsp-server',
 			})
 		end,
 	},
