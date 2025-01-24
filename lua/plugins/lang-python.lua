@@ -6,6 +6,9 @@ else
 	python_path = vim.g.python3_host_prog
 end
 
+vim.g.lazyvim_python_lsp = 'basedpyright'
+vim.g.lazyvim_python_ruff = 'ruff'
+
 return {
 	-- {
 	--   "bluz71/vim-moonfly-colors",
@@ -23,45 +26,6 @@ return {
 
 	-- Configuration for Pylsp: Use Ruff installed with :PylspInstall python-lsp-ruff
 	-- https://jdhao.github.io/2023/07/22/neovim-pylsp-setup/
-	{
-		'neovim/nvim-lspconfig',
-		opts = {
-			servers = {
-				pylsp = {
-					settings = {
-						pylsp = {
-							plugins = {
-								-- formatter options
-								-- ussing ruff
-								black = { enabled = false }, -- pyproject.toml
-								autopep8 = { enabled = false },
-								yapf = { enabled = false },
-								-- linter options
-								ruff = { enabled = true, formatEnabled = true }, --disabled by default pycodestyle, pyflakes, mccabe, autopep8, and yapf -- pyproject.toml
-								pylint = { enabled = false, executable = 'pylint' }, -- pyproject.toml
-								pyflakes = { enabled = false },
-								pycodestyle = { enabled = false },
-								flake8 = { enabled = false },
-								pydocstyle = { enabled = false },
-								-- type checker
-								pylsp_mypy = { enabled = false },
-								-- pylsp_mypy = { -- pyproject.toml :PylspInstall lsp-mypy
-								-- 	enabled = true,
-								-- 	overrides = { '--python-executable', python_path, true },
-								-- 	report_progress = true,
-								-- 	live_mode = false,
-								-- },
-								-- auto-completion options
-								jedi_completion = { fuzzy = true },
-								-- import sorting
-								isort = { enabled = true }, -- not sure if this is being used -- pyproject.toml; :PylspInstall python-isort
-							},
-						},
-					},
-				},
-			},
-		},
-	},
 	-----------------------------------------------------------------------------
 	{
 		'benlubas/molten-nvim',
@@ -272,149 +236,285 @@ return {
 		},
 	},
 	-----------------------------------------------------------------------------
+	{ import = 'lazyvim.plugins.extras.dap.core' },
 	{
-		'mfussenegger/nvim-dap',
-		ft = { 'python' },
-		dependencies = {
-			'nvim-neotest/nvim-nio',
-			'rcarriga/nvim-dap-ui',
-			'mfussenegger/nvim-dap-python',
-			'theHamsta/nvim-dap-virtual-text',
+		'linux-cultist/venv-selector.nvim',
+		opts = {
+			settings = {
+				options = {
+					enable_default_searches = false,
+					on_telescope_result_callback = function(filename)
+						return filename:gsub(os.getenv('HOME'), '~'):gsub('/bin/python', '')
+					end,
+				},
+				search = {
+					minis = {
+						command = "fd 'bin/python$' /usr/local/Caskroom/miniconda/base/envs --full-path --color never",
+						type = 'anaconda',
+					},
+					pyenvs = {
+						command = "fd '/bin/python$' $PYENV_ROOT/versions --full-path --color never -E pkgs/ -E envs/ -L",
+					},
+				},
+			},
 		},
-		config = function()
-			local dap = require('dap')
-			local dapui = require('dapui')
-			local dap_python = require('dap-python')
-
-			require('dapui').setup({})
-			require('nvim-dap-virtual-text').setup({
-				commented = true, -- Show virtual text alongside comment
-			})
-
-			dap_python.setup('python3')
-
-			vim.fn.sign_define('DapBreakpoint', {
-				text = '',
-				texthl = 'DiagnosticSignError',
-				linehl = '',
-				numhl = '',
-			})
-
-			vim.fn.sign_define('DapBreakpointRejected', {
-				text = '', -- or "❌"
-				texthl = 'DiagnosticSignError',
-				linehl = '',
-				numhl = '',
-			})
-
-			vim.fn.sign_define('DapStopped', {
-				text = '', -- or "→"
-				texthl = 'DiagnosticSignWarn',
-				linehl = 'Visual',
-				numhl = 'DiagnosticSignWarn',
-			})
-
-			-- Automatically open/close DAP UI
-			dap.listeners.after.event_initialized['dapui_config'] = function()
-				dapui.open()
-			end
-
-			local function opts(description)
-				return {
-					noremap = true,
-					silent = true,
-					buffer = true,
-					desc = description,
-				}
-			end
-
-			vim.api.nvim_create_autocmd('filetype', {
-				group = vim.api.nvim_create_augroup('group_python-wk', {}),
-				pattern = 'python',
-				callback = function(args)
-					local wk = require('which-key')
-					wk.add({
-						{
-							',d',
-							mode = 'n',
-							buffer = args.buf,
-							group = '+dab-' .. args.match,
-						},
-						{
-							',db',
-							function()
-								dap.toggle_breakpoint()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'toggle breakpoint',
-						},
-						{
-							',dc',
-							function()
-								dap.continue()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'continue',
-						},
-						{
-							',de',
-							function()
-								dapui.eval(nil, { enter = true })
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'eval',
-						},
-						{
-							',do',
-							function()
-								dap.step_over()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'step over',
-						},
-						{
-							',di',
-							function()
-								dap.step_into()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'step into',
-						},
-						{
-							',dO',
-							function()
-								dap.step_out()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'step out',
-						},
-						{
-							',dq',
-							function()
-								dap.terminate()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'terminate',
-						},
-						{
-							',du',
-							function()
-								dapui.toggle()
-							end,
-							mode = 'n',
-							buffer = args.buf,
-							desc = 'toggle',
-						},
-					})
-				end,
-			})
-		end,
 	},
+	-- {
+	-- 	'mfussenegger/nvim-dap',
+	-- 	ft = { 'python' },
+	-- 	dependencies = {
+	-- 		'nvim-neotest/nvim-nio',
+	-- 		'rcarriga/nvim-dap-ui',
+	-- 		'mfussenegger/nvim-dap-python',
+	-- 		'theHamsta/nvim-dap-virtual-text',
+	-- 	},
+	-- 	config = function()
+	-- 		local dap = require('dap')
+	-- 		local dapui = require('dapui')
+	-- 		local dap_python = require('dap-python')
+	--
+	-- 		require('dapui').setup({})
+	-- 		require('nvim-dap-virtual-text').setup({
+	-- 			commented = true, -- Show virtual text alongside comment
+	-- 		})
+	--
+	-- 		dap_python.setup('python3')
+	--
+	-- 		vim.fn.sign_define('DapBreakpoint', {
+	-- 			text = '',
+	-- 			texthl = 'DiagnosticSignError',
+	-- 			linehl = '',
+	-- 			numhl = '',
+	-- 		})
+	--
+	-- 		vim.fn.sign_define('DapBreakpointRejected', {
+	-- 			text = '', -- or "❌"
+	-- 			texthl = 'DiagnosticSignError',
+	-- 			linehl = '',
+	-- 			numhl = '',
+	-- 		})
+	--
+	-- 		vim.fn.sign_define('DapStopped', {
+	-- 			text = '', -- or "→"
+	-- 			texthl = 'DiagnosticSignWarn',
+	-- 			linehl = 'Visual',
+	-- 			numhl = 'DiagnosticSignWarn',
+	-- 		})
+	--
+	-- 		-- Automatically open/close DAP UI
+	-- 		dap.listeners.after.event_initialized['dapui_config'] = function()
+	-- 			dapui.open()
+	-- 		end
+	--
+	-- 		local function opts(description)
+	-- 			return {
+	-- 				noremap = true,
+	-- 				silent = true,
+	-- 				buffer = true,
+	-- 				desc = description,
+	-- 			}
+	-- 		end
+	--
+	-- 		vim.api.nvim_create_autocmd('filetype', {
+	-- 			group = vim.api.nvim_create_augroup('group_python-wk', {}),
+	-- 			pattern = 'python',
+	-- 			callback = function(args)
+	-- 				local wk = require('which-key')
+	-- 				wk.add({
+	-- 					{
+	-- 						',d',
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						group = '+dab-' .. args.match,
+	-- 					},
+	-- 					{
+	-- 						',db',
+	-- 						function()
+	-- 							dap.toggle_breakpoint()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'toggle breakpoint',
+	-- 					},
+	-- 					{
+	-- 						',dc',
+	-- 						function()
+	-- 							dap.continue()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'continue',
+	-- 					},
+	-- 					{
+	-- 						',de',
+	-- 						function()
+	-- 							dapui.eval(nil, { enter = true })
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'eval',
+	-- 					},
+	-- 					{
+	-- 						',do',
+	-- 						function()
+	-- 							dap.step_over()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'step over',
+	-- 					},
+	-- 					{
+	-- 						',di',
+	-- 						function()
+	-- 							dap.step_into()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'step into',
+	-- 					},
+	-- 					{
+	-- 						',dO',
+	-- 						function()
+	-- 							dap.step_out()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'step out',
+	-- 					},
+	-- 					{
+	-- 						',dq',
+	-- 						function()
+	-- 							dap.terminate()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'terminate',
+	-- 					},
+	-- 					{
+	-- 						',du',
+	-- 						function()
+	-- 							dapui.toggle()
+	-- 						end,
+	-- 						mode = 'n',
+	-- 						buffer = args.buf,
+	-- 						desc = 'toggle',
+	-- 					},
+	-- 				})
+	-- 			end,
+	-- 		})
+	-- 	end,
+	-- },
+
+	{ import = 'lazyvim.plugins.extras.lang.python' },
+	{
+		'neovim/nvim-lspconfig',
+		opts = {
+			servers = {
+				basedpyright = {
+					settings = {
+						basedpyright = {
+							-- Using Ruff's import organizer
+							disableOrganizeImports = true,
+							-- Set the type cheching mode
+							typeCheckingMode = 'basic',
+						},
+						python = {
+							analysis = {
+								-- Ignore all files for analysis to exclusively use Ruff for linting
+								ignore = { '*' },
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+	-- not using extras this worked for using ruff and basedpyright
+	-- {
+	-- 	'neovim/nvim-lspconfig',
+	-- 	opts = {
+	-- 		setup = {
+	-- 			ruff = function()
+	-- 				LazyVim.lsp.on_attach(function(client, _)
+	-- 					-- Disable hover in favor of Pyright
+	-- 					client.server_capabilities.hoverProvider = false
+	-- 				end, 'ruff')
+	-- 			end,
+	-- 		},
+	-- 		servers = {
+	-- 			ruff = {
+	-- 				cmd_env = { RUFF_TRACE = 'messages' },
+	-- 				init_options = {
+	-- 					settings = {
+	-- 						logLevel = 'error',
+	-- 					},
+	-- 				},
+	-- 				keys = {
+	-- 					{
+	-- 						'<leader>co',
+	-- 						LazyVim.lsp.action['source.organizeImports'],
+	-- 						desc = 'Organize Imports',
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 			basedpyright = {
+	-- 				settings = {
+	-- 					basedpyright = {
+	-- 						-- Using Ruff's import organizer
+	-- 						disableOrganizeImports = true,
+	-- 						-- Set the type cheching mode
+	-- 						typeCheckingMode = 'basic',
+	-- 					},
+	-- 					python = {
+	-- 						analysis = {
+	-- 							-- Ignore all files for analysis to exclusively use Ruff for linting
+	-- 							ignore = { '*' },
+	-- 						},
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
+	--
+	-- not using extras this worked for using pylsp
+	-- {
+	-- 	'neovim/nvim-lspconfig',
+	-- 	opts = {
+	-- 		setup = {
+	-- 			pylsp = {
+	-- 				settings = {
+	-- 					pylsp = {
+	-- 						plugins = {
+	-- 							-- formatter options
+	-- 							-- ussing ruff
+	-- 							black = { enabled = false }, -- pyproject.toml
+	-- 							autopep8 = { enabled = false },
+	-- 							yapf = { enabled = false },
+	-- 							-- linter options
+	-- 							ruff = { enabled = true, formatEnabled = true }, --disabled by default pycodestyle, pyflakes, mccabe, autopep8, and yapf -- pyproject.toml; :PylspInstall
+	-- 							pylint = { enabled = false, executable = 'pylint' }, -- pyproject.toml
+	-- 							pyflakes = { enabled = false },
+	-- 							pycodestyle = { enabled = false },
+	-- 							flake8 = { enabled = false },
+	-- 							pydocstyle = { enabled = false },
+	-- 							-- type checker
+	-- 							pylsp_mypy = { enabled = false },
+	-- 							-- pylsp_mypy = { -- pyproject.toml :PylspInstall lsp-mypy
+	-- 							-- 	enabled = true,
+	-- 							-- 	overrides = { '--python-executable', python_path, true },
+	-- 							-- 	report_progress = true,
+	-- 							-- 	live_mode = false,
+	-- 							-- },
+	-- 							-- auto-completion options
+	-- 							jedi_completion = { fuzzy = true },
+	-- 							-- import sorting
+	-- 							isort = { enabled = true }, -- not sure if this is being used -- pyproject.toml; :PylspInstall python-isort
+	-- 						},
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
 }
