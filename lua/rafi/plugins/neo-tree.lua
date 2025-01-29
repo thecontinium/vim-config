@@ -8,7 +8,7 @@ local function get_current_directory(state)
 	if node.type ~= 'directory' or not node:is_expanded() then
 		node = state.tree:get_node(node:get_parent_id())
 	end
-	return node.path
+	return node:get_id()
 end
 
 return {
@@ -20,27 +20,23 @@ return {
 	'neo-tree.nvim',
 	branch = 'v3.x',
 	dependencies = { 'MunifTanjim/nui.nvim' },
-	cmd = 'Neotree',
 	-- stylua: ignore
 	keys = {
-		{ '<localleader>e', '<leader>fe', desc = 'Explorer NeoTree (Root Dir)', remap = true },
-		{ '<localleader>E', '<leader>fE', desc = 'Explorer NeoTree (cwd)', remap = true },
+		{ '<localleader>e', '<leader>fe', desc = 'Explorer Tree (Root Dir)', remap = true },
+		{ '<localleader>E', '<leader>fE', desc = 'Explorer Tree (cwd)', remap = true },
 		{
 			'<localleader>a',
 			function()
-				require('neo-tree.command').execute({
-					reveal = true,
-					dir = LazyVim.root()
-				})
+				require('neo-tree.command').execute({ reveal = true, dir = LazyVim.root() })
 			end,
-			desc = 'Explorer NeoTree Reveal',
+			desc = 'Reveal in Explorer',
 		},
 		{
-			'<leader>xe',
+			'<localleader>A',
 			function()
-				require('neo-tree.command').execute({ source = 'document_symbols', toggle = true })
+				require('neo-tree.command').execute({ reveal = true, dir = vim.uv.cwd() })
 			end,
-			desc = 'Document Explorer',
+			desc = 'Reveal in Explorer (cwd)',
 		},
 	},
 	-- See: https://github.com/nvim-neo-tree/neo-tree.nvim
@@ -104,16 +100,18 @@ return {
 				},
 			},
 		},
+
 		window = {
 			width = 30, -- Default 40
 			mappings = {
 				['q'] = 'close_window',
 				['?'] = 'noop',
 				['g?'] = 'show_help',
-				['<leader>'] = { 'toggle_node', nowait = true },
+				['<leader>'] = 'noop',
 
-				-- Close preview or floating neo-tree window, and clear hlsearch.
-				['<Esc>'] = function(_)
+				-- Clear filter, preview and highlight search.
+				['<Esc>'] = function(state)
+					require('neo-tree.sources.filesystem').reset_search(state, true)
 					require('neo-tree.sources.filesystem.lib.filter_external').cancel()
 					require('neo-tree.sources.common.preview').hide()
 					vim.cmd([[ nohlsearch ]])
@@ -153,6 +151,8 @@ return {
 				['N'] = { 'add_directory', config = { show_path = 'relative' } },
 
 				['P'] = 'paste_from_clipboard',
+
+				['K'] = { 'preview', config = { use_float = true } },
 				['p'] = {
 					'toggle_preview',
 					config = { use_float = true },
@@ -172,12 +172,6 @@ return {
 						new_width = large
 					end
 					vim.cmd(new_width .. ' wincmd |')
-				end,
-
-				['K'] = function(state)
-					local node = state.tree:get_node()
-					local path = node:get_id()
-					require('rafi.util.preview').open(path)
 				end,
 
 				['Y'] = {
@@ -202,7 +196,8 @@ return {
 		},
 		filesystem = {
 			bind_to_cwd = false,
-			follow_current_file = { enabled = true },
+			follow_current_file = { enabled = false },
+			find_by_full_path_words = true,
 			group_empty_dirs = true,
 			use_libuv_file_watcher = has_git,
 			window = {
@@ -225,19 +220,18 @@ return {
 
 					-- Search and replace in path.
 					['gz'] = function(state)
-						local path = get_current_directory(state):gsub(' ', '\\ ')
-						local prefills = { paths = path }
-						local grugFar = require('grug-far')
-						if not grugFar.has_instance('tree') then
-							grugFar.open({
-								instanceName = 'tree',
-								prefills = prefills,
-								staticTitle = 'Find and Replace from Tree',
-							})
+						local prefills = {
+							paths = vim.fn.fnameescape(get_current_directory(state)),
+						}
+						local grug_far = require('grug-far')
+						if not grug_far.has_instance('explorer') then
+							grug_far.open({ instanceName = 'explorer' })
 						else
-							grugFar.open_instance('tree')
-							grugFar.update_instance_prefills('tree', prefills, false)
+							grug_far.open_instance('explorer')
 						end
+						-- Doing it seperately because multiple paths isn't supported when passed
+						-- with prefills update, without clearing search and other fields.
+						grug_far.update_instance_prefills('explorer', prefills, false)
 					end,
 				},
 			},
