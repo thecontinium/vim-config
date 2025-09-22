@@ -20,6 +20,7 @@ return {
 	'neo-tree.nvim',
 	branch = 'v3.x',
 	dependencies = { 'MunifTanjim/nui.nvim' },
+	optional = true,
 	-- stylua: ignore
 	keys = {
 		{ '<localleader>e', '<leader>fe', desc = 'Explorer Tree (Root Dir)', remap = true },

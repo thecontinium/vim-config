@@ -2,7 +2,7 @@ return {
 
 	-- Track and reuse file system visits
 	{
-		'echasnovski/mini.visits',
+		'nvim-mini/mini.visits',
 		event = 'VeryLazy',
 		opts = {},
 		-- stylua: ignore

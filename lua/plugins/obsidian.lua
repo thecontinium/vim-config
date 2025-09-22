@@ -1,5 +1,5 @@
 return {
-	'epwalsh/obsidian.nvim',
+	'thecontinium/obsidian.nvim',
 	version = '*', -- recommended, use latest release instead of latest commit
 	lazy = true,
 	-- ft = "markdown",
@@ -17,6 +17,10 @@ return {
 			.. '/Library/Mobile Documents/iCloud~md~obsidian/Documents/life',
 	},
 	cmd = { 'ObsidianSearch', 'ObsidianQuickSwitch' },
+
+	keys = {
+		{ '<localleader>w', '<cmd>ObsidianQuickSwitch<CR>', desc = "Obsidian Quick Switch" },
+	},
 	dependencies = {
 		-- Required.
 		'nvim-lua/plenary.nvim',
@@ -24,6 +28,9 @@ return {
 		-- see below for full list of optional dependencies 👇
 	},
 	opts = {
+		pickers = {
+			name = 'snacks.pick',
+		},
 		ui = { enable = false },
 		note_id_func = function(title)
 			local file_name = ''

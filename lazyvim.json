@@ -1,0 +1,15 @@
+{
+  "extras": [
+    "lazyvim.plugins.extras.editor.neo-tree",
+    "plugins.extras.editor.mini-files",
+    "plugins.extras.editor.snacks_picker",
+    "plugins.extras.lang.clojure",
+    "plugins.extras.lang.python",
+    "plugins.extras.multi"
+  ],
+  "install_version": 8,
+  "news": [
+
+  ],
+  "version": 8
+}

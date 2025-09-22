@@ -2,7 +2,7 @@ return {
 
 	-- Align text interactively
 	{
-		'echasnovski/mini.align',
+		'nvim-mini/mini.align',
 		opts = {
 			mappings = {
 				start = 'gb',
