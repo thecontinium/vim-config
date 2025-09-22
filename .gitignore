@@ -1,9 +1,0 @@
-*~
-/benchmarks/
-/spell/
-/.stignore
-/.stfolder
-/.stversions
-.clj-kondo/
-.lsp/
-/lua/lsp/
