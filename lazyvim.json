@@ -1,6 +1,9 @@
 {
   "extras": [
-
+    "plugins.extras.editor.git",
+    "plugins.extras.editor.mini-files",
+    "plugins.extras.editor.snacks_picker",
+    "plugins.extras.lang.tmux"
   ],
   "install_version": 8,
   "news": {

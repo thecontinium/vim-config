@@ -1,0 +1,87 @@
+return {
+
+  -----------------------------------------------------------------------------
+  -- Collection of small QoL plugins
+  -- NOTE: This extends
+  -- $XDG_DATA_HOME/nvim/lazy/LazyVim/lua/lazyvim/plugins/ui.lua
+  -- $XDG_DATA_HOME/nvim/lazy/LazyVim/lua/lazyvim/plugins/util.lua
+  -- {
+  --   "folke/snacks.nvim",
+  --   opts = {
+  --     dashboard = { enabled = false },
+  --     scroll = { enabled = false },
+  --     terminal = {
+  --       win = { style = "terminal", wo = { winbar = "" } },
+  --     },
+  --     zen = {
+  --       toggles = { git_signs = true },
+  --       zoom = {
+  --         show = { tabline = false },
+  --         win = { backdrop = true },
+  --       },
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "folke/snacks.nvim",
+  --   keys = function(_, keys)
+  --     if LazyVim.pick.picker.name ~= "snacks" then
+  --       return
+  --     end
+  -- 	-- stylua: ignore
+  -- 	local mappings = {
+  -- 		{
+  -- 			'<localleader>z',
+  -- 			mode = { 'n', 'x' },
+  -- 			desc = 'Zoxide',
+  -- 			function()
+  -- 				Snacks.picker.zoxide({
+  -- 					confirm = function(picker)
+  -- 						picker:close()
+  -- 						local item = picker:current()
+  -- 						if item and item.file then
+  -- 							vim.cmd.tcd(item.file)
+  -- 						end
+  -- 					end,
+  -- 				})
+  -- 			end,
+  -- 		},
+  -- 	}
+  --     return vim.list_extend(mappings, keys)
+  --   end,
+  --   opts = function(_, opts)
+  --     if LazyVim.pick.picker.name ~= "snacks" then
+  --       return
+  --     end
+  --     return vim.tbl_deep_extend("force", opts or {}, {
+  --       picker = {
+  --         win = {
+  --           input = {
+  --             keys = {
+  --               ["jj"] = { "<esc>", expr = true, mode = "i" },
+  --             },
+  --           },
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
+  --
+  -----------------------------------------------------------------------------
+  -- Hint and fix deviating indentation
+  -- {
+  --   "tenxsoydev/tabs-vs-spaces.nvim",
+  --   event = { "BufReadPost", "BufNewFile" },
+  --   opts = {},
+  -- },
+  --
+  -----------------------------------------------------------------------------
+  -- Highlight words quickly
+  -- {
+  --   "t9md/vim-quickhl",
+  -- -- stylua: ignore
+  -- keys = {
+  -- 	{ '<leader>mt', '<Plug>(quickhl-manual-this)', mode = { 'n', 'x' }, desc = 'Highlight word' },
+  -- },
+  -- },
+}
