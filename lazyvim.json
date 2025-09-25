@@ -1,8 +1,10 @@
 {
   "extras": [
+    "lazyvim.plugins.extras.coding.mini-surround",
     "plugins.extras.editor.git",
     "plugins.extras.editor.mini-files",
     "plugins.extras.editor.snacks_picker",
+    "plugins.extras.lang.clojure",
     "plugins.extras.lang.tmux"
   ],
   "install_version": 8,
