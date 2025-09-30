@@ -1,7 +1,6 @@
 return {
 
   { import = "lazyvim.plugins.extras.lang.clojure" },
-  { import = "lazyvim.plugins.extras.coding.mini-surround" },
   {
     "Olical/conjure",
     dependencies = {
@@ -15,16 +14,18 @@ return {
           local wk = require("which-key")
           wk.add({
             -- add conjure group names
-            { "<localleader>c", mode = "n", buffer = args.buf, group = "+connect" },
-            { "<localleader>e", mode = "n", buffer = args.buf, group = "+evaluate" },
-            { "<localleader>ec", mode = "n", buffer = args.buf, group = "+comment" },
-            { "<localleader>g", mode = "n", buffer = args.buf, group = "+get" },
-            { "<localleader>l", mode = "n", buffer = args.buf, group = "+log" },
-            { "<localleader>r", mode = "n", buffer = args.buf, group = "+refresh" },
-            { "<localleader>s", mode = "n", buffer = args.buf, group = "+session" },
-            { "<localleader>t", mode = "n", buffer = args.buf, group = "+test" },
-            { "<localleader>v", mode = "n", buffer = args.buf, group = "+display" },
-            { "<localleader>x", mode = "n", buffer = args.buf, group = "+run" },
+            mode = "n",
+            buffer = args.buf,
+            { "<localleader>c", group = "+connect" },
+            { "<localleader>e", group = "+evaluate" },
+            { "<localleader>ec", group = "+comment" },
+            { "<localleader>g", group = "+get" },
+            { "<localleader>l", group = "+log" },
+            { "<localleader>r", group = "+refresh" },
+            { "<localleader>s", group = "+session" },
+            { "<localleader>t", group = "+test" },
+            { "<localleader>v", group = "+display" },
+            { "<localleader>x", group = "+run" },
           })
         end,
       })
@@ -32,6 +33,22 @@ return {
   },
   {
     "julienvincent/nvim-paredit",
+    init = function()
+      -- set af,if which-key correctly
+      vim.api.nvim_create_autocmd("filetype", {
+        group = vim.api.nvim_create_augroup("group_paredit-wk", { clear = true }),
+        pattern = "clojure", -- vim.g["conjure#filetypes"],
+        callback = function(args)
+          local wk = require("which-key")
+          wk.add({
+            mode = { "x", "o" },
+            buffer = args.buf,
+            { "af", desc = "Around form" },
+            { "if", desc = "Inside form" },
+          })
+        end,
+      })
+    end,
     config = function()
       local paredit = require("nvim-paredit")
       paredit.setup({
@@ -45,39 +62,50 @@ return {
             repeatable = false,
             mode = { "n", "x", "v" },
           },
+          ["<localleader>w"] = {
+            function()
+              -- place cursor and set mode to `insert`
+              paredit.cursor.place_cursor(
+                -- wrap element under cursor with `( ` and `)`
+                paredit.wrap.wrap_element_under_cursor("( ", ")"),
+                -- cursor placement opts
+                { placement = "inner_start", mode = "insert" }
+              )
+            end,
+            "Wrap element insert head",
+          },
+
+          ["<localleader>W"] = {
+            function()
+              paredit.cursor.place_cursor(
+                paredit.wrap.wrap_element_under_cursor("(", " )"),
+                { placement = "inner_end", mode = "insert" }
+              )
+            end,
+            "Wrap element insert tail",
+          },
+
+          -- same as above but for enclosing form
+          ["<localleader>i"] = {
+            function()
+              paredit.cursor.place_cursor(
+                paredit.wrap.wrap_enclosing_form_under_cursor("( ", ")"),
+                { placement = "inner_start", mode = "insert" }
+              )
+            end,
+            "Wrap form insert head",
+          },
+
+          ["<localleader>I"] = {
+            function()
+              paredit.cursor.place_cursor(
+                paredit.wrap.wrap_enclosing_form_under_cursor("(", " )"),
+                { placement = "inner_end", mode = "insert" }
+              )
+            end,
+            "Wrap form insert tail",
+          },
         },
-      })
-    end,
-    init = function()
-      vim.api.nvim_create_autocmd("filetype", {
-        group = vim.api.nvim_create_augroup("group_treesitter-sexp", {}),
-        pattern = "clojure",
-        callback = function()
-          vim.keymap.set(
-            "n",
-            "<localleader>w",
-            "gsaie)(a <Left>",
-            { buffer = true, remap = true, desc = "insert surround elem head" }
-          )
-          vim.keymap.set(
-            "n",
-            "<localleader>W",
-            "gsaie))i ",
-            { buffer = true, remap = true, desc = "insert surround elem tail" }
-          )
-          vim.keymap.set(
-            "n",
-            "<localleader>i",
-            "gsaif)((a <Left>",
-            { buffer = true, remap = true, desc = "insert surround form head" }
-          )
-          vim.keymap.set(
-            "n",
-            "<localleader>I",
-            "gsaif)))i ",
-            { buffer = true, remap = true, desc = "insert surround form tail" }
-          )
-        end,
       })
     end,
   },
