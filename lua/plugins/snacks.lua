@@ -1,5 +1,26 @@
 return {
-
+  {
+    "folke/snacks.nvim",
+    -- init = function()
+    --   vim.api.nvim_create_autocmd("BufEnter", {
+    --     group = vim.api.nvim_create_augroup("snacks-mjn", { clear = true }),
+    --     once = true,
+    --     nested = true,
+    --     callback = function(ev)
+    --       require("snacks").image.setup()
+    --     end,
+    --   })
+    -- end,
+    ---@type snacks.Config
+    opts = {
+      image = {
+        enabled = true,
+        -- your image configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      },
+    },
+  },
   -----------------------------------------------------------------------------
   -- Collection of small QoL plugins
   -- NOTE: This extends

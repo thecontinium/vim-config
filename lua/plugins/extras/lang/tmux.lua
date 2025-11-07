@@ -62,23 +62,6 @@ return {
   },
 
   -----------------------------------------------------------------------------
-  -- Seamless navigation between tmux panes and vim splits
-  {
-    "christoomey/vim-tmux-navigator",
-    lazy = false,
-    cond = vim.env.TMUX and vim.uv.os_uname().sysname ~= "Windows_NT",
-		-- stylua: ignore
-		keys = {
-			{ '<C-h>', '<cmd>TmuxNavigateLeft<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Left Window' },
-			{ '<C-j>', '<cmd>TmuxNavigateDown<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Lower Window' },
-			{ '<C-k>', '<cmd>TmuxNavigateUp<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Upper Window' },
-			{ '<C-l>', '<cmd>TmuxNavigateRight<CR>', mode = { 'n', 't' }, silent = true, desc = 'Go to Right Window' },
-		},
-    init = function()
-      vim.g.tmux_navigator_no_mappings = true
-    end,
-  },
-
   {
     "saghen/blink.cmp",
     dependencies = {
