@@ -7,6 +7,19 @@ return {
       "folke/which-key.nvim",
     },
     init = function()
+      vim.g["conjure#filetypes"] = { -- remove python
+        "clojure",
+        "fennel",
+        "janet",
+        "hy",
+        "julia",
+        "racket",
+        "scheme",
+        "lua",
+        "lisp",
+        "rust",
+        "sql",
+      }
       vim.api.nvim_create_autocmd("filetype", {
         group = vim.api.nvim_create_augroup("group_conjure-wk", {}),
         pattern = vim.g["conjure#filetypes"],
@@ -108,5 +121,14 @@ return {
         },
       })
     end,
+  },
+
+  {
+    "mason-org/mason.nvim",
+    opts = {
+      ensure_installed = {
+        "clojure-lsp",
+      },
+    },
   },
 }
