@@ -188,7 +188,7 @@ return {
   },
   {
     "nvim-mini/mini.ai",
-    dependencies = { "GCBallesteros/NotebookNavigator.nvim" },
+    dependencies = { "NotebookNavigator.nvim" },
     opts = function(_, opts)
       local nn = require("notebook-navigator")
       opts.custom_textobjects.h = nn.miniai_spec
