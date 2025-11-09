@@ -96,33 +96,63 @@ return {
   {
     "thecontinium/NotebookNavigator.nvim",
     branch = "add-new-repl",
-    keys = {
-      {
-        "]h",
-        function()
-          require("notebook-navigator").move_cell("d")
-        end,
-      },
-      {
-        "[h",
-        function()
-          require("notebook-navigator").move_cell("u")
-        end,
-      },
-      {
-        "<leader>cn<space>",
-        function()
-          require("which-key").show({ keys = "<leader>cn", loop = true })
-        end,
-        desc = "Hydra Mode (which-key)",
-      },
-      { "<leader>cnR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "Run" },
-      { "<leader>cnr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "Run and Move" },
-      { "<leader>cnc", "<cmd>lua require('notebook-navigator').comment_cell()<cr>", desc = "comment Cell" },
-      { "<leader>cnb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "Run Buffer" },
-      { "<leader>cna", "<cmd>lua require('notebook-navigator').run_cells_below()<cr>", desc = "Run After (incl.)" },
-      { "<leader>cnp", "<cmd>lua require('notebook-navigator').run_cells_above()<cr>", desc = "Run Previous (excl.)" },
-    },
+    keys = function()
+      return {
+        {
+          "]h",
+          function()
+            require("notebook-navigator").move_cell("d")
+          end,
+        },
+        {
+          "[h",
+          function()
+            require("notebook-navigator").move_cell("u")
+          end,
+        },
+        {
+          "<leader>cnr<space>",
+          function()
+            require("which-key").show({ keys = "<leader>cnr", loop = true })
+          end,
+          desc = "Hydra Mode (which-key)",
+        },
+        -- map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
+        { "<leader>cnc", "<cmd>normal gcih<cr>", desc = "Comment Cell" },
+        { "<leader>cns", "<cmd>lua require('notebook-navigator').split_cell()<cr>", desc = "Split Cell" },
+
+        -- running cells
+        { "<leader>cnrR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "Run" },
+        { "<leader>cnrr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "Run and Move" },
+        { "<leader>cnrb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "Run Buffer" },
+        { "<leader>cnra", "<cmd>lua require('notebook-navigator').run_cells_below()<cr>", desc = "Run After (incl.)" },
+        {
+          "<leader>cnrp",
+          "<cmd>lua require('notebook-navigator').run_cells_above()<cr>",
+          desc = "Run Previous (excl.)",
+        },
+
+        -- adding cells
+        { "<leader>cnab", "<cmd>lua require('notebook-navigator').add_cell_below()<cr>", desc = "Add Cell Below" },
+        { "<leader>cnaa", "<cmd>lua require('notebook-navigator').add_cell_above()<cr>", desc = "Add Cell Above" },
+
+        -- move cell
+        { "<leader>cnmu", "<cmd>lua require('notebook-navigator').swap_cell('u')<cr>", desc = "Move Cell Up" },
+        { "<leader>cnmd", "<cmd>lua require('notebook-navigator').swap_cell('d')<cr>", desc = "Move Cell Down" },
+
+        -- join cell
+        {
+          "<leader>cnja",
+          "<cmd>lua require('notebook-navigator').merge_cell('u')<cr>",
+          desc = "Join With Cell Above",
+        },
+        {
+          "<leader>cnjb",
+          "<cmd>lua require('notebook-navigator').merge_cell('d')<cr>",
+          desc = "Join With Cell Below ",
+        },
+      }
+    end,
     dependencies = {
       {
         "sourproton/tunnell.nvim",
@@ -142,6 +172,10 @@ return {
       local nn = require("notebook-navigator")
       wk.add({
         { "<leader>cn", group = "notebook" },
+        { "<leader>cnr", group = "run" },
+        { "<leader>cna", group = "add" },
+        { "<leader>cnm", group = "move" },
+        { "<leader>cnj", group = "join" },
       })
       nn.setup({
         cell_markers = {
@@ -150,6 +184,14 @@ return {
         syntax_highlight = true,
         cell_highlight_group = "FloatShadow",
       })
+    end,
+  },
+  {
+    "nvim-mini/mini.ai",
+    dependencies = { "GCBallesteros/NotebookNavigator.nvim" },
+    opts = function(_, opts)
+      local nn = require("notebook-navigator")
+      opts.custom_textobjects.h = nn.miniai_spec
     end,
   },
   -- {
