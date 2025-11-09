@@ -1,12 +1,15 @@
 return {
-
   { import = "lazyvim.plugins.extras.lang.clojure" },
   {
     "Olical/conjure",
-    dependencies = {
-      "folke/which-key.nvim",
-    },
-    init = function()
+    -- load on ft instead of LazyFile
+    event = function(_, event)
+      -- remove any events that may trigger
+      while #event ~= 0 do
+        rawset(event, #event, nil)
+      end
+    end,
+    ft = function()
       vim.g["conjure#filetypes"] = { -- remove python
         "clojure",
         "fennel",
@@ -20,6 +23,12 @@ return {
         "rust",
         "sql",
       }
+      return vim.g["conjure#filetypes"]
+    end,
+    dependencies = {
+      "folke/which-key.nvim",
+    },
+    init = function()
       vim.api.nvim_create_autocmd("filetype", {
         group = vim.api.nvim_create_augroup("group_conjure-wk", {}),
         pattern = vim.g["conjure#filetypes"],
