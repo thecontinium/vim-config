@@ -10,7 +10,9 @@ return {
       end
     end,
     ft = function()
-      vim.g["conjure#filetypes"] = { -- remove python
+      vim.g["conjure#filetypes"] = {
+        -- remove python
+        -- "python",
         "clojure",
         "fennel",
         "janet",
