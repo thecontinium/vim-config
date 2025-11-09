@@ -1,16 +1,10 @@
--- local conda_prefix = os.getenv("CONDA_PREFIX")
--- local python_path = nil
--- if conda_prefix ~= nil then
---   python_path = conda_prefix .. "/bin/python"
--- else
---   python_path = vim.g.python3_host_prog
--- end
---
--- vim.treesitter.language.register("markdown", "dap-view-term")
--- vim.treesitter.language.register("markdown", "terminal")
 local function create_tmux_pane(init_cmds)
   -- create a pane to the right and capture its pane ID
   local handle = io.popen("tmux split-window -h -P -F '#{pane_id}'")
+  if not handle then
+    vim.notify("Failed to run tmux command (io.popen returned nil). Are you in tmux?")
+    return
+  end
   local pane_id = handle:read("*a"):gsub("%s+", "")
   handle:close()
 
@@ -23,7 +17,7 @@ end
 vim.api.nvim_set_keymap("n", "<leader>cnt", "", {
   noremap = true,
   silent = true,
-  desc = "tmux ipython pane",
+  desc = "Open Tmux ipython Pane",
   callback = function()
     local venv_path = require("venv-selector").venv()
     if not venv_path or venv_path == "" then
@@ -33,6 +27,7 @@ vim.api.nvim_set_keymap("n", "<leader>cnt", "", {
 
     local venv_name = vim.fn.fnamemodify(venv_path, ":t")
     create_tmux_pane({
+      ("cd %s"):format(vim.fn.getcwd()),
       "pyenv activate " .. venv_name,
       [[ipython -i -c "import matplotlib.pyplot as plt; plt.style.use('dark_background');"]],
     })
@@ -40,8 +35,10 @@ vim.api.nvim_set_keymap("n", "<leader>cnt", "", {
 })
 
 return {
+  -- uncomment to turn on dap and/or test support
+  -- { import = "lazyvim.plugins.extras.dap.core" },
+  -- { import = "lazyvim.plugins.extras.test.core" },
 
-  { import = "lazyvim.plugins.extras.dap.core" },
   { import = "lazyvim.plugins.extras.lang.python" },
 
   {
@@ -65,13 +62,17 @@ return {
   },
 
   {
+    "nvim-lualine/lualine.nvim",
+    optional = true,
+    event = "VeryLazy",
+    opts = function(_, opts)
+      table.insert(opts.sections.lualine_b, "venv-selector")
+    end,
+  },
+
+  {
     "nvim-neotest/neotest",
-    dependencies = {
-      "nvim-neotest/nvim-nio",
-      "nvim-lua/plenary.nvim",
-      "antoinemadec/FixCursorHold.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
+    optional = true,
     opts = {
       adapters = {
         ["neotest-python"] = {
@@ -84,16 +85,12 @@ return {
   },
 
   {
-    "GCBallesteros/jupytext.nvim",
+    "goerz/jupytext.nvim",
+    version = "0.2.0",
     opts = {
-      style = "hydrogen",
-      output_extension = "py", -- Default extension. Don't change unless you know what you are doing
-      force_ft = nil, -- Default filetype. Don't change unless you know what you are doing
-      custom_language_formatting = {},
+      format = "py:hydrogen",
+      filetype = "python",
     },
-    config = true,
-    -- Depending on your nvim distro or config you may need to make the loading not lazy
-    -- lazy=false,
   },
 
   {
@@ -117,14 +114,14 @@ return {
         function()
           require("which-key").show({ keys = "<leader>cn", loop = true })
         end,
-        desc = "Notebook Naviagator Hydra Mode (which-key)",
+        desc = "Hydra Mode (which-key)",
       },
-      { "<leader>cnR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "run" },
-      { "<leader>cnr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "run and move" },
-      { "<leader>cnc", "<cmd>lua require('notebook-navigator').comment_cell()<cr>", desc = "comment cell" },
-      { "<leader>cnb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "run all buffer" },
-      { "<leader>cna", "<cmd>lua require('notebook-navigator').run_cells_below()<cr>", desc = "run after" },
-      { "<leader>cnp", "<cmd>lua require('notebook-navigator').run_cells_above()<cr>", desc = "run previous" },
+      { "<leader>cnR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "Run" },
+      { "<leader>cnr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "Run and Move" },
+      { "<leader>cnc", "<cmd>lua require('notebook-navigator').comment_cell()<cr>", desc = "comment Cell" },
+      { "<leader>cnb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "Run Buffer" },
+      { "<leader>cna", "<cmd>lua require('notebook-navigator').run_cells_below()<cr>", desc = "Run After (incl.)" },
+      { "<leader>cnp", "<cmd>lua require('notebook-navigator').run_cells_above()<cr>", desc = "Run Previous (excl.)" },
     },
     dependencies = {
       {
