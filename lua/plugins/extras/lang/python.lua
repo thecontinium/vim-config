@@ -14,24 +14,26 @@ local function create_tmux_pane(init_cmds)
   end
 end
 
+local function open_tmux_ipython_pane()
+  local venv_path = require("venv-selector").venv()
+  if not venv_path or venv_path == "" then
+    vim.notify("No virtual environment selected!", vim.log.levels.WARN)
+    return
+  end
+
+  local venv_name = vim.fn.fnamemodify(venv_path, ":t")
+  create_tmux_pane({
+    ("cd %s"):format(vim.fn.getcwd()),
+    "pyenv activate " .. venv_name,
+    [[ipython -i -c "import matplotlib.pyplot as plt; plt.style.use('dark_background');"]],
+  })
+end
+
 vim.api.nvim_set_keymap("n", "<leader>cnt", "", {
   noremap = true,
   silent = true,
-  desc = "Open Tmux ipython Pane",
-  callback = function()
-    local venv_path = require("venv-selector").venv()
-    if not venv_path or venv_path == "" then
-      vim.notify("No virtual environment selected!", vim.log.levels.WARN)
-      return
-    end
-
-    local venv_name = vim.fn.fnamemodify(venv_path, ":t")
-    create_tmux_pane({
-      ("cd %s"):format(vim.fn.getcwd()),
-      "pyenv activate " .. venv_name,
-      [[ipython -i -c "import matplotlib.pyplot as plt; plt.style.use('dark_background');"]],
-    })
-  end,
+  desc = "Open Tmux iPython Pane",
+  callback = open_tmux_ipython_pane,
 })
 
 return {
@@ -96,63 +98,55 @@ return {
   {
     "thecontinium/NotebookNavigator.nvim",
     branch = "add-new-repl",
-    keys = function()
-      return {
-        {
-          "]h",
-          function()
-            require("notebook-navigator").move_cell("d")
-          end,
-        },
-        {
-          "[h",
-          function()
-            require("notebook-navigator").move_cell("u")
-          end,
-        },
-        {
-          "<leader>cnr<space>",
-          function()
-            require("which-key").show({ keys = "<leader>cnr", loop = true })
-          end,
-          desc = "Hydra Mode (which-key)",
-        },
-        -- map("n", "gco", "o<esc>Vcx<esc><cmd>normal gcc<cr>fxa<bs>", { desc = "Add Comment Below" })
-        { "<leader>cnc", "<cmd>normal gcih<cr>", desc = "Comment Cell" },
-        { "<leader>cns", "<cmd>lua require('notebook-navigator').split_cell()<cr>", desc = "Split Cell" },
+    keys = {
+      {
+        "<leader>cnr<space>",
+        function()
+          require("which-key").show({ keys = "<leader>cnr", loop = true })
+        end,
+        desc = "Hydra Mode (which-key)",
+      },
+      { "<leader>cnc", "<cmd>normal gcih<cr>", desc = "Comment Cell" },
+      { "<leader>cns", "<cmd>lua require('notebook-navigator').split_cell()<cr>", desc = "Split Cell" },
 
-        -- running cells
-        { "<leader>cnrR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "Run" },
-        { "<leader>cnrr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "Run and Move" },
-        { "<leader>cnrb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "Run Buffer" },
-        { "<leader>cnra", "<cmd>lua require('notebook-navigator').run_cells_below()<cr>", desc = "Run After (incl.)" },
-        {
-          "<leader>cnrp",
-          "<cmd>lua require('notebook-navigator').run_cells_above()<cr>",
-          desc = "Run Previous (excl.)",
-        },
+      -- running cells
+      { "<leader>cnrR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "Run Cell" },
+      { "<leader>cnrr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "Run Cell and Move" },
+      { "<leader>cnrb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "Run Buffer" },
+      {
+        "<leader>cnra",
+        "<cmd>lua require('notebook-navigator').run_cells_below()<cr>",
+        desc = "Run Remaining Cells (incl.)",
+      },
+      {
+        "<leader>cnrp",
+        "<cmd>lua require('notebook-navigator').run_cells_above()<cr>",
+        desc = "Run Previous Cells (excl.)",
+      },
+      { "<leader>cnrj", "<cmd>lua require('notebook-navigator').move_cell('d')<cr>", desc = "Next Cell" },
+      { "<leader>cnrk", "<cmd>lua require('notebook-navigator').move_cell('u')<cr>", desc = "Previous Cell" },
+      { "<leader>cnrt", open_tmux_ipython_pane, desc = "Tmux iPython Pane" },
 
-        -- adding cells
-        { "<leader>cnab", "<cmd>lua require('notebook-navigator').add_cell_below()<cr>", desc = "Add Cell Below" },
-        { "<leader>cnaa", "<cmd>lua require('notebook-navigator').add_cell_above()<cr>", desc = "Add Cell Above" },
+      -- adding cells
+      { "<leader>cnab", "<cmd>lua require('notebook-navigator').add_cell_below()<cr>", desc = "Add Cell Below" },
+      { "<leader>cnaa", "<cmd>lua require('notebook-navigator').add_cell_above()<cr>", desc = "Add Cell Above" },
 
-        -- move cell
-        { "<leader>cnmu", "<cmd>lua require('notebook-navigator').swap_cell('u')<cr>", desc = "Move Cell Up" },
-        { "<leader>cnmd", "<cmd>lua require('notebook-navigator').swap_cell('d')<cr>", desc = "Move Cell Down" },
+      -- move cell
+      { "<leader>cnmu", "<cmd>lua require('notebook-navigator').swap_cell('u')<cr>", desc = "Move Cell Up" },
+      { "<leader>cnmd", "<cmd>lua require('notebook-navigator').swap_cell('d')<cr>", desc = "Move Cell Down" },
 
-        -- join cell
-        {
-          "<leader>cnja",
-          "<cmd>lua require('notebook-navigator').merge_cell('u')<cr>",
-          desc = "Join With Cell Above",
-        },
-        {
-          "<leader>cnjb",
-          "<cmd>lua require('notebook-navigator').merge_cell('d')<cr>",
-          desc = "Join With Cell Below ",
-        },
-      }
-    end,
+      -- join cell
+      {
+        "<leader>cnja",
+        "<cmd>lua require('notebook-navigator').merge_cell('u')<cr>",
+        desc = "Join With Cell Above",
+      },
+      {
+        "<leader>cnjb",
+        "<cmd>lua require('notebook-navigator').merge_cell('d')<cr>",
+        desc = "Join With Cell Below ",
+      },
+    },
     dependencies = {
       {
         "sourproton/tunnell.nvim",
@@ -172,7 +166,7 @@ return {
       local nn = require("notebook-navigator")
       wk.add({
         { "<leader>cn", group = "notebook" },
-        { "<leader>cnr", group = "run" },
+        { "<leader>cnr", group = "run/navigate" },
         { "<leader>cna", group = "add" },
         { "<leader>cnm", group = "move" },
         { "<leader>cnj", group = "join" },
@@ -194,6 +188,8 @@ return {
       opts.custom_textobjects.h = nn.miniai_spec
     end,
   },
+
+  -- example nvim-dap setup for python
   -- {
   --   "mfussenegger/nvim-dap-python",
   --   opts = {
