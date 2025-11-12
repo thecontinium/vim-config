@@ -31,6 +31,8 @@ return {
       "folke/which-key.nvim",
     },
     init = function()
+      -- vim.g["conjure#debug"] = true
+      vim.g["conjure#client#python#stdio#delay-stderr-ms"] = 100
       vim.api.nvim_create_autocmd("filetype", {
         group = vim.api.nvim_create_augroup("group_conjure-wk", {}),
         pattern = vim.g["conjure#filetypes"],
