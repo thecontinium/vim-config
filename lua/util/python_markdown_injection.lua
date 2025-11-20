@@ -11,7 +11,7 @@
 local M = {}
 
 M.debug = false
-M.enabled = true
+M.enabled = false
 
 ---@type table<integer, {[1]: integer, [2]: integer, version: integer}[]>
 local markdown_ranges_cache = {}
@@ -222,7 +222,6 @@ function M.setup()
     return
   end
   debug_print("Set injection query for python")
-
   -- Setup autocommands
   local group = vim.api.nvim_create_augroup("MarkdownInjection", { clear = true })
 
@@ -323,9 +322,9 @@ function M.setup()
     -- Optionally map to a keymap
     M.toggle:map("<leader>um") -- Uncomment and customize keymap as needed
 
-    vim.notify("Markdown injection enabled with Snacks toggle", vim.log.levels.INFO)
+    debug_print("Markdown injection enabled with Snacks toggle")
   else
-    vim.notify("Markdown injection enabled for Python %% cells", vim.log.levels.INFO)
+    debug_print("Markdown injection enabled for Python %% cells")
   end
 end
 
