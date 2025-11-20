@@ -1,4 +1,4 @@
--- Markdown injection for Python %% [markdown] cells
+-- Optimized Markdown injection for Python %% [markdown] cells
 -- Save this as ~/.config/nvim/lua/utils/markdown_injection.lua
 
 ---@class MarkdownInjection
@@ -8,12 +8,13 @@
 ---@field force_update function Force update injection
 local M = {}
 
--- Debug mode flag
 M.debug = false
 
----@type table<integer, {[1]: integer, [2]: integer}[]>
--- Cache for markdown ranges per buffer (bufnr -> array of {start_line, end_line})
+---@type table<integer, {[1]: integer, [2]: integer, version: integer}[]>
 local markdown_ranges_cache = {}
+
+---@type table<integer, integer>
+local buffer_versions = {}
 
 ---Print debug message if debug mode is enabled
 ---@param msg string The message to print
@@ -23,7 +24,14 @@ local function debug_print(msg)
   end
 end
 
----Find markdown cell ranges in buffer
+---Get buffer version for change detection
+---@param bufnr integer Buffer number
+---@return integer Buffer changedtick
+local function get_buffer_version(bufnr)
+  return vim.api.nvim_buf_get_changedtick(bufnr)
+end
+
+---Find markdown cell ranges in buffer (optimized)
 ---@param bufnr integer Buffer number
 ---@return {[1]: integer, [2]: integer}[] Array of {start_line, end_line} ranges
 local function get_markdown_ranges(bufnr)
@@ -31,29 +39,39 @@ local function get_markdown_ranges(bufnr)
   local ranges = {}
   local in_markdown = false
   local region_start = nil
+  local line_count = #lines
 
-  for i, line in ipairs(lines) do
+  for i = 1, line_count do
+    local line = lines[i]
     local line_num = i - 1
 
-    if line:match("^#%s*%%%%+%s*%[markdown%]") then
-      debug_print(string.format("Found markdown marker at line %d", line_num))
-      in_markdown = true
-      region_start = line_num + 1
-    elseif in_markdown then
-      if not line:match("^#") then
-        if region_start then
-          debug_print(string.format("Markdown region: lines %d-%d", region_start, line_num - 1))
-          table.insert(ranges, { region_start, line_num - 1 })
+    -- Fast path: check first character before expensive pattern match
+    if line:byte(1) == 35 then -- '#' character
+      if in_markdown then
+        -- Already in markdown, continue
+      else
+        -- Check for markdown marker
+        if line:match("^#%s*%%%%+%s*%[markdown%]") then
+          debug_print(string.format("Found markdown marker at line %d", line_num))
+          in_markdown = true
+          region_start = line_num + 1
         end
-        in_markdown = false
-        region_start = nil
       end
+    elseif in_markdown then
+      -- Non-comment line ends the region
+      if region_start and region_start <= line_num - 1 then
+        debug_print(string.format("Markdown region: lines %d-%d", region_start, line_num - 1))
+        ranges[#ranges + 1] = { region_start, line_num - 1 }
+      end
+      in_markdown = false
+      region_start = nil
     end
   end
 
-  if in_markdown and region_start then
-    debug_print(string.format("Markdown region (end of file): lines %d-%d", region_start, #lines - 1))
-    table.insert(ranges, { region_start, #lines - 1 })
+  -- Handle region extending to EOF
+  if in_markdown and region_start and region_start <= line_count - 1 then
+    debug_print(string.format("Markdown region (end of file): lines %d-%d", region_start, line_count - 1))
+    ranges[#ranges + 1] = { region_start, line_count - 1 }
   end
 
   debug_print(string.format("Total markdown regions found: %d", #ranges))
@@ -68,40 +86,49 @@ end
 ---@param metadata table|nil Additional metadata
 ---@return boolean True if comment is in markdown cell
 local function in_markdown_cell(match, pattern, bufnr, predicate, metadata)
-  debug_print(string.format("Predicate called for buffer %d", bufnr))
-
   -- Get cached ranges for this buffer
   local ranges = markdown_ranges_cache[bufnr]
   if not ranges or #ranges == 0 then
-    debug_print("No cached ranges found")
     return false
   end
-
-  debug_print(string.format("Checking against %d ranges", #ranges))
 
   -- Get the capture (the comment node)
   local capture_id = predicate[2]
   local nodes = match[capture_id]
 
   if not nodes or #nodes == 0 then
-    debug_print("No nodes in match")
     return false
   end
 
   local node = nodes[1]
   local start_row = node:range()
 
-  debug_print(string.format("Comment at row %d", start_row))
+  -- Binary search for performance with many ranges
+  if #ranges > 10 then
+    local left, right = 1, #ranges
+    while left <= right do
+      local mid = math.floor((left + right) / 2)
+      local range = ranges[mid]
 
-  -- Check if this row is in any markdown range
-  for _, range in ipairs(ranges) do
+      if start_row < range[1] then
+        right = mid - 1
+      elseif start_row > range[2] then
+        left = mid + 1
+      else
+        return true
+      end
+    end
+    return false
+  end
+
+  -- Linear search for small number of ranges
+  for i = 1, #ranges do
+    local range = ranges[i]
     if start_row >= range[1] and start_row <= range[2] then
-      debug_print(string.format("Row %d is in range [%d-%d] - MATCH!", start_row, range[1], range[2]))
       return true
     end
   end
 
-  debug_print(string.format("Row %d not in any range", start_row))
   return false
 end
 
@@ -110,22 +137,27 @@ end
 local function update_injection(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
+  -- Check if buffer has changed
+  local current_version = get_buffer_version(bufnr)
+  if buffer_versions[bufnr] == current_version then
+    debug_print(string.format("Buffer %d unchanged, skipping update", bufnr))
+    return
+  end
+
   debug_print(string.format("Updating injection for buffer %d", bufnr))
 
   -- Update cached ranges
   markdown_ranges_cache[bufnr] = get_markdown_ranges(bufnr)
+  buffer_versions[bufnr] = current_version
 
   -- Force treesitter to reparse
   local ok, parser = pcall(vim.treesitter.get_parser, bufnr, "python")
   if ok and parser then
-    debug_print("Invalidating parser and scheduling reparse")
+    debug_print("Invalidating parser")
     parser:invalidate(true)
-    vim.schedule(function()
-      if vim.api.nvim_buf_is_valid(bufnr) then
-        pcall(parser.parse, parser)
-        debug_print("Reparse completed")
-      end
-    end)
+    -- Reparse is now synchronous for immediate effect
+    pcall(parser.parse, parser)
+    debug_print("Reparse completed")
   else
     debug_print("Failed to get parser")
   end
@@ -139,7 +171,8 @@ function M.show_ranges()
     print("No markdown ranges found in current buffer")
   else
     print(string.format("Markdown ranges in buffer %d:", bufnr))
-    for i, range in ipairs(ranges) do
+    for i = 1, #ranges do
+      local range = ranges[i]
       print(string.format("  %d: lines %d-%d", i, range[1], range[2]))
     end
   end
@@ -155,16 +188,17 @@ end
 function M.force_update()
   local bufnr = vim.api.nvim_get_current_buf()
   print("Forcing update for buffer " .. bufnr)
+  buffer_versions[bufnr] = nil -- Force update
   update_injection(bufnr)
 end
 
 ---Setup markdown injection for Python files
 function M.setup()
-  -- Register the custom predicate FIRST
+  -- Register the custom predicate
   vim.treesitter.query.add_predicate("in-markdown-cell?", in_markdown_cell, { force = true })
   debug_print("Registered custom predicate: in-markdown-cell?")
 
-  -- Set the injection query directly
+  -- Set the injection query
   local query_content = [[
 ; Inject markdown into comments within markdown cells
 ((comment) @injection.content
@@ -173,14 +207,13 @@ function M.setup()
  (#offset! @injection.content 0 1 0 0))
 ]]
 
-  -- Set the query directly
   local ok, err = pcall(vim.treesitter.query.set, "python", "injections", query_content)
   if not ok then
     vim.notify("Failed to set injection query: " .. tostring(err), vim.log.levels.ERROR)
     return
   end
   debug_print("Set injection query for python")
-  update_injection()
+
   -- Setup autocommands
   local group = vim.api.nvim_create_augroup("MarkdownInjection", { clear = true })
 
@@ -191,8 +224,33 @@ function M.setup()
       debug_print("FileType python triggered")
       update_injection(args.buf)
 
-      -- Setup buffer-local autocommands for updates
-      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+      -- Debounced updates: waits 200ms after last change before updating
+      -- This prevents running expensive operations on every keystroke
+      local timer = nil
+      local function debounced_update()
+        -- Cancel pending update if one exists
+        if timer then
+          timer:stop()
+        end
+        -- Schedule new update 200ms from now
+        timer = vim.defer_fn(function()
+          if vim.api.nvim_buf_is_valid(args.buf) then
+            debug_print("Debounced update triggered")
+            update_injection(args.buf)
+          end
+          timer = nil
+        end, 200)
+      end
+
+      -- Trigger debounced update on any text change
+      vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "InsertLeave" }, {
+        group = group,
+        buffer = args.buf,
+        callback = debounced_update,
+      })
+
+      -- Immediate update on save
+      vim.api.nvim_create_autocmd("BufWritePost", {
         group = group,
         buffer = args.buf,
         callback = function()
@@ -201,30 +259,19 @@ function M.setup()
         end,
       })
 
-      vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "InsertLeave" }, {
-        group = group,
-        buffer = args.buf,
-        callback = function()
-          vim.defer_fn(function()
-            if vim.api.nvim_buf_is_valid(args.buf) then
-              debug_print("TextChanged triggered")
-              update_injection(args.buf)
-            end
-          end, 150)
-        end,
-      })
-
+      -- Cleanup on buffer delete
       vim.api.nvim_create_autocmd("BufDelete", {
         group = group,
         buffer = args.buf,
         callback = function()
           markdown_ranges_cache[args.buf] = nil
+          buffer_versions[args.buf] = nil
         end,
       })
     end,
   })
 
-  -- Initialize current buffer
+  -- Initialize current buffer if it's Python
   if vim.bo.filetype == "python" then
     vim.defer_fn(function()
       debug_print("Initializing current buffer")
@@ -233,12 +280,6 @@ function M.setup()
   end
 
   vim.notify("Markdown injection enabled for Python %% cells", vim.log.levels.INFO)
-
-  -- Verify setup
-  vim.defer_fn(function()
-    local q = vim.treesitter.query.get("python", "injections")
-    debug_print("Query loaded: " .. (q and "YES" or "NO"))
-  end, 200)
 end
 
 return M
