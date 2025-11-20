@@ -11,13 +11,24 @@ return {
     --     end,
     --   })
     -- end,
+    -- stylua: ignore
+    keys = {
+      -- { "<leader>s>", function() local word = (vim.fn.getreg('/'):gsub('\\%<', ''):gsub('\\%>', '')) or vim.fn.expand("<cword>")
+      { "<leader>s>", function() local word = vim.fn.expand("<cword>")
+          Snacks.picker.lines().input:set(word) end, desc = "Buffer Words" },
+    },
     ---@type snacks.Config
     opts = {
+    -- stylua: ignore
       image = {
         enabled = true,
-        -- your image configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
+        math = {
+          latex = {
+            font_size = "small", -- your image configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+          },
+        },
       },
     },
   },
