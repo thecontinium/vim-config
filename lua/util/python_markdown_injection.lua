@@ -292,7 +292,7 @@ function M.setup()
   local has_snacks, snacks = pcall(require, "snacks")
   if has_snacks and snacks.toggle then
     M.toggle = snacks.toggle({
-      name = "Python Markdown Injection",
+      name = "Python # %% [markdown] Injection",
       get = function()
         return M.enabled
       end,
@@ -321,7 +321,7 @@ function M.setup()
     })
 
     -- Optionally map to a keymap
-    -- M.toggle:map("<leader>um") -- Uncomment and customize keymap as needed
+    M.toggle:map("<leader>um") -- Uncomment and customize keymap as needed
 
     vim.notify("Markdown injection enabled with Snacks toggle", vim.log.levels.INFO)
   else
