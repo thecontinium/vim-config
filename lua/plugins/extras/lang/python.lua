@@ -29,13 +29,6 @@ local function open_tmux_ipython_pane()
   })
 end
 
-vim.api.nvim_set_keymap("n", "<leader>cnt", "", {
-  noremap = true,
-  silent = true,
-  desc = "Open Tmux iPython Pane",
-  callback = open_tmux_ipython_pane,
-})
-
 return {
   -- uncomment to turn on dap and/or test support
   -- { import = "lazyvim.plugins.extras.dap.core" },
@@ -94,59 +87,26 @@ return {
       filetype = "python",
     },
   },
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = function(_, opts)
+      -- Save original
+      local original_on_attach = opts.on_attach
 
+      -- Override opts.on_attach with wrapper
+      opts.on_attach = function(buffer)
+        if vim.api.nvim_buf_get_name(buffer):match("%.ipynb$") then
+          return false
+        else
+          return original_on_attach(buffer)
+        end
+      end
+    end,
+  },
   {
     "thecontinium/NotebookNavigator.nvim",
     branch = "add-new-repl",
-    keys = {
-      {
-        "<leader>cnr<space>",
-        function()
-          require("which-key").show({ keys = "<leader>cnr", loop = true })
-        end,
-        desc = "Hydra Mode (which-key)",
-      },
-      { "<leader>cnc", "<cmd>normal gcih<cr>", desc = "Comment Cell" },
-      { "<leader>cns", "<cmd>lua require('notebook-navigator').split_cell()<cr>", desc = "Split Cell" },
-
-      -- running cells
-      { "<leader>cnrR", "<cmd>lua require('notebook-navigator').run_cell()<cr>", desc = "Run Cell" },
-      { "<leader>cnrr", "<cmd>lua require('notebook-navigator').run_and_move()<cr>", desc = "Run Cell and Move" },
-      { "<leader>cnrb", "<cmd>lua require('notebook-navigator').run_all_cells()<cr>", desc = "Run Buffer" },
-      {
-        "<leader>cnra",
-        "<cmd>lua require('notebook-navigator').run_cells_below()<cr>",
-        desc = "Run Remaining Cells (incl.)",
-      },
-      {
-        "<leader>cnrp",
-        "<cmd>lua require('notebook-navigator').run_cells_above()<cr>",
-        desc = "Run Previous Cells (excl.)",
-      },
-      { "<leader>cnrj", "<cmd>lua require('notebook-navigator').move_cell('d')<cr>", desc = "Next Cell" },
-      { "<leader>cnrk", "<cmd>lua require('notebook-navigator').move_cell('u')<cr>", desc = "Previous Cell" },
-      { "<leader>cnrt", open_tmux_ipython_pane, desc = "Tmux iPython Pane" },
-
-      -- adding cells
-      { "<leader>cnab", "<cmd>lua require('notebook-navigator').add_cell_below()<cr>", desc = "Add Cell Below" },
-      { "<leader>cnaa", "<cmd>lua require('notebook-navigator').add_cell_above()<cr>", desc = "Add Cell Above" },
-
-      -- move cell
-      { "<leader>cnmu", "<cmd>lua require('notebook-navigator').swap_cell('u')<cr>", desc = "Move Cell Up" },
-      { "<leader>cnmd", "<cmd>lua require('notebook-navigator').swap_cell('d')<cr>", desc = "Move Cell Down" },
-
-      -- join cell
-      {
-        "<leader>cnja",
-        "<cmd>lua require('notebook-navigator').merge_cell('u')<cr>",
-        desc = "Join With Cell Above",
-      },
-      {
-        "<leader>cnjb",
-        "<cmd>lua require('notebook-navigator').merge_cell('d')<cr>",
-        desc = "Join With Cell Below ",
-      },
-    },
+    ft = "python",
     dependencies = {
       {
         "sourproton/tunnell.nvim",
@@ -160,23 +120,108 @@ return {
         },
       },
     },
-    event = "VeryLazy",
     config = function()
       local wk = require("which-key")
       local nn = require("notebook-navigator")
-      wk.add({
-        { "<leader>cn", group = "notebook" },
-        { "<leader>cnr", group = "run/navigate" },
-        { "<leader>cna", group = "add" },
-        { "<leader>cnm", group = "move" },
-        { "<leader>cnj", group = "join" },
-      })
+
       nn.setup({
         cell_markers = {
           python = "# %%",
         },
         syntax_highlight = true,
         cell_highlight_group = "FloatShadow",
+      })
+
+      require("util.python_markdown_injection").setup()
+
+      -- Setup keybindings only for python files
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "python",
+        callback = function()
+          local opts = { buffer = true }
+
+          wk.add({
+            { "<leader>cn", group = "notebook", buffer = true },
+            { "<leader>cnr", group = "run/navigate", buffer = true },
+            { "<leader>cna", group = "add", buffer = true },
+            { "<leader>cnm", group = "move", buffer = true },
+            { "<leader>cnj", group = "join", buffer = true },
+          })
+
+          -- stylua: ignore
+          vim.keymap.set( "n", "<leader>cnt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Open Tmux iPython Pane" }))
+          vim.keymap.set("n", "<leader>cnr<space>", function()
+            require("which-key").show({ keys = "<leader>cnr", loop = true })
+          end, vim.tbl_extend("force", opts, { desc = "Hydra Mode (which-key)" }))
+          vim.keymap.set("n", "]h", function()
+            nn.move_cell("d")
+          end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
+          vim.keymap.set("n", "[h", function()
+            nn.move_cell("u")
+          end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
+          vim.keymap.set(
+            "n",
+            "<leader>cnc",
+            "<cmd>normal gcih<cr>",
+            vim.tbl_extend("force", opts, { desc = "Comment Cell" })
+          )
+          vim.keymap.set("n", "<leader>cns", function()
+            nn.split_cell()
+          end, vim.tbl_extend("force", opts, { desc = "Split Cell" }))
+
+          -- running cells
+          vim.keymap.set("n", "<leader>cnrR", function()
+            nn.run_cell()
+          end, vim.tbl_extend("force", opts, { desc = "Run Cell" }))
+          vim.keymap.set("n", "<leader>cnrr", function()
+            nn.run_and_move()
+          end, vim.tbl_extend("force", opts, { desc = "Run Cell and Move" }))
+          vim.keymap.set("n", "<leader>cnrb", function()
+            nn.run_all_cells()
+          end, vim.tbl_extend("force", opts, { desc = "Run Buffer" }))
+          vim.keymap.set("n", "<leader>cnra", function()
+            nn.run_cells_below()
+          end, vim.tbl_extend("force", opts, { desc = "Run Remaining Cells (incl.)" }))
+          vim.keymap.set("n", "<leader>cnrp", function()
+            nn.run_cells_above()
+          end, vim.tbl_extend("force", opts, { desc = "Run Previous Cells (excl.)" }))
+          vim.keymap.set("n", "<leader>cnrj", function()
+            nn.move_cell("d")
+          end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
+          vim.keymap.set("n", "<leader>cnrk", function()
+            nn.move_cell("u")
+          end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
+          vim.keymap.set(
+            "n",
+            "<leader>cnrt",
+            open_tmux_ipython_pane,
+            vim.tbl_extend("force", opts, { desc = "Tmux iPython Pane" })
+          )
+
+          -- adding cells
+          vim.keymap.set("n", "<leader>cnab", function()
+            nn.add_cell_below()
+          end, vim.tbl_extend("force", opts, { desc = "Add Cell Below" }))
+          vim.keymap.set("n", "<leader>cnaa", function()
+            nn.add_cell_above()
+          end, vim.tbl_extend("force", opts, { desc = "Add Cell Above" }))
+
+          -- move cell
+          vim.keymap.set("n", "<leader>cnmu", function()
+            nn.swap_cell("u")
+          end, vim.tbl_extend("force", opts, { desc = "Move Cell Up" }))
+          vim.keymap.set("n", "<leader>cnmd", function()
+            nn.swap_cell("d")
+          end, vim.tbl_extend("force", opts, { desc = "Move Cell Down" }))
+
+          -- join cell
+          vim.keymap.set("n", "<leader>cnja", function()
+            nn.merge_cell("u")
+          end, vim.tbl_extend("force", opts, { desc = "Join With Cell Above" }))
+          vim.keymap.set("n", "<leader>cnjb", function()
+            nn.merge_cell("d")
+          end, vim.tbl_extend("force", opts, { desc = "Join With Cell Below" }))
+        end,
       })
     end,
   },
