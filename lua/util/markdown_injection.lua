@@ -6,9 +6,12 @@
 ---@field show_ranges function Show detected markdown ranges
 ---@field toggle_debug function Toggle debug mode
 ---@field force_update function Force update injection
+---@field enabled boolean Whether markdown injection is enabled
+---@field toggle snacks.toggle.Class|nil Snacks toggle instance
 local M = {}
 
 M.debug = false
+M.enabled = true
 
 ---@type table<integer, {[1]: integer, [2]: integer, version: integer}[]>
 local markdown_ranges_cache = {}
@@ -136,6 +139,12 @@ end
 ---@param bufnr? integer Buffer number (defaults to current buffer)
 local function update_injection(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  -- Skip if disabled
+  if not M.enabled then
+    debug_print(string.format("Markdown injection disabled, skipping update for buffer %d", bufnr))
+    return
+  end
 
   -- Check if buffer has changed
   local current_version = get_buffer_version(bufnr)
@@ -279,7 +288,45 @@ function M.setup()
     end, 100)
   end
 
-  vim.notify("Markdown injection enabled for Python %% cells", vim.log.levels.INFO)
+  -- Create Snacks.toggle if available
+  local has_snacks, snacks = pcall(require, "snacks")
+  if has_snacks and snacks.toggle then
+    M.toggle = snacks.toggle({
+      name = "Python Markdown Injection",
+      get = function()
+        return M.enabled
+      end,
+      set = function(state)
+        M.enabled = state
+        if state then
+          -- Re-enable: update all python buffers
+          for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].filetype == "python" then
+              buffer_versions[buf] = nil -- Force update
+              update_injection(buf)
+            end
+          end
+        else
+          -- Disable: clear caches and reparse to remove injections
+          for bufnr, _ in pairs(markdown_ranges_cache) do
+            markdown_ranges_cache[bufnr] = {}
+            local ok, parser = pcall(vim.treesitter.get_parser, bufnr, "python")
+            if ok and parser then
+              parser:invalidate(true)
+              pcall(parser.parse, parser)
+            end
+          end
+        end
+      end,
+    })
+
+    -- Optionally map to a keymap
+    -- M.toggle:map("<leader>um") -- Uncomment and customize keymap as needed
+
+    vim.notify("Markdown injection enabled with Snacks toggle", vim.log.levels.INFO)
+  else
+    vim.notify("Markdown injection enabled for Python %% cells", vim.log.levels.INFO)
+  end
 end
 
 return M
