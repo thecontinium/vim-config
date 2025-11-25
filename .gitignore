@@ -8,3 +8,4 @@ foo.*
 data
 .clj-kondo/
 .lsp/
+queries/python/injections.scm
