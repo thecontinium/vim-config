@@ -1,6 +1,7 @@
 {
   "extras": [
     "lazyvim.plugins.extras.coding.mini-surround",
+    "plugins.extras.coding.yanky",
     "plugins.extras.editor.git",
     "plugins.extras.editor.mini-files",
     "plugins.extras.editor.snacks_picker",
