@@ -172,6 +172,50 @@ local function update_injection(bufnr)
   end
 end
 
+---Write injection query to file if it doesn't exist and register it manually
+local function ensure_injection_file()
+  local config_path = vim.fn.stdpath("config")
+  local query_dir = config_path .. "/queries/python"
+  local query_file = query_dir .. "/injections.scm"
+
+  local query_content = [[; Inject markdown into comments within markdown cells
+((comment) @injection.content
+ (#in-markdown-cell? @injection.content)
+ (#set! injection.language "markdown")
+ (#offset! @injection.content 0 1 0 0))
+]]
+
+  -- Check if file already exists
+  if vim.fn.filereadable(query_file) == 1 then
+    debug_print("Using existing injection query file: " .. query_file)
+    return
+  end
+
+  -- Create directory if it doesn't exist
+  vim.fn.mkdir(query_dir, "p")
+
+  -- Write the injection query
+  local file = io.open(query_file, "w")
+  if not file then
+    vim.notify("Failed to create injection query file: " .. query_file, vim.log.levels.ERROR)
+    return
+  end
+
+  file:write(query_content)
+  file:close()
+
+  debug_print("Created injection query file: " .. query_file)
+  vim.notify("Created Python markdown injection query at: " .. query_file, vim.log.levels.INFO)
+
+  -- Manually register the query since file was just created
+  local ok, err = pcall(vim.treesitter.query.set, "python", "injections", query_content)
+  if not ok then
+    vim.notify("Failed to set injection query: " .. tostring(err), vim.log.levels.ERROR)
+    return
+  end
+  debug_print("Manually set injection query for python (file was just created)")
+end
+
 ---Show markdown ranges in current buffer
 function M.show_ranges()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -203,25 +247,13 @@ end
 
 ---Setup markdown injection for Python files
 function M.setup()
+  -- Ensure the injection query file exists and register if needed
+  ensure_injection_file()
+
   -- Register the custom predicate
   vim.treesitter.query.add_predicate("in-markdown-cell?", in_markdown_cell, { force = true })
   debug_print("Registered custom predicate: in-markdown-cell?")
 
-  -- Set the injection query
-  local query_content = [[
-; Inject markdown into comments within markdown cells
-((comment) @injection.content
- (#in-markdown-cell? @injection.content)
- (#set! injection.language "markdown")
- (#offset! @injection.content 0 1 0 0))
-]]
-
-  local ok, err = pcall(vim.treesitter.query.set, "python", "injections", query_content)
-  if not ok then
-    vim.notify("Failed to set injection query: " .. tostring(err), vim.log.levels.ERROR)
-    return
-  end
-  debug_print("Set injection query for python")
   -- Setup autocommands
   local group = vim.api.nvim_create_augroup("MarkdownInjection", { clear = true })
 
@@ -291,7 +323,7 @@ function M.setup()
   local has_snacks, snacks = pcall(require, "snacks")
   if has_snacks and snacks.toggle then
     M.toggle = snacks.toggle({
-      name = "Python # %% [markdown] Injection",
+      name = "Python Markdown Injection",
       get = function()
         return M.enabled
       end,
