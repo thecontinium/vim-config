@@ -34,6 +34,7 @@ return {
   -- { import = "lazyvim.plugins.extras.dap.core" },
   -- { import = "lazyvim.plugins.extras.test.core" },
 
+  { import = "lazyvim.plugins.extras.lang.tex" }, -- ensure latex treesitter installed
   { import = "lazyvim.plugins.extras.lang.python" },
 
   {
