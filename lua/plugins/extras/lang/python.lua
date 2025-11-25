@@ -104,10 +104,24 @@ return {
     end,
   },
   {
+    "nvim-mini/mini.hipatterns",
+    event = "VeryLazy",
+    opts = true,
+  },
+  {
+    "nvim-mini/mini.ai",
+    dependencies = { "NotebookNavigator.nvim" },
+    opts = function(_, opts)
+      local nn = require("notebook-navigator")
+      opts.custom_textobjects.h = nn.miniai_spec
+    end,
+  },
+  {
     "thecontinium/NotebookNavigator.nvim",
     branch = "add-new-repl",
     ft = "python",
     dependencies = {
+      { "mini.hipatterns" },
       {
         "sourproton/tunnell.nvim",
         opts = {
@@ -128,8 +142,6 @@ return {
         cell_markers = {
           python = "# %%",
         },
-        syntax_highlight = true,
-        cell_highlight_group = "FloatShadow",
       })
 
       require("util.python_markdown_injection").setup()
@@ -138,6 +150,10 @@ return {
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "python",
         callback = function()
+          vim.b.minihipatterns_config = {
+            highlighters = { cells = nn.minihipatterns_spec },
+          }
+
           local opts = { buffer = true }
 
           wk.add({
@@ -223,14 +239,6 @@ return {
           end, vim.tbl_extend("force", opts, { desc = "Join With Cell Below" }))
         end,
       })
-    end,
-  },
-  {
-    "nvim-mini/mini.ai",
-    dependencies = { "NotebookNavigator.nvim" },
-    opts = function(_, opts)
-      local nn = require("notebook-navigator")
-      opts.custom_textobjects.h = nn.miniai_spec
     end,
   },
 
