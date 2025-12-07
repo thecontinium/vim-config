@@ -369,10 +369,14 @@ return {
       if LazyVim.pick.picker.name ~= "snacks" then
         return
       end
+      -- Add markdown root markers into projects
       local patterns = { ".marksman.toml" }
-      vim.list_extend(patterns, require("snacks.picker.config.sources").projects.patterns) -- add markdown root markers
+      vim.list_extend(patterns, require("snacks.picker.config.sources").projects.patterns)
+      -- Add obsidian docs to dev in projects
       local dev = { "~/Library/Mobile Documents/iCloud~md~obsidian/Documents" }
-      vim.list_extend(dev, require("snacks.picker.config.sources").projects.dev) -- add osidian document to dev
+      local current_dev = require("snacks.picker.config.sources").projects.dev
+      vim.list_extend(dev, type(current_dev) == "string" and { current_dev } or current_dev --[[@as string[] ]])
+      -- Add into the projects options along with jj mapping for esc in all pickers
       return vim.tbl_deep_extend("force", opts or {}, {
         picker = {
           sources = {
