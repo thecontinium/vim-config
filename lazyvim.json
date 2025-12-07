@@ -6,6 +6,7 @@
     "plugins.extras.editor.mini-files",
     "plugins.extras.editor.snacks_picker",
     "plugins.extras.lang.clojure",
+    "plugins.extras.lang.markdown",
     "plugins.extras.lang.python",
     "plugins.extras.lang.tmux"
   ],

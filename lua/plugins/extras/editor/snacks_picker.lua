@@ -114,6 +114,106 @@ local function tabs_picker()
   })
 end
 
+local function list_by_mtime(opts)
+  opts = opts or {}
+  local cwd = opts.cwd or vim.fn.getcwd()
+  cwd = vim.fn.fnamemodify(cwd, ":p")
+  local patterns = opts.patterns or nil -- list of glob patterns
+  local max_depth = opts.max_depth or nil
+  ---@type {path:string, stat:uv.fs_stat.result}[]
+  local ret = {}
+
+  local function glob_to_pattern(glob)
+    local pattern = glob:gsub("%.", "%%.") -- escape dot
+    pattern = pattern:gsub("%*", ".*") -- convert * to .*
+    pattern = "^" .. pattern .. "$" -- match whole string
+    return pattern
+  end
+  local function match_patterns(name)
+    if not patterns then
+      return true
+    end
+    for _, glob in ipairs(patterns) do
+      local pat = glob_to_pattern(glob)
+      if name:match(pat) then
+        return true
+      end
+    end
+    return false
+  end
+  local function scan(path, depth)
+    depth = depth or 1
+    if max_depth and depth > max_depth then
+      return
+    end
+
+    for name, t in vim.fs.dir(path) do
+      local full = path .. "/" .. name
+      if t == "file" then
+        if match_patterns(name) then
+          local stat = vim.loop.fs_stat(full)
+          if stat then
+            ret[#ret + 1] = { path = full, stat = stat }
+          end
+        end
+      elseif t == "directory" and name ~= ".git" then
+        scan(full, depth + 1)
+      end
+    end
+  end
+
+  scan(cwd)
+
+  table.sort(ret, function(a, b)
+    return a.stat.mtime.sec > b.stat.mtime.sec
+  end)
+
+  return ret
+end
+
+-- Snacks-style picker for recent files
+local function recent_files_picker(opts)
+  opts = opts or {}
+  opts.cwd = opts.cwd or vim.fn.getcwd()
+  local root = vim.fn.fnamemodify(opts.cwd, ":p")
+  local raw_items = list_by_mtime(opts)
+  --- Convert raw items into Snacks picker-compatible items
+  local items = {}
+  for _, item in ipairs(raw_items) do
+    local text = vim.fn.fnamemodify(item.path, ":h") -- immediate parent dir
+    text = item.path:sub(#root + 2)
+    table.insert(items, {
+      text = text,
+      file = item.path, -- this is what will be displayed
+      data = item, -- keep the full table for actions
+    })
+  end
+  Snacks.picker({
+    title = opts.title or "Recent Files",
+    items = items,
+    format = "text",
+    confirm = function(picker, item)
+      picker:close()
+      vim.cmd(("edit %s"):format(vim.fn.fnameescape(item.file)))
+    end,
+    preview = "file",
+    actions = {
+      delete_file = function(picker, item)
+        picker:close()
+        os.remove(item.path)
+        vim.notify("Deleted file: " .. item.path)
+      end,
+    },
+    win = {
+      input = {
+        keys = {
+          ["d"] = "delete_file", -- press 'd' to delete
+        },
+      },
+    },
+  })
+end
+
 local function pick_cmd_result(picker_opts)
   local git_root = Snacks.git.get_root()
   local function finder(opts, ctx)
@@ -169,68 +269,119 @@ return {
       if LazyVim.pick.picker.name ~= "snacks" then
         return
       end
-			-- stylua: ignore
-			local mappings = {
-				{
-					'<leader><tab>p',
-					mode = { 'n', 'x' },
-					desc = 'Tabs',
-					function()
+      local obsidian_icloud_docs = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents"
+      local mappings = {
+        {
+          "<leader>s>",
+          function()
+            local word = vim.fn.expand("<cword>")
+            Snacks.picker.lines().input:set(word)
+          end,
+          desc = "Buffer Words",
+        },
+        {
+          "<leader><tab>p",
+          mode = { "n", "x" },
+          desc = "Tabs",
+          function()
             tabs_picker()
-					end,
-				},
-				{
-					'<leader>sP',
-					mode = { 'n', 'x' },
-					desc = 'Plugin Directories',
-					function()
+          end,
+        },
+        {
+          "<leader>so",
+          mode = { "n", "x" },
+          desc = "Obsidian Files",
+          function()
+            Snacks.picker.grep({
+              title = "Grep Obsidian Files",
+              dirs = { obsidian_icloud_docs },
+              globs = "*.md",
+            })
+          end,
+        },
+        {
+          "<leader>fo",
+          mode = { "n", "x" },
+          desc = "Obsidian Files",
+          function()
+            recent_files_picker({
+              title = "Obsidian Files",
+              patterns = { "*.md", "*.jp*" },
+              cwd = obsidian_icloud_docs,
+            })
+          end,
+        },
+        {
+          "<leader>sP",
+          mode = { "n", "x" },
+          desc = "Plugin Directories",
+          function()
             directory_picker({
               cwd = vim.fn.stdpath("data") .. "/lazy/",
               source = "Lazy Plugins",
             })
-					end,
-				},
-				{
-					'<leader>fx',
-					mode = { 'n', 'x' },
-					desc = 'Find in Git Show',
-					function()
+          end,
+        },
+        {
+          "<leader>fx",
+          mode = { "n", "x" },
+          desc = "Find in Git Show",
+          function()
             custom_pickers.git_show()
-					end,
-				},
-				{
-					'<leader>fy',
-					mode = { 'n', 'x' },
-					desc = 'Find in Git Diff',
-					function()
+          end,
+        },
+        {
+          "<leader>fy",
+          mode = { "n", "x" },
+          desc = "Find in Git Diff",
+          function()
             custom_pickers.git_diff_upstream()
-					end,
-				},
-				{
-					'<leader>sz',
-					mode = { 'n', 'x' },
-					desc = 'Zoxide',
-					function()
-						Snacks.picker.zoxide({
-							confirm = function(picker)
-								picker:close()
-								local item = picker:current()
-								if item and item.file then
-									vim.cmd.tcd(item.file)
-								end
-							end,
-						})
-					end,
-				},
-			}
+          end,
+        },
+        {
+          "<leader>z=",
+          mode = { "n", "x" },
+          desc = "Spelling Suggestions",
+          function()
+            Snacks.picker.spelling()
+          end,
+        },
+        {
+          "<leader>sz",
+          mode = { "n", "x" },
+          desc = "Zoxide",
+          function()
+            Snacks.picker.zoxide({
+              confirm = function(picker)
+                picker:close()
+                local item = picker:current()
+                if item and item.file then
+                  vim.cmd.tcd(item.file)
+                end
+              end,
+            })
+          end,
+        },
+      }
       return vim.list_extend(mappings, keys)
     end,
     opts = function(_, opts)
       if LazyVim.pick.picker.name ~= "snacks" then
         return
       end
+      local patterns = { ".marksman.toml" }
+      vim.list_extend(patterns, require("snacks.picker.config.sources").projects.patterns) -- add markdown root markers
+      local dev = { "~/Library/Mobile Documents/iCloud~md~obsidian/Documents" }
+      vim.list_extend(dev, require("snacks.picker.config.sources").projects.dev) -- add osidian document to dev
       return vim.tbl_deep_extend("force", opts or {}, {
         picker = {
+          sources = {
+            projects = {
+              patterns = patterns,
+              max_depth = 3,
+              dev = dev,
+            },
+          },
           win = {
             input = {
               keys = {

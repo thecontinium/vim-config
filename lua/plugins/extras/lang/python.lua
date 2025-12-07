@@ -165,79 +165,36 @@ return {
             { "<leader>cnj", group = "join", buffer = true },
           })
 
-          -- stylua: ignore
+          -- stylua: ignore start
           vim.keymap.set( "n", "<leader>cnt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Open Tmux iPython Pane" }))
-          vim.keymap.set("n", "<leader>cnr<space>", function()
-            require("which-key").show({ keys = "<leader>cnr", loop = true })
-          end, vim.tbl_extend("force", opts, { desc = "Hydra Mode (which-key)" }))
-          vim.keymap.set("n", "]h", function()
-            nn.move_cell("d")
-          end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
-          vim.keymap.set("n", "[h", function()
-            nn.move_cell("u")
-          end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
-          vim.keymap.set(
-            "n",
-            "<leader>cnc",
-            "<cmd>normal gcih<cr>",
-            vim.tbl_extend("force", opts, { desc = "Comment Cell" })
-          )
-          vim.keymap.set("n", "<leader>cns", function()
-            nn.split_cell()
-          end, vim.tbl_extend("force", opts, { desc = "Split Cell" }))
+          vim.keymap.set("n", "<leader>cnr<space>", function() require("which-key").show({ keys = "<leader>cnr", loop = true }) end, vim.tbl_extend("force", opts, { desc = "Hydra Mode (which-key)" }))
+          vim.keymap.set("n", "]h", function() nn.move_cell("d") end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
+          vim.keymap.set("n", "[h", function() nn.move_cell("u") end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
+          vim.keymap.set( "n", "<leader>cnc", "<cmd>normal gcih<cr>", vim.tbl_extend("force", opts, { desc = "Comment Cell" }))
+          vim.keymap.set("n", "<leader>cns", function() nn.split_cell() end, vim.tbl_extend("force", opts, { desc = "Split Cell" }))
 
           -- running cells
-          vim.keymap.set("n", "<leader>cnrR", function()
-            nn.run_cell()
-          end, vim.tbl_extend("force", opts, { desc = "Run Cell" }))
-          vim.keymap.set("n", "<leader>cnrr", function()
-            nn.run_and_move()
-          end, vim.tbl_extend("force", opts, { desc = "Run Cell and Move" }))
-          vim.keymap.set("n", "<leader>cnrb", function()
-            nn.run_all_cells()
-          end, vim.tbl_extend("force", opts, { desc = "Run Buffer" }))
-          vim.keymap.set("n", "<leader>cnra", function()
-            nn.run_cells_below()
-          end, vim.tbl_extend("force", opts, { desc = "Run Remaining Cells (incl.)" }))
-          vim.keymap.set("n", "<leader>cnrp", function()
-            nn.run_cells_above()
-          end, vim.tbl_extend("force", opts, { desc = "Run Previous Cells (excl.)" }))
-          vim.keymap.set("n", "<leader>cnrj", function()
-            nn.move_cell("d")
-          end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
-          vim.keymap.set("n", "<leader>cnrk", function()
-            nn.move_cell("u")
-          end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
-          vim.keymap.set(
-            "n",
-            "<leader>cnrt",
-            open_tmux_ipython_pane,
-            vim.tbl_extend("force", opts, { desc = "Tmux iPython Pane" })
-          )
+          vim.keymap.set("n", "<leader>cnrR", function() nn.run_cell() end, vim.tbl_extend("force", opts, { desc = "Run Cell" }))
+          vim.keymap.set("n", "<leader>cnrr", function() nn.run_and_move() end, vim.tbl_extend("force", opts, { desc = "Run Cell and Move" }))
+          vim.keymap.set("n", "<leader>cnrb", function() nn.run_all_cells() end, vim.tbl_extend("force", opts, { desc = "Run Buffer" }))
+          vim.keymap.set("n", "<leader>cnra", function() nn.run_cells_below() end, vim.tbl_extend("force", opts, { desc = "Run Remaining Cells (incl.)" }))
+          vim.keymap.set("n", "<leader>cnrp", function() nn.run_cells_above() end, vim.tbl_extend("force", opts, { desc = "Run Previous Cells (excl.)" }))
+          vim.keymap.set("n", "<leader>cnrj", function() nn.move_cell("d") end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
+          vim.keymap.set("n", "<leader>cnrk", function() nn.move_cell("u") end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
+          vim.keymap.set( "n", "<leader>cnrt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Tmux iPython Pane" }))
 
           -- adding cells
-          vim.keymap.set("n", "<leader>cnab", function()
-            nn.add_cell_below()
-          end, vim.tbl_extend("force", opts, { desc = "Add Cell Below" }))
-          vim.keymap.set("n", "<leader>cnaa", function()
-            nn.add_cell_above()
-          end, vim.tbl_extend("force", opts, { desc = "Add Cell Above" }))
+          vim.keymap.set("n", "<leader>cnab", function() nn.add_cell_below() end, vim.tbl_extend("force", opts, { desc = "Add Cell Below" }))
+          vim.keymap.set("n", "<leader>cnaa", function() nn.add_cell_above() end, vim.tbl_extend("force", opts, { desc = "Add Cell Above" }))
 
           -- move cell
-          vim.keymap.set("n", "<leader>cnmu", function()
-            nn.swap_cell("u")
-          end, vim.tbl_extend("force", opts, { desc = "Move Cell Up" }))
-          vim.keymap.set("n", "<leader>cnmd", function()
-            nn.swap_cell("d")
-          end, vim.tbl_extend("force", opts, { desc = "Move Cell Down" }))
+          vim.keymap.set("n", "<leader>cnmu", function() nn.swap_cell("u") end, vim.tbl_extend("force", opts, { desc = "Move Cell Up" }))
+          vim.keymap.set("n", "<leader>cnmd", function() nn.swap_cell("d") end, vim.tbl_extend("force", opts, { desc = "Move Cell Down" }))
 
           -- join cell
-          vim.keymap.set("n", "<leader>cnja", function()
-            nn.merge_cell("u")
-          end, vim.tbl_extend("force", opts, { desc = "Join With Cell Above" }))
-          vim.keymap.set("n", "<leader>cnjb", function()
-            nn.merge_cell("d")
-          end, vim.tbl_extend("force", opts, { desc = "Join With Cell Below" }))
+          vim.keymap.set("n", "<leader>cnja", function() nn.merge_cell("u") end, vim.tbl_extend("force", opts, { desc = "Join With Cell Above" }))
+          vim.keymap.set("n", "<leader>cnjb", function() nn.merge_cell("d") end, vim.tbl_extend("force", opts, { desc = "Join With Cell Below" }))
+          -- stylua: ignore end
         end,
       })
     end,

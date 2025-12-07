@@ -1,25 +1,7 @@
 return {
   {
     "folke/snacks.nvim",
-    -- init = function()
-    --   vim.api.nvim_create_autocmd("BufEnter", {
-    --     group = vim.api.nvim_create_augroup("snacks-mjn", { clear = true }),
-    --     once = true,
-    --     nested = true,
-    --     callback = function(ev)
-    --       require("snacks").image.setup()
-    --     end,
-    --   })
-    -- end,
-    -- stylua: ignore
-    keys = {
-      -- { "<leader>s>", function() local word = (vim.fn.getreg('/'):gsub('\\%<', ''):gsub('\\%>', '')) or vim.fn.expand("<cword>")
-      { "<leader>s>", function() local word = vim.fn.expand("<cword>")
-          Snacks.picker.lines().input:set(word) end, desc = "Buffer Words" },
-    },
-    ---@type snacks.Config
     opts = {
-    -- stylua: ignore
       image = {
         enabled = true,
         math = {

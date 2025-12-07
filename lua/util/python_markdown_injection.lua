@@ -352,7 +352,7 @@ function M.setup()
     })
 
     -- Optionally map to a keymap
-    M.toggle:map("<leader>um") -- Uncomment and customize keymap as needed
+    M.toggle:map("<leader>uy") -- Uncomment and customize keymap as needed
 
     debug_print("Markdown injection enabled with Snacks toggle")
   else
