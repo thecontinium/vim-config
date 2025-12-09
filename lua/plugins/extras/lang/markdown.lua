@@ -5,6 +5,7 @@ return {
     "thecontinium/bullets.nvim",
     ft = "markdown",
     opts = {
+      outline_levels = { "num", "std*", "std-", "std+" },
       keys = {
         newline_cr = { key = "<cr>", desc = "Insert New Bullet" },
         newline_o = { key = "o", desc = "Insert New Bullet Below" },
