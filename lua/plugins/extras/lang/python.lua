@@ -56,7 +56,6 @@ return {
       },
     },
   },
-
   {
     "nvim-lualine/lualine.nvim",
     optional = true,
@@ -122,6 +121,7 @@ return {
     branch = "add-new-repl",
     ft = "python",
     dependencies = {
+      { "libmodal" },
       { "mini.hipatterns" },
       {
         "sourproton/tunnell.nvim",
@@ -138,6 +138,7 @@ return {
     config = function()
       local wk = require("which-key")
       local nn = require("notebook-navigator")
+      local libmodal = require("libmodal")
 
       nn.setup({
         cell_markers = {
@@ -159,29 +160,58 @@ return {
 
           wk.add({
             { "<leader>cn", group = "notebook", buffer = true },
-            { "<leader>cnr", group = "run/navigate", buffer = true },
             { "<leader>cna", group = "add", buffer = true },
             { "<leader>cnm", group = "move", buffer = true },
             { "<leader>cnj", group = "join", buffer = true },
           })
 
+          local utils = require("libmodal.utils.help")
+          -- register keymaps for splitting windows and then closing windows
+          local nnDescriptions = {
+            j = "Next Cell",
+            k = "Previous Cell",
+            r = "Run Cell and Move",
+            R = "Run Cell",
+            b = "Run Buffer",
+            a = "Run Remaining Cells (incl.)",
+            p = "Run Previous Cells (excl.)",
+            t = "Tmux iPython Pane",
+          }
+          local nnModeKeymaps = {
+            j = libmodal.mode.map.fn(nn.move_cell, "d"),
+            k = libmodal.mode.map.fn(nn.move_cell, "u"),
+            r = libmodal.mode.map.fn(nn.run_and_move),
+            R = libmodal.mode.map.fn(nn.run_cell),
+            b = libmodal.mode.map.fn(nn.run_all_cells),
+            a = libmodal.mode.map.fn(nn.run_cells_below),
+            p = libmodal.mode.map.fn(nn.run_cells_above),
+            t = libmodal.mode.map.fn(open_tmux_ipython_pane),
+            ["?"] = function(_)
+              utils.new(nnDescriptions, "Notebook Mode"):show()
+            end,
+          }
+
+          vim.keymap.set("n", "<leader>cnr", function()
+            local mode = libmodal.mode.new("NOTEBOOK", nnModeKeymaps)
+            mode:enter()
+          end, vim.tbl_extend("force", opts, { desc = "NN Mode" }))
           -- stylua: ignore start
-          vim.keymap.set( "n", "<leader>cnt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Open Tmux iPython Pane" }))
-          vim.keymap.set("n", "<leader>cnr<space>", function() require("which-key").show({ keys = "<leader>cnr", loop = true }) end, vim.tbl_extend("force", opts, { desc = "Hydra Mode (which-key)" }))
+          -- vim.keymap.set("n", "<leader>cnr<space>", function() require("which-key").show({ keys = "<leader>cnr", loop = true, foreign_keys = true }) end, vim.tbl_extend("force", opts, { desc = "Hydra Mode (which-key)" }))
+          vim.keymap.set("n", "<leader>cnt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Open Tmux iPython Pane" }))
           vim.keymap.set("n", "]h", function() nn.move_cell("d") end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
           vim.keymap.set("n", "[h", function() nn.move_cell("u") end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
-          vim.keymap.set( "n", "<leader>cnc", "<cmd>normal gcih<cr>", vim.tbl_extend("force", opts, { desc = "Comment Cell" }))
+          vim.keymap.set("n", "<leader>cnc", "<cmd>normal gcih<cr>", vim.tbl_extend("force", opts, { desc = "Comment Cell" }))
           vim.keymap.set("n", "<leader>cns", function() nn.split_cell() end, vim.tbl_extend("force", opts, { desc = "Split Cell" }))
 
           -- running cells
-          vim.keymap.set("n", "<leader>cnrR", function() nn.run_cell() end, vim.tbl_extend("force", opts, { desc = "Run Cell" }))
-          vim.keymap.set("n", "<leader>cnrr", function() nn.run_and_move() end, vim.tbl_extend("force", opts, { desc = "Run Cell and Move" }))
-          vim.keymap.set("n", "<leader>cnrb", function() nn.run_all_cells() end, vim.tbl_extend("force", opts, { desc = "Run Buffer" }))
-          vim.keymap.set("n", "<leader>cnra", function() nn.run_cells_below() end, vim.tbl_extend("force", opts, { desc = "Run Remaining Cells (incl.)" }))
-          vim.keymap.set("n", "<leader>cnrp", function() nn.run_cells_above() end, vim.tbl_extend("force", opts, { desc = "Run Previous Cells (excl.)" }))
-          vim.keymap.set("n", "<leader>cnrj", function() nn.move_cell("d") end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
-          vim.keymap.set("n", "<leader>cnrk", function() nn.move_cell("u") end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
-          vim.keymap.set( "n", "<leader>cnrt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Tmux iPython Pane" }))
+          -- vim.keymap.set("n", "<leader>cnrR", function() nn.run_cell() end, vim.tbl_extend("force", opts, { desc = "Run Cell" }))
+          -- vim.keymap.set("n", "<leader>cnrr", function() nn.run_and_move() end, vim.tbl_extend("force", opts, { desc = "Run Cell and Move" }))
+          -- vim.keymap.set("n", "<leader>cnrb", function() nn.run_all_cells() end, vim.tbl_extend("force", opts, { desc = "Run Buffer" }))
+          -- vim.keymap.set("n", "<leader>cnra", function() nn.run_cells_below() end, vim.tbl_extend("force", opts, { desc = "Run Remaining Cells (incl.)" }))
+          -- vim.keymap.set("n", "<leader>cnrp", function() nn.run_cells_above() end, vim.tbl_extend("force", opts, { desc = "Run Previous Cells (excl.)" }))
+          -- vim.keymap.set("n", "<leader>cnrj", function() nn.move_cell("d") end, vim.tbl_extend("force", opts, { desc = "Next Cell" }))
+          -- vim.keymap.set("n", "<leader>cnrk", function() nn.move_cell("u") end, vim.tbl_extend("force", opts, { desc = "Previous Cell" }))
+          -- vim.keymap.set("n", "<leader>cnrt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Tmux iPython Pane" }))
 
           -- adding cells
           vim.keymap.set("n", "<leader>cnab", function() nn.add_cell_below() end, vim.tbl_extend("force", opts, { desc = "Add Cell Below" }))

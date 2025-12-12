@@ -30,6 +30,7 @@ return {
   {
     "thecontinium/bullets.nvim",
     ft = "markdown",
+    dependencies = { { "libmodal" } },
     opts = {
       outline_levels = { "num", "std*", "std-", "std+" },
       keys = {
@@ -37,11 +38,11 @@ return {
         newline_o = { key = "o", desc = "Insert New Bullet Below" },
         renumber_visual = { key = "gR", desc = "Renumber Items" },
         renumber_normal = { key = "gR", desc = "Renumber Entire List" },
-        toggle_checkbox = { key = "<localleader>xx", desc = "Toggle" },
-        check_all = { key = "<localleader>xl", desc = "Entire List" },
-        check_all_lists = { key = "<localleader>xb", desc = "Entire Buffer" },
-        uncheck_all = { key = "<localleader>ul", desc = "Entire List" },
-        uncheck_all_lists = { key = "<localleader>ub", desc = "Entire Buffer" },
+        toggle_checkbox = { key = nil, desc = "Toggle Markdown Checkbox" },
+        check_all = { key = nil, desc = "Check Entire List" },
+        check_all_lists = { key = nil, desc = "Check Entire Buffer" },
+        uncheck_all = { key = nil, desc = "Uncheck Entire List" },
+        uncheck_all_lists = { key = nil, desc = "Uncheck Entire Buffer" },
         demote_insert = { key = "<C-t>", desc = "Demote Bullet " },
         demote_normal = { key = ">>", desc = "Demote Bullet " },
         demote_visual = { key = ">", desc = "Demote Bullets" },
@@ -53,14 +54,37 @@ return {
     config = function(_, opts)
       require("Bullets").setup(opts)
       local wk = require("which-key")
+      local libmodal = require("libmodal")
+      local utils = require("libmodal.utils.help")
+      local checkDescriptions = {
+        t = "Toggle Markdown Checkbox",
+        c = "Check Entire List",
+        C = "Uncheck Entire List",
+        b = "Check Entire Buffer",
+        B = "Uncheck Entire Buffer",
+      }
+      local checkInstructions = {
+        n = { -- normal mode mappings
+          t = { rhs = "<Plug>(bullets-toggle-checkbox)", noremap = true },
+          c = { rhs = "<Plug>(bullets-check-all)", noremap = true },
+          C = { rhs = "<Plug>(bullets-uncheck-all)", noremap = true },
+          b = { rhs = "<Plug>(bullets-check-all-lists)", noremap = true },
+          B = { rhs = "<Plug>(bullets-uncheck-all-lists)", noremap = true },
+          ["?"] = {
+            rhs = function()
+              utils.new(checkDescriptions, "Check Mode"):show()
+            end,
+            noremap = true,
+          },
+        },
+      }
 
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "markdown",
         callback = function()
-          wk.add({
-            { "<localleader>x", group = "markdown check", buffer = true },
-            { "<localleader>u", group = "markdown uncheck", buffer = true },
-          })
+          vim.keymap.set("n", "<Leader>ch", function()
+            libmodal.layer.enter(checkInstructions, "<Esc>")
+          end, { desc = "Check Mode", buffer = true })
         end,
       })
     end,
