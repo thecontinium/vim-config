@@ -53,29 +53,14 @@ return {
     },
     config = function(_, opts)
       require("Bullets").setup(opts)
-      local wk = require("which-key")
       local libmodal = require("libmodal")
-      local utils = require("libmodal.utils.help")
-      local checkDescriptions = {
-        t = "Toggle Markdown Checkbox",
-        c = "Check Entire List",
-        C = "Uncheck Entire List",
-        b = "Check Entire Buffer",
-        B = "Uncheck Entire Buffer",
-      }
-      local checkInstructions = {
+      local checkKeyMap = {
         n = { -- normal mode mappings
-          t = { rhs = "<Plug>(bullets-toggle-checkbox)", noremap = true },
-          c = { rhs = "<Plug>(bullets-check-all)", noremap = true },
-          C = { rhs = "<Plug>(bullets-uncheck-all)", noremap = true },
-          b = { rhs = "<Plug>(bullets-check-all-lists)", noremap = true },
-          B = { rhs = "<Plug>(bullets-uncheck-all-lists)", noremap = true },
-          ["?"] = {
-            rhs = function()
-              utils.new(checkDescriptions, "Check Mode"):show()
-            end,
-            noremap = true,
-          },
+          t = { rhs = "<Plug>(bullets-toggle-checkbox)", noremap = true, desc = "[L] Toggle Markdown Checkbox" },
+          c = { rhs = "<Plug>(bullets-check-all)", noremap = true, desc = "[L] Check Entire List" },
+          C = { rhs = "<Plug>(bullets-uncheck-all)", noremap = true, desc = "[L] Uncheck Entire List" },
+          b = { rhs = "<Plug>(bullets-check-all-lists)", noremap = true, desc = "[L] Check Entire Buffer" },
+          B = { rhs = "<Plug>(bullets-uncheck-all-lists)", noremap = true, desc = "[L] Uncheck Entire Buffer" },
         },
       }
 
@@ -83,8 +68,8 @@ return {
         pattern = "markdown",
         callback = function()
           vim.keymap.set("n", "<Leader>ch", function()
-            libmodal.layer.enter(checkInstructions, "<Esc>")
-          end, { desc = "Check Mode", buffer = true })
+            libmodal.layer.enter(checkKeyMap, "<Esc>")
+          end, { desc = "Check Layer", buffer = true })
         end,
       })
     end,
