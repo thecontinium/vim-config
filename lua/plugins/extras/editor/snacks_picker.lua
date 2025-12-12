@@ -120,7 +120,6 @@ local function list_by_mtime(opts)
   cwd = vim.fn.fnamemodify(cwd, ":p")
   local patterns = opts.patterns or nil -- list of glob patterns
   local max_depth = opts.max_depth or nil
-  ---@type {path:string, stat:uv.fs_stat.result}[]
   local ret = {}
 
   local function glob_to_pattern(glob)
@@ -151,7 +150,7 @@ local function list_by_mtime(opts)
       local full = path .. "/" .. name
       if t == "file" then
         if match_patterns(name) then
-          local stat = vim.loop.fs_stat(full)
+          local stat = vim.uv.fs_stat(full)
           if stat then
             ret[#ret + 1] = { path = full, stat = stat }
           end
@@ -172,7 +171,7 @@ local function list_by_mtime(opts)
 end
 
 -- Snacks-style picker for recent files
-local function recent_files_picker(opts)
+local function recent_files(opts)
   opts = opts or {}
   opts.cwd = opts.cwd or vim.fn.getcwd()
   local root = vim.fn.fnamemodify(opts.cwd, ":p")
@@ -188,26 +187,64 @@ local function recent_files_picker(opts)
       data = item, -- keep the full table for actions
     })
   end
+  return items
+end
+
+local add_new_file = function(root, picker, item)
+  local path = root .. "/" .. picker.finder.filter.pattern
+  local parent = vim.fn.fnamemodify(path, ":h")
+  -- if parent directory doesn't exist, warn and give option
+  if vim.fn.isdirectory(parent) == 0 then
+    Snacks.notify.warn("Directory does not exist")
+    if vim.fn.confirm("Create Directory ?", "&Yes\n&No", 2) ~= 1 then
+      return
+    else
+      vim.fn.mkdir(parent)
+    end
+  end
+  if vim.fn.filereadable(path) == 0 then
+    vim.fn.writefile({}, path)
+    Snacks.notify.info("New File Created")
+  end
+  picker:refresh()
+end
+
+local function recent_files_picker(opts)
+  local root = vim.fn.fnamemodify(opts.cwd, ":p")
   Snacks.picker({
     title = opts.title or "Recent Files",
-    items = items,
+    finder = function()
+      return recent_files(opts)
+    end,
     format = "text",
     confirm = function(picker, item)
-      picker:close()
-      vim.cmd(("edit %s"):format(vim.fn.fnameescape(item.file)))
+      if item then
+        picker:close()
+        vim.cmd(("edit %s"):format(vim.fn.fnameescape(item.file)))
+      else
+        add_new_file(root, picker, item)
+      end
     end,
     preview = "file",
     actions = {
+      new_file = function(picker, item)
+        add_new_file(root, picker, item)
+      end,
       delete_file = function(picker, item)
-        picker:close()
-        os.remove(item.path)
-        vim.notify("Deleted file: " .. item.path)
+        local name = vim.fn.fnamemodify(item.file, ":t")
+        if vim.fn.confirm(("Delete %s ?"):format(name), "&Yes\n&No", 2) ~= 1 then
+          return
+        end
+        os.remove(item.file)
+        Snacks.notify.info("Deleted " .. name)
+        picker:refresh()
       end,
     },
     win = {
       input = {
         keys = {
           ["d"] = "delete_file", -- press 'd' to delete
+          ["<c-n>"] = { "new_file", mode = { "i", "n" } },
         },
       },
     },
