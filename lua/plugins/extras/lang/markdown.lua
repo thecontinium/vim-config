@@ -53,7 +53,7 @@ return {
     },
     config = function(_, opts)
       require("Bullets").setup(opts)
-      local libmodal = require("libmodal")
+      local namedLayer = require("util.libmodal_named_layer")
       local checkKeyMap = {
         n = { -- normal mode mappings
           t = { rhs = "<Plug>(bullets-toggle-checkbox)", noremap = true, desc = "[L] Toggle Markdown Checkbox" },
@@ -68,10 +68,15 @@ return {
         pattern = "markdown",
         callback = function()
           vim.keymap.set("n", "<Leader>ch", function()
-            libmodal.layer.enter(checkKeyMap, "<Esc>")
+            namedLayer.enter("CHECK", checkKeyMap, "<Esc>")
           end, { desc = "Check Layer", buffer = true })
         end,
       })
     end,
+  },
+  {
+    "SCJangra/table-nvim",
+    ft = "markdown",
+    opts = {},
   },
 }

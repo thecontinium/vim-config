@@ -16,7 +16,7 @@ return {
       opts.sections.lualine_a[1] = {
         "mode",
         fmt = function(str)
-          return vim.g.libmodalActiveModeName or str
+          return vim.g.libmodalActiveModeName or vim.g.activeLayerName or str
         end,
         -- color = function(_)
         -- local ORANGE = "#ff8900"
