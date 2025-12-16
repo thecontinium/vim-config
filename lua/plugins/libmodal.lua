@@ -10,7 +10,17 @@ return {
     "nvim-lualine/lualine.nvim",
     dependencies = { "libmodal" },
     optional = true,
-    event = "VeryLazy",
+    init = function()
+      vim.api.nvim_create_autocmd("ModeChanged", {
+        callback = function(e)
+          local newmode = e.match:match(":(.*)")
+          -- only update lualine if changing to a libmodal mode
+          if newmode == vim.g.libmodalActiveModeName then
+            require("lualine").refresh({ force = true, scope = "window", place = { "statusline" } })
+          end
+        end,
+      })
+    end,
     opts = function(_, opts)
       -- Replace the first (and only) entry in lualine_a
       opts.sections.lualine_a[1] = {

@@ -194,7 +194,7 @@ return {
           vim.keymap.set("n", "<leader>cnr", function()
             local mode = libmodal.mode.new("NOTEBOOK", nnModeKeymaps)
             mode:enter()
-          end, vim.tbl_extend("force", opts, { desc = "NN Mode" }))
+          end, vim.tbl_extend("force", opts, { desc = "Notebook Mode" }))
           -- stylua: ignore start
           -- vim.keymap.set("n", "<leader>cnr<space>", function() require("which-key").show({ keys = "<leader>cnr", loop = true, foreign_keys = true }) end, vim.tbl_extend("force", opts, { desc = "Hydra Mode (which-key)" }))
           vim.keymap.set("n", "<leader>cnt", open_tmux_ipython_pane, vim.tbl_extend("force", opts, { desc = "Open Tmux iPython Pane" }))
