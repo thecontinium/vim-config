@@ -144,4 +144,17 @@ return {
       },
     },
   },
+  -- Ensure zipPlugin is installed for clojure
+  -- so that libs can be loaded lsp gd works
+  {
+    name = "zipPlugin",
+    dir = vim.env.VIMRUNTIME,
+    ft = "clojure",
+    init = function()
+      vim.g.loaded_zipPlugin = nil
+    end,
+    config = function()
+      vim.cmd.runtime("plugin/zipPlugin.vim")
+    end,
+  },
 }
