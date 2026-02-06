@@ -135,7 +135,30 @@ return {
       })
     end,
   },
-
+  {
+    "https://tangled.org/treybastian.com/nvim-jack-in",
+    dependencies = {
+      "snacks.nvim",
+    },
+    ft = "clojure",
+    opts = function()
+      Snacks.keymap.set("n", "<localleader>cn", "<cmd>Clj<cr>", {
+        ft = "clojure",
+        desc = "Start Clj nRepl",
+      })
+      return {
+        location = "buffer",
+        clj_dependencies = {
+          { name = "nrepl/nrepl", version = "1.5.2" },
+          { name = "cider/cider-nrepl", version = "0.58.0" },
+        },
+        clj_middleware = {
+          "cider.nrepl/cider-middleware",
+        },
+      }
+    end,
+    config = true,
+  },
   {
     "mason-org/mason.nvim",
     opts = {
