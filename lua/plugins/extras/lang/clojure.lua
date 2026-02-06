@@ -43,6 +43,7 @@ return {
             mode = "n",
             buffer = args.buf,
             { "<localleader>c", group = "+connect" },
+            { "<localleader>cc", group = "+clay" }, -- will only show if clay is loaded
             { "<localleader>e", group = "+evaluate" },
             { "<localleader>ec", group = "+comment" },
             { "<localleader>g", group = "+get" },
@@ -137,15 +138,9 @@ return {
   },
   {
     "https://tangled.org/treybastian.com/nvim-jack-in",
-    dependencies = {
-      "snacks.nvim",
-    },
     ft = "clojure",
     opts = function()
-      Snacks.keymap.set("n", "<localleader>cn", "<cmd>Clj<cr>", {
-        ft = "clojure",
-        desc = "Start Clj nRepl",
-      })
+      Snacks.keymap.set("n", "<localleader>cn", "<cmd>Clj<cr>", { ft = "clojure", desc = "Jack-In Clj nRepl" })
       return {
         location = "buffer",
         clj_dependencies = {
@@ -158,6 +153,18 @@ return {
       }
     end,
     config = true,
+  },
+  {
+    "radovanne/clay.nvim",
+    dependencies = { "Olical/conjure" },
+    ft = { "clojure" },
+    config = function()
+      local clay = require("clay")
+      Snacks.keymap.set("n", "<localleader>ccb", clay.ClayBrowse, { ft = "clojure", desc = "Browser" })
+      Snacks.keymap.set("n", "<localleader>ccw", clay.ClayWatch, { ft = "clojure", desc = "Watch Notebooks Folder" })
+      Snacks.keymap.set("n", "<localleader>ccf", clay.ClayMakeCurrentForm, { ft = "clojure", desc = "Render form" })
+      Snacks.keymap.set("n", "<localleader>ccn", clay.ClayMakeFile, { ft = "clojure", desc = "Render File" })
+    end,
   },
   {
     "mason-org/mason.nvim",
