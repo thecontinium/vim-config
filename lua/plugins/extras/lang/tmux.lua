@@ -79,7 +79,7 @@ return {
             name = "tmux",
             -- default options
             opts = {
-              all_panes = false,
+              panes = "window",
               capture_history = false,
               -- only suggest completions from `tmux` if the `trigger_chars` are
               -- used
