@@ -142,10 +142,11 @@ return {
     opts = function()
       Snacks.keymap.set("n", "<localleader>cn", "<cmd>Clj<cr>", { ft = "clojure", desc = "Jack-In Clj nRepl" })
       return {
-        location = "buffer",
+        location = "split",
         clj_dependencies = {
           { name = "nrepl/nrepl", version = "1.5.2" },
           { name = "cider/cider-nrepl", version = "0.58.0" },
+          { name = "djblue/portal", version = "0.62.2" },
         },
         clj_middleware = {
           "cider.nrepl/cider-middleware",
