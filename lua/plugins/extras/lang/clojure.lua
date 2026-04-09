@@ -137,7 +137,8 @@ return {
     end,
   },
   {
-    "https://tangled.org/treybastian.com/nvim-jack-in",
+    -- "https://tangled.org/treybastian.com/nvim-jack-in",
+    "thecontinium/nvim-jack-in",
     ft = "clojure",
     opts = function()
       Snacks.keymap.set("n", "<localleader>cn", "<cmd>Clj<cr>", { ft = "clojure", desc = "Jack-In Clj nRepl" })
