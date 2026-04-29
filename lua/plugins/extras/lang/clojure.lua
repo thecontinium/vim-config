@@ -30,7 +30,7 @@ return {
     dependencies = {
       "folke/which-key.nvim",
     },
-    init = function()
+    opts = function() -- can't use init as it overides the extras
       -- vim.g["conjure#debug"] = true
       vim.g["conjure#client#python#stdio#delay-stderr-ms"] = 100
       vim.api.nvim_create_autocmd("filetype", {
