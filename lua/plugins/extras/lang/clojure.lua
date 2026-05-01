@@ -143,7 +143,7 @@ return {
     opts = function()
       Snacks.keymap.set("n", "<localleader>cn", "<cmd>Clj<cr>", { ft = "clojure", desc = "Jack-In Clj nRepl" })
       return {
-        location = "split",
+        location = "background",
         clj_dependencies = {
           { name = "nrepl/nrepl", version = "1.5.2" },
           { name = "cider/cider-nrepl", version = "0.58.0" },
@@ -152,6 +152,9 @@ return {
         clj_middleware = {
           "cider.nrepl/cider-middleware",
         },
+        cwd = function()
+          return LazyVim.root()
+        end,
       }
     end,
     config = true,
