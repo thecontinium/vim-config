@@ -165,10 +165,10 @@ return {
     ft = { "clojure" },
     config = function()
       local clay = require("clay")
-      Snacks.keymap.set("n", "<localleader>ccb", clay.ClayBrowse, { ft = "clojure", desc = "Browser" })
+      Snacks.keymap.set("n", "<localleader>ccb", clay.ClayBrowse, { ft = "clojure", desc = "Browse Render" })
       Snacks.keymap.set("n", "<localleader>ccw", clay.ClayWatch, { ft = "clojure", desc = "Watch Notebooks Folder" })
       Snacks.keymap.set("n", "<localleader>ccf", clay.ClayMakeCurrentForm, { ft = "clojure", desc = "Render form" })
-      Snacks.keymap.set("n", "<localleader>ccn", clay.ClayMakeFile, { ft = "clojure", desc = "Render File" })
+      Snacks.keymap.set("n", "<localleader>ccn", clay.ClayMakeFile, { ft = "clojure", desc = "Render Namespace/File" })
     end,
   },
   {
