@@ -34,7 +34,6 @@ return {
       -- vim.g["conjure#debug"] = true
       vim.g["conjure#client#python#stdio#delay-stderr-ms"] = 100
       vim.g["conjure#log#jump_to_latest#enabled"] = true
-      vim.g["conjure#log#jump_to_latest#cursor_scroll_position"] = "last"
       vim.g["conjure#client_on_load"] = false
       vim.api.nvim_create_autocmd("filetype", {
         group = vim.api.nvim_create_augroup("group_conjure-wk", {}),
