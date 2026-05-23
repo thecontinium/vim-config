@@ -66,6 +66,35 @@ return {
       })
     end,
   },
+  -- blink.cmp conjure competion integration where conjure is only abailble in clojure filetypes
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    dependencies = { "PaterJason/cmp-conjure", "saghen/blink.compat" },
+    opts = {
+      -- uncomment the below to see the source names in the completion menu
+      -- completion = {
+      --   menu = {
+      --     draw = { columns = { { "kind_icon" }, { "label", "label_description", gap = 1 }, { "source_name" } } },
+      --   },
+      -- },
+      sources = {
+        per_filetype = {
+          clojure = {
+            inherit_defaults = true,
+            "conjure",
+          },
+        },
+        providers = {
+          conjure = {
+            name = "conjure",
+            module = "blink.compat.source",
+            async = true,
+          },
+        },
+      },
+    },
+  },
   {
     "julienvincent/nvim-paredit",
     init = function()
@@ -156,9 +185,11 @@ return {
           { name = "nrepl/nrepl", version = "1.5.2" },
           { name = "cider/cider-nrepl", version = "0.58.0" },
           { name = "djblue/portal", version = "0.62.2" },
+          { name = "org.corfield/rephrase", version = "1.0.0" },
         },
         clj_middleware = {
           "cider.nrepl/cider-middleware",
+          "org.corfield.rephrase.nrepl/wrap-rephrase",
         },
         cwd = function()
           return LazyVim.root()
