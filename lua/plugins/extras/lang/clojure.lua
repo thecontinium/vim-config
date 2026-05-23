@@ -58,6 +58,12 @@ return {
           })
         end,
       })
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "ConjureDoc",
+        callback = function(ev)
+          vim.lsp.util.open_floating_preview(vim.split(ev.data, "\n"), "markdown", { border = "rounded" })
+        end,
+      })
     end,
   },
   {
