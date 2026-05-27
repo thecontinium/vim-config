@@ -38,6 +38,7 @@ local function directory_picker(opts)
       picker:close()
       Snacks.notify.info("Changed directory to Lazy Plugin " .. item.text)
       vim.cmd("cd " .. item.value)
+      -- require("mini.files").open(item.value, true)
     end,
   })
 end
@@ -389,13 +390,13 @@ return {
           desc = "Zoxide",
           function()
             Snacks.picker.zoxide({
-              confirm = function(picker)
-                picker:close()
-                local item = picker:current()
-                if item and item.file then
-                  vim.cmd.tcd(item.file)
-                end
-              end,
+              -- confirm = function(picker)
+              --   picker:close()
+              --   local item = picker:current()
+              --   if item and item.file then
+              --     vim.cmd.tcd(item.file)
+              --   end
+              -- end,
             })
           end,
         },
