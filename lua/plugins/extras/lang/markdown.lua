@@ -56,11 +56,13 @@ return {
       local namedLayer = require("util.libmodal_named_layer")
       local checkKeyMap = {
         n = { -- normal mode mappings
-          t = { rhs = "<Plug>(bullets-toggle-checkbox)", noremap = true, desc = "[L] Toggle Markdown Checkbox" },
-          c = { rhs = "<Plug>(bullets-check-all)", noremap = true, desc = "[L] Check Entire List" },
-          C = { rhs = "<Plug>(bullets-uncheck-all)", noremap = true, desc = "[L] Uncheck Entire List" },
-          b = { rhs = "<Plug>(bullets-check-all-lists)", noremap = true, desc = "[L] Check Entire Buffer" },
-          B = { rhs = "<Plug>(bullets-uncheck-all-lists)", noremap = true, desc = "[L] Uncheck Entire Buffer" },
+          -- stylua: ignore start
+          t = { rhs = "<Plug>(bullets-toggle-checkbox)", buffer = true, noremap = true, desc = "[L] Toggle Markdown Checkbox", },
+          c = { rhs = "<Plug>(bullets-check-all)", buffer = true, noremap = true, desc = "[L] Check Entire List" },
+          C = { rhs = "<Plug>(bullets-uncheck-all)", buffer = true, noremap = true, desc = "[L] Uncheck Entire List" },
+          b = { rhs = "<Plug>(bullets-check-all-lists)", buffer = true, noremap = true, desc = "[L] Check Entire Buffer", },
+          B = { rhs = "<Plug>(bullets-uncheck-all-lists)", buffer = true, noremap = true, desc = "[L] Uncheck Entire Buffer", },
+          -- stylua: ignore end
         },
       }
 
