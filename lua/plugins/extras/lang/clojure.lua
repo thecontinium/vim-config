@@ -1,3 +1,5 @@
+local conjure_doc_win = nil
+
 return {
   { import = "lazyvim.plugins.extras.lang.clojure" },
   {
@@ -61,7 +63,19 @@ return {
       vim.api.nvim_create_autocmd("User", {
         pattern = "ConjureDoc",
         callback = function(ev)
-          vim.lsp.util.open_floating_preview(vim.split(ev.data, "\n"), "markdown", { border = "rounded" })
+          -- If the window is still open, jump into it
+          if conjure_doc_win and vim.api.nvim_win_is_valid(conjure_doc_win) then
+            vim.api.nvim_set_current_win(conjure_doc_win)
+            return
+          end
+          -- Otherwise open a new one and store the handle
+          local lines = vim.split(ev.data or "", "\n")
+          -- remove first line of dashes
+          if lines[1] and lines[1]:match("^%-%-%-") then
+            table.remove(lines, 1)
+          end
+          local _, winnr = vim.lsp.util.open_floating_preview(lines, "markdown", { border = "rounded" })
+          conjure_doc_win = winnr
         end,
       })
     end,
