@@ -34,6 +34,7 @@ return {
     },
     opts = function() -- can't use init as it overides the extras
       -- vim.g["conjure#debug"] = true
+      vim.g["conjure#client#clojure#nrepl#eval#print_options#level"] = 5
       vim.g["conjure#client#python#stdio#delay-stderr-ms"] = 100
       vim.g["conjure#log#jump_to_latest#enabled"] = true
       vim.g["conjure#client_on_load"] = false
@@ -196,14 +197,14 @@ return {
       return {
         location = "background",
         clj_dependencies = {
-          { name = "nrepl/nrepl", version = "1.5.2" },
-          { name = "cider/cider-nrepl", version = "0.58.0" },
-          { name = "djblue/portal", version = "0.62.2" },
-          { name = "org.corfield/rephrase", version = "1.0.0" },
+          { name = "nrepl/nrepl", version = "1.7.0" },
+          { name = "cider/cider-nrepl", version = "0.62.0" },
+          { name = "djblue/portal", version = "0.66.0" },
+          -- { name = "org.corfield/rephrase", version = "1.0.0" },
         },
         clj_middleware = {
           "cider.nrepl/cider-middleware",
-          "org.corfield.rephrase.nrepl/wrap-rephrase",
+          -- "org.corfield.rephrase.nrepl/wrap-rephrase",
         },
         cwd = function()
           return LazyVim.root()
