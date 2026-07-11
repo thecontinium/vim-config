@@ -298,6 +298,149 @@ function custom_pickers.git_diff_upstream()
   })
 end
 
+local function snacks_all_variables()
+  local items = {}
+
+  -- 1. Gather Global Variables
+  for k, v in pairs(vim.api.nvim_eval("g:")) do
+    if type(v) ~= "table" and type(v) ~= "function" then
+      table.insert(items, { text = k .. " " .. tostring(v), var_name = k, var_val_str = tostring(v), scope = "global" })
+    end
+  end
+
+  -- 2. Gather Buffer-Local Variables
+  for k, v in pairs(vim.api.nvim_eval("b:")) do
+    if type(v) ~= "table" and type(v) ~= "function" then
+      table.insert(items, { text = k .. " " .. tostring(v), var_name = k, var_val_str = tostring(v), scope = "buffer" })
+    end
+  end
+
+  -- 3. Gather Tabpage-Local Variables
+  for k, v in pairs(vim.api.nvim_eval("t:")) do
+    if type(v) ~= "table" and type(v) ~= "function" then
+      table.insert(items, { text = k .. " " .. tostring(v), var_name = k, var_val_str = tostring(v), scope = "tab" })
+    end
+  end
+
+  table.sort(items, function(a, b)
+    return a.var_name < b.var_name
+  end)
+
+  -- Helper function to map scope names back to Neovim API tables
+  local function get_scope_target(scope_name)
+    return scope_name == "buffer" and vim.b or scope_name == "tab" and vim.t or vim.g
+  end
+
+  -- Worker function to modify or create a variable in a specific scope allocation
+  local function modify_variable(target_scope, var_name)
+    local scope_target = get_scope_target(target_scope)
+    local current_val = scope_target[var_name]
+    if current_val == nil then
+      current_val = vim.g[var_name] -- Safe type fallback check
+    end
+
+    if type(current_val) == "boolean" then
+      vim.ui.select({ "true", "false" }, {
+        prompt = string.format(" Set [%s] %s to: ", target_scope, var_name),
+        default = current_val and "true" or "false",
+      }, function(choice)
+        if choice ~= nil then
+          scope_target[var_name] = (choice == "true")
+          vim.notify(string.format("Set %s [%s] = %s", var_name, target_scope, choice))
+        end
+      end)
+    else
+      local input_str =
+        vim.fn.input(string.format("Set %s [%s] to: ", var_name, target_scope), vim.inspect(current_val))
+      if input_str ~= "" then
+        ---@type any
+        local parsed_val = input_str
+        if tonumber(input_str) then
+          parsed_val = tonumber(input_str)
+        elseif input_str:match("^['\"].*['\"]$") then
+          parsed_val = input_str:sub(2, -2)
+        end
+        scope_target[var_name] = parsed_val
+        vim.notify(string.format("Set %s [%s] = %s", var_name, target_scope, tostring(parsed_val)))
+      end
+    end
+  end
+
+  -- Launch Snacks Picker Engine
+  Snacks.picker({
+    title = "Variables",
+    items = items,
+    layout = { preset = "select" },
+    format = function(item, _)
+      local ret = {}
+      local scope_hl = item.scope == "buffer" and "SnacksPickerGitStatusModified"
+        or item.scope == "tab" and "SnacksPickerGitStatusAdded"
+        or "SnacksPickerSpecial"
+
+      table.insert(ret, { string.format("[%s] ", item.scope), scope_hl })
+      table.insert(ret, { item.var_name, "SnacksPickerLabel" })
+      table.insert(ret, { " = ", "SnacksPickerDelim" })
+      table.insert(ret, { item.var_val_str, "SnacksPickerComment" })
+      return ret
+    end,
+    -- Default Action: Edit item instantly inside its original current scope allocation
+    confirm = function(picker, item)
+      picker:close()
+      modify_variable(item.scope, item.var_name)
+    end,
+    -- Registered action dictionary block
+    actions = {
+      change_target_scope = function(picker)
+        local item = picker:current()
+        if not item then
+          return
+        end
+        picker:close()
+
+        vim.ui.select({ "global", "buffer", "tab" }, {
+          prompt = string.format("Change Target Scope for '%s': ", item.var_name),
+          default = item.scope,
+        }, function(chosen_scope)
+          if chosen_scope then
+            modify_variable(chosen_scope, item.var_name)
+          end
+        end)
+      end,
+
+      delete_variable = function(picker)
+        local item = picker:current()
+        if not item then
+          return
+        end
+        picker:close()
+
+        -- Double check confirmation dialog box to keep it bulletproof
+        vim.ui.select({ "No, cancel", "Yes, delete variable" }, {
+          prompt = string.format("Delete %s from [%s] scope?", item.var_name, item.scope),
+          default = "No, cancel",
+        }, function(confirmation)
+          if confirmation == "Yes, delete variable" then
+            local target = get_scope_target(item.scope)
+            target[item.var_name] = nil -- Assigning nil deletes the key completely
+            vim.notify(string.format("Deleted %s from [%s] scope", item.var_name, item.scope))
+          end
+        end)
+      end,
+    },
+    -- Explicit keymapping allocations
+    win = {
+      input = {
+        keys = {
+          ["<C-s>"] = { "change_target_scope", mode = { "n", "i" }, desc = "change scope" },
+          -- Set to normal mode 'dd' to match standard buffer/list deletions in LazyVim
+          ["dd"] = { "delete_variable", mode = { "n" }, desc = "delete variable" },
+        },
+      },
+    },
+  })
+end
+
+-- Keymap assignment invocation
 return {
 
   { import = "lazyvim.plugins.extras.editor.snacks_picker" },
@@ -399,6 +542,12 @@ return {
               -- end,
             })
           end,
+        },
+        {
+          "<leader>sv",
+          mode = { "n" },
+          desc = "Variables",
+          snacks_all_variables,
         },
       }
       return vim.list_extend(mappings, keys)
