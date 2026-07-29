@@ -15,6 +15,7 @@ return {
       vim.g["conjure#filetypes"] = {
         -- remove python
         -- "python",
+        -- "r",
         "clojure",
         "fennel",
         "janet",
